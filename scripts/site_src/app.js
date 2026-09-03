@@ -14,6 +14,17 @@
   function loadK(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
   function saveK(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
+  /* ===== 图片兜底：GIF CDN 加载失败 → 替换为动作 emoji（error 不冒泡，须 capture 捕获） ===== */
+  document.addEventListener('error', function (e) {
+    var t = e.target;
+    if (t && t.tagName === 'IMG' && t.parentNode) {
+      var s = document.createElement('span');
+      s.className = 'img-fb';
+      s.textContent = t.getAttribute('data-fb') || '🏋️';
+      t.parentNode.replaceChild(s, t);
+    }
+  }, true);
+
   /* ============ 状态 ============ */
   var S = {
     tab: 'home', seg: 'course', actMus: '全部',
@@ -124,7 +135,7 @@
     var rows = list.filter(function (a) { return S.actMus === '全部' || (musclesOf(a) || '').indexOf(S.actMus) >= 0; }).map(function (a) {
       return '<div class="act-row" data-a="actInfo" data-name="' + esc(a.name) + '"><div class="a-ic">' + a.icon + '</div>' +
         '<div><div class="a-n">' + esc(a.name) + '</div><div class="a-s">' + (a.type === 'reps' ? a.value + ' 次' : a.value + ' 秒') + ' · ' + esc(musclesOf(a)) + '</div></div>' +
-        (a.gif ? '<div class="a-g"><img loading="lazy" src="' + a.gif + '"></div>' : '') + '<div class="a-go">›</div></div>';
+        (a.gif ? '<div class="a-g"><img loading="lazy" data-fb="' + a.icon + '" src="' + a.gif + '"></div>' : '') + '<div class="a-go">›</div></div>';
     }).join('');
     return seg + '<div class="chips">' + chips + '</div><div style="height:10px"></div>' + (rows || '<div class="empty"><div class="e-ic">🤸</div>该肌群暂无动作</div>');
   }
@@ -224,7 +235,7 @@
     var sub = act ? (act.type === 'reps' ? (lib && lib.d ? '难度 ' + '★'.repeat(lib.d) + '☆☆'.slice(0, 3 - lib.d) + ' · ' : '') + '单轮 ' + act.value + ' 次' : act.value + ' 秒 · 保持稳定节奏') : '';
     openSheet('<div class="sh-h"><div class="sh-t">' + (act ? act.icon : '🏋️') + ' ' + esc(name) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
       '<div class="sh-sub">' + sub + ' · ' + esc(musclesOf({ name: name })) + '</div>' +
-      (act && act.gif ? '<div class="demo"><img src="' + act.gif + '" alt=""></div>' : '') +
+      (act && act.gif ? '<div class="demo"><img data-fb="' + act.icon + '" src="' + act.gif + '" alt=""></div>' : '') +
       '<div class="cue-box">💡 ' + esc((act && act.cue) || '保持核心收紧，动作标准优先于数量') + '</div>');
   }
   function sheetDay(wIdx, i) {
@@ -359,7 +370,7 @@
       var mid;
       if (W.phase === 'rest' && W.i + 1 < W.seq.length) {
         var nx = W.seq[W.i + 1];
-        mid = '<div class="wk-next">' + (nx.gif ? '<img src="' + nx.gif + '">' : '<div style="font-size:26px">' + nx.icon + '</div>') +
+        mid = '<div class="wk-next">' + (nx.gif ? '<img data-fb="' + nx.icon + '" src="' + nx.gif + '">' : '<div style="font-size:26px">' + nx.icon + '</div>') +
           '<div><div class="wn-t">下一动作</div><div class="wn-n">' + esc(nx.name) + ' · ' + (nx.type === 'reps' ? nx.value + ' 次' : nx.value + ' 秒') + '</div></div></div>';
       } else if (isAct) {
         mid = '<div class="wk-cue">' + esc(a.cue || '保持标准动作，注意呼吸节奏') + '</div>';
@@ -367,7 +378,7 @@
       body = top + '<div class="wk-prog"><i id="wprog" style="width:' + wProg() + '%"></i></div>' +
         '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 20px;min-height:0">' +
         (W.phase === 'act' && !isTime ? '<div class="wk-act-tag" id="wl1" style="margin-bottom:8px">目标 ' + a.value + ' 次</div>' : '') +
-        '<div class="wk-gif">' + (a.gif ? '<img id="wgif" src="' + a.gif + '">' : '<div class="bf">' + a.icon + '</div>') + '</div>' +
+        '<div class="wk-gif">' + (a.gif ? '<img id="wgif" data-fb="' + a.icon + '" src="' + a.gif + '">' : '<div class="bf">' + a.icon + '</div>') + '</div>' +
         mid + '</div>' +
         '<div class="wk-ctrl">' + side + big + '<div class="wk-mini" data-a="pauseW">⏸</div></div>';
     }
