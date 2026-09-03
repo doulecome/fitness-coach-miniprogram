@@ -25,6 +25,25 @@
     }
   }, true);
 
+  /* ===== 屏幕常亮（Wake Lock）：跟练期间手机不锁屏；不支持的环境静默忽略 ===== */
+  var wlSent = null;
+  function keepAwake(on) {
+    if (!on) {
+      if (wlSent && wlSent.release) { try { wlSent.release(); } catch (e) {} wlSent = null; }
+      return;
+    }
+    if (!navigator.wakeLock || wlSent) return;
+    navigator.wakeLock.request('screen').then(function (s) {
+      wlSent = s;
+      s.addEventListener('release', function () { if (wlSent === s) wlSent = null; });
+    }).catch(function () {});
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) return; // 切后台时浏览器会自动释放，回到前台再补请求
+    var wko = $('#wko');
+    if (wko && !wko.classList.contains('hide')) keepAwake(true);
+  });
+
   /* ============ 状态 ============ */
   var S = {
     tab: 'home', seg: 'course', actMus: '全部',
@@ -274,6 +293,7 @@
     W = { seq: seq, title: title, icon: icon, kcal: kcal || 0, bg: bg || '#1FD6A8', i: 0, phase: 'ready', rem: 3,
       actual: 0, detail: [], t0: Date.now(), rest: S.restSec, paused: false, prs: 0, tag: tag };
     $('#wko').classList.remove('hide');
+    keepAwake(true); // 跟练期间屏幕常亮
     renderW();
     WT = setInterval(onTick, 1000);
   }
@@ -325,7 +345,7 @@
   }
   function stopT() { if (WT) { clearInterval(WT); WT = null; } }
   function closeW() {
-    stopT(); W = null;
+    stopT(); keepAwake(false); W = null;
     $('#wko').classList.add('hide');
     S.tab = 'record'; renderShell();
   }
