@@ -1,0 +1,463 @@
+.header {
+  padding: 40rpx 32rpx 16rpx;
+}
+.title {
+  font-size: 44rpx;
+  font-weight: 800;
+}
+.subtitle {
+  font-size: 26rpx;
+  color: var(--sub);
+  margin-top: 8rpx;
+}
+
+.stats {
+  margin: 16rpx 32rpx;
+  display: flex;
+  padding: 36rpx 0;
+}
+.stat {
+  flex: 1;
+  text-align: center;
+}
+.num {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: var(--accent);
+}
+.lab {
+  font-size: 24rpx;
+  color: var(--sub);
+  margin-top: 8rpx;
+}
+
+.list {
+  padding: 8rpx 32rpx;
+}
+.rec {
+  display: flex;
+  align-items: center;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+}
+.rec-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+.rec-info {
+  flex: 1;
+}
+.rec-name {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+.rec-date {
+  font-size: 24rpx;
+  color: var(--sub);
+  margin-top: 6rpx;
+}
+.rec-meta {
+  font-size: 24rpx;
+  color: #6b7178;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 32rpx;
+}
+.empty-emoji {
+  font-size: 120rpx;
+}
+.empty-text {
+  font-size: 28rpx;
+  color: var(--sub);
+  margin-top: 20rpx;
+}
+.empty-btn {
+  display: inline-block;
+  margin-top: 32rpx;
+  background: var(--accent);
+  color: #fff;
+  padding: 18rpx 56rpx;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.clear {
+  text-align: center;
+  color: #c0c4c8;
+  font-size: 26rpx;
+  margin: 24rpx 0 40rpx;
+}
+
+/* 微信运动 */
+.werun {
+  margin: 16rpx 32rpx;
+  padding: 28rpx 32rpx 24rpx;
+}
+.wr-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wr-title {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+.wr-sync {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  padding: 10rpx 32rpx;
+  border-radius: 999rpx;
+}
+.wr-today {
+  display: flex;
+  align-items: baseline;
+  margin: 16rpx 0 24rpx;
+}
+.wr-num {
+  font-size: 60rpx;
+  font-weight: 800;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.wr-lab {
+  font-size: 26rpx;
+  color: var(--sub);
+  margin-left: 16rpx;
+}
+.wr-bars {
+  display: flex;
+  align-items: flex-end;
+  height: 160rpx;
+  gap: 8rpx;
+}
+.wr-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+.wr-col {
+  width: 60%;
+  min-height: 6rpx;
+  background: linear-gradient(180deg, #1FD6A8, #9BE9D2);
+  border-radius: 999rpx 999rpx 0 0;
+  transition: height 0.4s ease;
+}
+.wr-bl {
+  font-size: 22rpx;
+  color: #b5bac0;
+  margin-top: 10rpx;
+}
+
+/* 手动录入步数 */
+.mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  z-index: 100;
+}
+.step-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 44rpx 40rpx 56rpx;
+  box-sizing: border-box;
+}
+.ss-title {
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+.ss-input {
+  margin: 32rpx 0;
+  background: #f3f4f6;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  font-size: 36rpx;
+  text-align: center;
+}
+.ss-btns {
+  display: flex;
+  margin-top: 8rpx;
+}
+.ss-btn {
+  flex: 1;
+  height: 92rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  margin: 0 10rpx;
+}
+.ss-btn.ghost {
+  background: #eef0f2;
+  color: #5a6066;
+}
+
+/* 打卡日历 */
+.cal {
+  margin: 16rpx 32rpx;
+  padding: 32rpx 28rpx;
+}
+.cal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24rpx;
+}
+.cal-month {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+.cal-tip {
+  font-size: 24rpx;
+  color: var(--sub);
+}
+.cal-week {
+  display: flex;
+  margin-bottom: 12rpx;
+}
+.cal-wd {
+  flex: 1;
+  text-align: center;
+  font-size: 24rpx;
+  color: #b5bac0;
+}
+.cal-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+.cal-cell {
+  width: 14.28%;
+  height: 76rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: #333;
+  position: relative;
+  box-sizing: border-box;
+}
+.cal-cell.empty {
+  visibility: hidden;
+}
+.cal-cell.on {
+  color: #fff;
+  font-weight: 700;
+}
+.cal-cell.on::before {
+  content: '';
+  position: absolute;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: var(--accent);
+  z-index: 0;
+}
+.cal-cell.on text {
+  position: relative;
+  z-index: 1;
+}
+.cal-cell.today::after {
+  content: '';
+  position: absolute;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  border: 3rpx solid #FFB020;
+  box-sizing: border-box;
+}
+
+/* 动作最佳纪录（进步曲线） */
+.prs {
+  margin: 16rpx 32rpx;
+  padding: 28rpx 28rpx 8rpx;
+}
+.pr-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.pr-title {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+.pr-count {
+  font-size: 22rpx;
+  color: var(--sub);
+}
+.pr-sub {
+  font-size: 22rpx;
+  color: #b5bac0;
+  margin: 6rpx 0 8rpx;
+}
+.pr-item {
+  padding: 20rpx 4rpx 14rpx;
+}
+.pr-item.bd {
+  border-top: 1rpx solid #f1f3f4;
+}
+.pr-line {
+  display: flex;
+  align-items: center;
+}
+.pr-icon {
+  font-size: 34rpx;
+  margin-right: 12rpx;
+}
+.pr-name {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.pr-trend {
+  font-size: 20rpx;
+  margin-left: 12rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 999rpx;
+  background: #eef6f3;
+  color: #1ca484;
+}
+.pr-trend.up {
+  color: #0e9f76;
+  background: #e4f6ef;
+  font-weight: 700;
+}
+.pr-trend.down {
+  color: #e07a3f;
+  background: #fdf0e6;
+}
+.pr-trend.flat {
+  color: #8a9096;
+  background: #f0f1f3;
+}
+.pr-trend.new {
+  color: #1ca484;
+  background: #e4f6ef;
+}
+.pr-gap {
+  flex: 1;
+}
+.pr-bestlab {
+  font-size: 22rpx;
+  color: var(--sub);
+}
+.pr-best {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: var(--accent);
+}
+.pr-spark {
+  display: flex;
+  align-items: flex-end;
+  height: 64rpx;
+  margin-top: 12rpx;
+  gap: 6rpx;
+}
+.pr-bar {
+  flex: 1;
+  min-width: 6rpx;
+  max-width: 28rpx;
+  border-radius: 4rpx 4rpx 0 0;
+  background: #dcefe9;
+}
+.pr-bar.hi {
+  background: var(--accent);
+}
+.pr-meta {
+  font-size: 20rpx;
+  color: #b5bac0;
+  margin-top: 8rpx;
+}
+
+/* 记录点击态 + 明细弹层 */
+.tap-dim {
+  opacity: 0.65;
+}
+.rec-sheet {
+  max-height: 76vh;
+  display: flex;
+  flex-direction: column;
+}
+.ss-sub {
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--sub);
+  margin-top: 10rpx;
+}
+.dr-list {
+  margin: 28rpx 0 8rpx;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 46vh;
+}
+.dr-row {
+  display: flex;
+  align-items: center;
+  padding: 18rpx 4rpx;
+  border-bottom: 1rpx solid #f3f4f6;
+}
+.dr-icon {
+  width: 56rpx;
+  font-size: 30rpx;
+  text-align: center;
+  margin-right: 12rpx;
+}
+.dr-name {
+  flex: 1;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.dr-target {
+  font-size: 22rpx;
+  color: #b5bac0;
+  margin-right: 16rpx;
+}
+.dr-st {
+  font-size: 24rpx;
+  font-weight: 700;
+  min-width: 120rpx;
+  text-align: right;
+}
+.dr-st.ok { color: var(--accent); }
+.dr-st.over { color: #0e9f76; }
+.dr-st.miss { color: #e07a3f; }
+.dr-st.skip { color: #b5bac0; font-weight: 500; }
+.dr-empty {
+  text-align: center;
+  color: #b5bac0;
+  font-size: 26rpx;
+  padding: 60rpx 0;
+}
+.dr-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24rpx;
+  padding: 16rpx 0 8rpx;
+  flex-wrap: wrap;
+}
+.lg {
+  font-size: 20rpx;
+  color: #8a9096;
+}
+.lg.ok { color: #1ca484; }
+.lg.over { color: #0e9f76; }
+.lg.miss { color: #e07a3f; }
+.lg.skip { color: #b5bac0; }

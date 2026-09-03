@@ -1,0 +1,187 @@
+/* 全局样式 —— Keep 风：浅灰底 + 活力绿强调色 */
+page {
+  --accent: #1FD6A8;
+  --bg: #F5F6F8;
+  --card: #FFFFFF;
+  --text: #1A1D1F;
+  --sub: #9AA0A6;
+  background: var(--bg);
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", Helvetica, sans-serif;
+  color: var(--text);
+  font-size: 28rpx;
+}
+
+.page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-bottom: 40rpx;
+}
+
+/* 通用区块 */
+.section {
+  padding: 32rpx 32rpx 8rpx;
+}
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+.section-title {
+  font-size: 36rpx;
+  font-weight: 700;
+}
+.section-more {
+  font-size: 26rpx;
+  color: var(--sub);
+}
+
+/* 通用卡片 */
+.card {
+  background: var(--card);
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+/* ============ 动作演示动画（训练详情/跟练页共用） ============ */
+.demo-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: flex-end;
+  z-index: 100;
+}
+.demo-box {
+  width: 100%;
+  background: linear-gradient(160deg, #1FD6A8 0%, #14B085 100%);
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 44rpx 40rpx 56rpx;
+  box-sizing: border-box;
+  color: #fff;
+}
+.demo-title {
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+.demo-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20rpx 0 8rpx;
+  min-height: 400rpx;
+}
+.demo-fig {
+  position: relative;
+  width: 200rpx;
+  height: 320rpx;
+  filter: drop-shadow(0 10rpx 18rpx rgba(0, 0, 0, 0.18));
+}
+.demo-img {
+  width: 540rpx;
+  height: 400rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.16);
+  display: block;
+}
+.demo-src {
+  text-align: center;
+  font-size: 22rpx;
+  opacity: 0.72;
+  margin: 2rpx 0 6rpx;
+}
+/* 纯 CSS 火柴人（小程序不渲染内联 <svg>，用 view 拼） */
+.fig-head {
+  position: absolute;
+  top: 8rpx;
+  left: 77rpx;
+  width: 46rpx;
+  height: 46rpx;
+  border-radius: 50%;
+  background: #ffffff;
+}
+.fig-torso {
+  position: absolute;
+  top: 52rpx;
+  left: 92rpx;
+  width: 16rpx;
+  height: 118rpx;
+  border-radius: 8rpx;
+  background: #ffffff;
+}
+.fig-arm {
+  position: absolute;
+  top: 60rpx;
+  left: 92rpx;
+  width: 12rpx;
+  height: 92rpx;
+  border-radius: 6rpx;
+  background: #ffffff;
+  transform-origin: top center;
+}
+.fig-arm-l { transform: rotate(28deg); }
+.fig-arm-r { transform: rotate(-28deg); }
+.fig-leg {
+  position: absolute;
+  top: 168rpx;
+  left: 92rpx;
+  width: 14rpx;
+  height: 124rpx;
+  border-radius: 7rpx;
+  background: #ffffff;
+  transform-origin: top center;
+}
+.fig-leg-l { transform: rotate(16deg); }
+.fig-leg-r { transform: rotate(-16deg); }
+/* 三种动作节奏（整体律动，模拟发力/呼吸/跑动） */
+.anim-dynamic { animation: demo-bob 1s ease-in-out infinite; }
+.anim-hold { animation: demo-breathe 3s ease-in-out infinite; }
+.anim-cardio { animation: demo-run 0.6s linear infinite; }
+@keyframes demo-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(22rpx); }
+}
+@keyframes demo-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+@keyframes demo-run {
+  0% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-12rpx) rotate(4deg); }
+  100% { transform: translateY(0) rotate(-4deg); }
+}
+.demo-phases {
+  display: flex;
+  justify-content: center;
+  gap: 20rpx;
+  margin: 8rpx 0 18rpx;
+}
+.dp {
+  font-size: 26rpx;
+  opacity: 0.5;
+  padding: 10rpx 28rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.16);
+}
+.dp.on {
+  opacity: 1;
+  background: #fff;
+  color: #14B085;
+  font-weight: 700;
+}
+.demo-tip {
+  text-align: center;
+  font-size: 26rpx;
+  opacity: 0.92;
+  margin: 6rpx 0 28rpx;
+  line-height: 1.5;
+}
+.demo-close {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.22);
+  padding: 24rpx;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}

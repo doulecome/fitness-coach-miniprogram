@@ -1,0 +1,60 @@
+<view class="page">
+  <view class="header">
+    <view class="title">身体数据</view>
+    <view class="subtitle">记录身高体重，追踪身体变化</view>
+  </view>
+
+  <!-- 录入 -->
+  <view class="form card">
+    <view class="field">
+      <text class="f-label">身高</text>
+      <input class="f-input" type="digit" placeholder="cm" value="{{height}}" bindinput="onHeight" />
+      <text class="f-unit">cm</text>
+    </view>
+    <view class="field">
+      <text class="f-label">体重</text>
+      <input class="f-input" type="digit" placeholder="kg" value="{{weight}}" bindinput="onWeight" />
+      <text class="f-unit">kg</text>
+    </view>
+    <view class="save-btn" bindtap="save">保存今日数据</view>
+  </view>
+
+  <!-- BMI -->
+  <view class="bmi card" wx:if="{{bmi !== null}}" style="border-color:{{color}}">
+    <view class="bmi-left">
+      <view class="bmi-num" style="color:{{color}}">{{bmi}}</view>
+      <view class="bmi-cap">BMI</view>
+    </view>
+    <view class="bmi-right">
+      <view class="bmi-cat" style="color:{{color}}">{{category}}</view>
+      <view class="bmi-tip">{{tip}}</view>
+    </view>
+  </view>
+  <view class="bmi card empty-bmi" wx:else>
+    <view class="bmi-tip">还没有身体数据，先在上方记录一次吧～</view>
+  </view>
+
+  <!-- 体重趋势 -->
+  <view class="trend card" wx:if="{{trend.length}}">
+    <view class="trend-title">体重趋势（最近 {{trend.length}} 次）</view>
+    <view class="bars">
+      <view class="bar-col" wx:for="{{trend}}" wx:key="date">
+        <view class="bar-val">{{item.weight}}</view>
+        <view class="bar-track">
+          <view class="bar-fill" style="height:{{item.h}};background:{{color}}"></view>
+        </view>
+        <view class="bar-date">{{item.date}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史 -->
+  <view class="history" wx:if="{{records.length}}">
+    <view class="hist-item card" wx:for="{{records}}" wx:key="ts">
+      <view class="hist-date">{{item.date}}</view>
+      <view class="hist-data">{{item.height}}cm · {{item.weight}}kg</view>
+    </view>
+  </view>
+
+  <view class="clear" wx:if="{{records.length}}" bindtap="clearBody">清空身体数据</view>
+</view>

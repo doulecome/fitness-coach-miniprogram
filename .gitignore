@@ -1,0 +1,16 @@
+# 微信开发者工具私有配置（含个人 appid / 编译缓存）
+project.private.config.json
+
+# 项目本地工作数据（记忆日志 / 自动化脚本数据，不上传）
+.workbuddy/
+
+# 浏览器预览生成物（可由 scripts/gen_demo_preview.js / gen_plan_preview.js 重新生成）
+preview/
+
+# ExerciseDB 素材库抓取快照/缓存（大文件，可由脚本重新抓取）
+scripts/exdb_full.json
+scripts/exdb_cache.json
+
+# 临时与日志
+*.log
+*.tmp

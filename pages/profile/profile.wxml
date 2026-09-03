@@ -1,0 +1,38 @@
+<view class="page">
+  <view class="profile-head">
+    <view class="avatar">🏋️</view>
+    <view class="p-info">
+      <view class="p-name">{{userName}}</view>
+      <view class="p-level">Lv.{{level}} · {{levelName}}</view>
+    </view>
+  </view>
+
+  <view class="badge card">
+    <view class="b-item">
+      <view class="b-num">{{streak}}</view>
+      <view class="b-lab">连续打卡</view>
+    </view>
+    <view class="b-div"></view>
+    <view class="b-item">
+      <view class="b-num">{{totalMin}}</view>
+      <view class="b-lab">训练分钟</view>
+    </view>
+    <view class="b-div"></view>
+    <view class="b-item">
+      <view class="b-num">{{level}}</view>
+      <view class="b-lab">等级</view>
+    </view>
+  </view>
+
+  <view class="menu card">
+    <view class="menu-item" wx:for="{{menus}}" wx:key="name" bindtap="openMenu" data-page="{{item.page}}">
+      <view class="m-icon">{{item.icon}}</view>
+      <view class="m-name">{{item.name}}</view>
+      <view class="m-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="tip card">
+    💪 私人教练小贴士：每次训练后拉伸 5 分钟，恢复更快、线条更美。
+  </view>
+</view>

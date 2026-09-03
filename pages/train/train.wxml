@@ -1,0 +1,72 @@
+<import src="_tpl/demo.wxml" />
+<view class="page">
+  <view class="header">
+    <view class="title">训练</view>
+    <view class="subtitle">选一节课程，或逛逛动作库</view>
+  </view>
+
+  <!-- 分段切换 -->
+  <view class="segment">
+    <view class="seg {{tab === 'course' ? 'seg-on' : ''}}" bindtap="setTab" data-tab="course">课程</view>
+    <view class="seg {{tab === 'action' ? 'seg-on' : ''}}" bindtap="setTab" data-tab="action">动作库</view>
+  </view>
+
+  <!-- 课程视图 -->
+  <block wx:if="{{tab === 'course'}}">
+    <view class="filter">
+      <view class="chip {{activeCat === item ? 'chip-on' : ''}}" wx:for="{{cats}}" wx:key="*this" bindtap="setCat" data-cat="{{item}}">{{item}}</view>
+    </view>
+
+    <view class="list">
+      <view class="plan" wx:for="{{list}}" wx:key="id">
+        <view class="plan-icon" style="background:{{item.color}}22;color:{{item.color}}">{{item.icon}}</view>
+        <view class="plan-info">
+          <view class="plan-name">{{item.name}}</view>
+          <view class="plan-desc">{{item.desc}}</view>
+          <view class="plan-meta">
+            <text class="tag" style="background:{{item.color}}">{{item.level}}</text>
+            {{item.duration}}分钟 · {{item.kcal}}千卡 · {{item.actions.length}}个动作
+          </view>
+        </view>
+        <view class="plan-btn" bindtap="start" data-id="{{item.id}}">开始</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 动作库视图 -->
+  <block wx:else>
+    <view class="groups">
+      <view class="group" wx:for="{{groups}}" wx:key="muscle">
+        <view class="group-title">{{item.muscle}}</view>
+        <view class="action-grid">
+          <view class="action-card" wx:for="{{item.list}}" wx:for-item="a" wx:key="name"
+            bindtap="openAction" data-name="{{a.name}}" data-icon="{{a.icon}}" data-type="{{a.type}}" data-value="{{a.value}}" data-course="{{a.course}}">
+            <view class="action-emoji">{{a.icon}}</view>
+            <view class="action-name">{{a.name}}</view>
+            <view class="action-val">{{a.type === 'reps' ? a.value + '次' : a.value + '秒'}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 动作详情弹层 -->
+  <view class="mask" wx:if="{{showDetail}}" bindtap="closeDetail">
+    <view class="sheet" catchtap="noop">
+      <view class="sheet-icon">{{detail.icon}}</view>
+      <view class="sheet-name">{{detail.name}}</view>
+      <view class="sheet-row"><text class="sheet-k">所属课程</text><text class="sheet-v">{{detail.course}}</text></view>
+      <view class="sheet-row"><text class="sheet-k">训练量</text><text class="sheet-v">{{detail.type === 'reps' ? detail.value + ' 次' : detail.value + ' 秒'}}</text></view>
+      <view class="sheet-cue" wx:if="{{detailCue}}">💡 {{detailCue}}</view>
+      <view class="sheet-tip">{{detailTip}}</view>
+      <view class="sheet-btns">
+        <view class="sheet-btn ghost" bindtap="closeDetail">关闭</view>
+        <view class="sheet-btn demo-btn" bindtap="openDemo">▶ 看演示</view>
+        <view class="sheet-btn" bindtap="startFromDetail">去练这组</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 动作演示动画 -->
+  <template is="actionDemo" wx:if="{{showDemo}}" />
+</view>

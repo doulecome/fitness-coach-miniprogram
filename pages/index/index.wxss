@@ -1,0 +1,131 @@
+.hero {
+  background: linear-gradient(135deg, #1FD6A8 0%, #16B892 100%);
+  padding: 56rpx 40rpx 64rpx;
+  color: #fff;
+}
+.greeting {
+  font-size: 28rpx;
+  opacity: 0.92;
+}
+.hero-title {
+  font-size: 48rpx;
+  font-weight: 800;
+  margin-top: 12rpx;
+}
+.hero-sub {
+  font-size: 24rpx;
+  opacity: 0.85;
+  margin-top: 16rpx;
+}
+.start-btn {
+  margin-top: 44rpx;
+  background: #fff;
+  color: #16B892;
+  display: inline-flex;
+  align-items: center;
+  padding: 22rpx 48rpx;
+  border-radius: 999rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  box-shadow: 0 12rpx 28rpx rgba(0, 0, 0, 0.12);
+}
+.start-tri {
+  margin-right: 12rpx;
+  font-size: 26rpx;
+}
+.ai-banner {
+  margin: 28rpx 32rpx 0;
+  background: linear-gradient(135deg, #FF8A5B 0%, #FF5C77 100%);
+  border-radius: 24rpx;
+  padding: 28rpx 32rpx;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  box-shadow: 0 10rpx 24rpx rgba(255, 92, 119, 0.22);
+}
+.ai-left {
+  flex: 1;
+}
+.ai-title {
+  font-size: 32rpx;
+  font-weight: 800;
+}
+.ai-sub {
+  font-size: 24rpx;
+  opacity: 0.92;
+  margin-top: 8rpx;
+}
+.ai-go {
+  font-size: 28rpx;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.22);
+  padding: 14rpx 28rpx;
+  border-radius: 999rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+/* 推荐课程横向卡片 */
+.course-scroll {
+  white-space: nowrap;
+  width: 100%;
+}
+.course-card {
+  display: inline-block;
+  width: 260rpx;
+  height: 300rpx;
+  margin-right: 24rpx;
+  border-radius: 28rpx;
+  padding: 28rpx;
+  box-sizing: border-box;
+  color: #fff;
+  vertical-align: top;
+  box-shadow: 0 10rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+.course-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.course-emoji {
+  font-size: 52rpx;
+}
+.course-level {
+  font-size: 22rpx;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+}
+.course-name {
+  font-size: 38rpx;
+  font-weight: 800;
+  margin-top: 36rpx;
+}
+.course-meta {
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-top: 12rpx;
+}
+
+/* 训练目标 */
+.goal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.goal-item {
+  width: 23%;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx 0;
+  text-align: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+.goal-icon {
+  font-size: 48rpx;
+}
+.goal-name {
+  font-size: 26rpx;
+  margin-top: 12rpx;
+  color: #1A1D1F;
+}

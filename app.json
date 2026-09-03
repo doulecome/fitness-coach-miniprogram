@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/train/train",
+    "pages/workout/workout",
+    "pages/record/record",
+    "pages/profile/profile",
+    "pages/body/body",
+    "pages/plan/plan"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#1FD6A8",
+    "navigationBarTitleText": "练练",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F5F6F8"
+  },
+  "tabBar": {
+    "color": "#9AA0A6",
+    "selectedColor": "#1FD6A8",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页" },
+      { "pagePath": "pages/train/train", "text": "训练" },
+      { "pagePath": "pages/record/record", "text": "记录" },
+      { "pagePath": "pages/profile/profile", "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

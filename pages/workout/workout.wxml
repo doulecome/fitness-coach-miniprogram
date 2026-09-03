@@ -1,0 +1,111 @@
+<import src="_tpl/demo.wxml" />
+<view class="workout">
+
+  <!-- 完成结算 -->
+  <view class="done" wx:if="{{phase === 'done'}}">
+    <view class="done-emoji">🎉</view>
+    <view class="done-title">训练完成！</view>
+    <view class="done-sub">{{course.name}} · {{course.duration}} 分钟</view>
+    <view class="done-stats">
+      <view class="ds"><view class="ds-num">{{course.duration}}</view><view class="ds-label">分钟</view></view>
+      <view class="ds"><view class="ds-num">{{course.kcal}}</view><view class="ds-label">千卡</view></view>
+      <view class="ds"><view class="ds-num">{{doneCount}}/{{total}}</view><view class="ds-label">动作</view></view>
+    </view>
+    <view class="done-record" wx:if="{{recordCount > 0}}">🎖 打破 {{recordCount}} 项个人纪录</view>
+    <view class="done-btns">
+      <view class="done-btn ghost" bindtap="restart">再来一组</view>
+      <view class="done-btn" bindtap="goRecord">查看记录</view>
+    </view>
+  </view>
+
+  <!-- 训练中 -->
+  <block wx:else>
+    <view class="topbar" style="padding-top:{{statusBar}}px">
+      <view class="close" bindtap="back">✕</view>
+      <view class="step">{{phase === 'ready' ? '准备' : index + 1 + ' / ' + total}}</view>
+      <view class="spacer"></view>
+    </view>
+
+    <view class="progress"><view class="bar" style="width:{{phase === 'ready' ? 0 : progress}}%"></view></view>
+
+    <view class="stage">
+
+      <!-- 3-2-1 准备 -->
+      <block wx:if="{{phase === 'ready'}}">
+        <view class="ready-label">准备开始</view>
+        <view class="ready-count {{hurrying ? 'hurrying' : ''}}">{{remaining}}</view>
+        <view class="ready-course">{{course.name}}</view>
+        <view class="ready-first">先练 · {{course.actions[0].name}} {{course.actions[0].type === 'reps' ? course.actions[0].value + ' 次' : course.actions[0].value + 's'}}</view>
+        <view class="ready-note" wx:if="{{planNote}}">🧠 {{planNote}}</view>
+      </block>
+
+      <!-- 组间休息 -->
+      <block wx:elif="{{phase === 'rest'}}">
+        <view class="rest-label">休息一下</view>
+        <view class="timer {{hurrying ? 'hurrying' : ''}}">{{remaining}}<text class="unit">s</text></view>
+        <view class="rest-next-card" wx:if="{{index < total - 1}}">
+          <view class="rnext-icon">{{course.actions[index + 1].icon}}</view>
+          <image wx:if="{{nextImgOk}}" class="rnext-img" src="{{course.actions[index + 1].gif || course.actions[index + 1].media.src}}"
+            mode="aspectFill" bindload="onNextImgLoad" binderror="onNextImgErr"></image>
+          <view class="rnext-name">下一个 · {{course.actions[index + 1].name}}</view>
+        </view>
+        <view class="rest-opts">
+          <view class="ro {{restSec === opt ? 'on' : ''}}" wx:for="{{restOpts}}" wx:key="*this"
+            data-sec="{{item}}" bindtap="setRest">{{item}}s</view>
+        </view>
+        <view class="action-hint">休息结束自动进入下一动作</view>
+      </block>
+
+      <!-- 动作进行中 -->
+      <block wx:else>
+        <view class="action-visual" wx:if="{{(current.gif || current.media) && curImgOk}}" bindtap="openDemo">
+          <image class="action-img" src="{{current.gif || current.media.src}}" mode="aspectFit"
+            bindload="onCurImgLoad" binderror="onCurImgErr"></image>
+          <view class="action-img-tip">点击看演示 ▾</view>
+        </view>
+        <view class="action-icon" wx:else bindtap="openDemo">{{current.icon}}</view>
+        <view class="action-name">{{current.name}}</view>
+        <view class="action-cue" wx:if="{{current.cue}}">{{current.cue}}</view>
+
+        <block wx:if="{{current.type === 'time'}}">
+          <view class="timer {{hurrying ? 'hurrying' : ''}}">{{remaining}}<text class="unit">s</text></view>
+          <view class="action-hint">保持节奏，坚持住！</view>
+        </block>
+
+        <block wx:else>
+          <view class="reps-row">
+            <view class="reps-btn" data-d="-2" bindtap="adjReps">－</view>
+            <view class="reps">{{repsActual}}<text class="unit">次</text></view>
+            <view class="reps-btn" data-d="2" bindtap="adjReps">＋</view>
+          </view>
+          <view class="reps-target">目标 {{current.value}} 次<text class="reps-hist" wx:if="{{histLine}}"> · {{histLine}}</text></view>
+          <view class="reps-up" wx:if="{{repsActual >= current.value}}">已达标 ✓<text wx:if="{{repsActual > current.value}}"> 超额 +{{repsActual - current.value}}！</text></view>
+          <view class="action-hint">做完点「完成」，实际次数可调 ±</view>
+        </block>
+
+        <view class="demo-toggle" bindtap="openDemo">▶ 看动作演示</view>
+      </block>
+    </view>
+
+    <!-- 控制区 -->
+    <view class="controls">
+      <view class="ctrl ghost" bindtap="skip">{{phase === 'rest' ? '跳过休息' : '跳过'}}</view>
+      <view class="ctrl main" bindtap="onMain">
+        <text wx:if="{{phase === 'ready'}}">开练 ▶</text>
+        <text wx:elif="{{phase === 'rest'}}">开始 ▸</text>
+        <text wx:elif="{{phase === 'action' && current.type === 'reps'}}">完成 ✓</text>
+        <text wx:elif="{{running}}">暂停 ⏸</text>
+        <text wx:else>继续 ▶</text>
+      </view>
+      <view class="ctrl ghost" bindtap="restart">重来</view>
+    </view>
+
+    <view class="next-preview" wx:if="{{phase === 'action' && index < total - 1}}">
+      下一项 · {{course.actions[index + 1].name}}
+    </view>
+  </block>
+
+  <!-- 动作演示动画 -->
+  <template is="actionDemo" wx:if="{{showDemo}}" />
+
+</view>

@@ -1,0 +1,34 @@
+<!-- 动作演示动画模板：在训练详情页与跟练页复用 -->
+<!-- 调用页需在 data 中提供：demoName / demoAnim / demoTip / phaseIndex，并实现 openDemo / closeDemo / noop -->
+<template name="actionDemo">
+  <view class="demo-mask" catchtap="closeDemo">
+    <view class="demo-box" catchtap="noop">
+      <view class="demo-title">{{demoName}} · 动作演示</view>
+
+      <view class="demo-stage">
+        <!-- 有 ExerciseDB 真人 GIF：直接播连贯动作（Keep 式）；无则用 CSS 火柴人演示 -->
+        <image wx:if="{{demoMedia && demoImgOk}}" class="demo-img" src="{{demoMedia}}" mode="aspectFit"
+          bindload="onDemoImgLoad" binderror="onDemoImgError"></image>
+        <view wx:else class="demo-fig anim-{{demoAnim}}">
+          <view class="fig-head"></view>
+          <view class="fig-torso"></view>
+          <view class="fig-arm fig-arm-l"></view>
+          <view class="fig-arm fig-arm-r"></view>
+          <view class="fig-leg fig-leg-l"></view>
+          <view class="fig-leg fig-leg-r"></view>
+        </view>
+      </view>
+
+      <view class="demo-phases" wx:if="{{!demoMedia || !demoImgOk}}">
+        <text class="dp {{phaseIndex === 0 ? 'on' : ''}}">起始</text>
+        <text class="dp {{phaseIndex === 1 ? 'on' : ''}}">{{demoAnim === 'hold' ? '保持' : '发力'}}</text>
+        <text class="dp {{phaseIndex === 2 ? 'on' : ''}}">{{demoAnim === 'hold' ? '呼吸' : '还原'}}</text>
+      </view>
+
+      <view class="demo-src" wx:if="{{demoMedia && demoImgOk}}">真人动作演示 · 来源 ExerciseDB</view>
+
+      <view class="demo-tip">{{demoTip}}</view>
+      <view class="demo-close" catchtap="closeDemo">收起演示</view>
+    </view>
+  </view>
+</template>

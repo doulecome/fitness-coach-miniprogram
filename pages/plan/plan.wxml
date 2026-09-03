@@ -1,0 +1,163 @@
+<view class="page">
+
+  <!-- 表单态 -->
+  <block wx:if="{{!generated}}">
+    <view class="header">
+      <view class="h-title">AI 定制动态训练计划</view>
+      <view class="h-sub">5 个问题 → 每周肌群编排 + 逐动作组数目标 + 教练按语</view>
+    </view>
+
+    <view class="card form">
+      <view class="field">
+        <view class="f-label">训练目标</view>
+        <view class="opts">
+          <view class="opt {{goal === item ? 'on' : ''}}" wx:for="{{goals}}" wx:key="*this"
+            bindtap="choose" data-field="goal" data-value="{{item}}">{{item}}</view>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="f-label">每周训练天数</view>
+        <view class="opts">
+          <view class="opt {{day === item ? 'on' : ''}}" wx:for="{{days}}" wx:key="*this"
+            bindtap="choose" data-field="day" data-value="{{item}}">{{item}} 天</view>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="f-label">单次时长</view>
+        <view class="opts">
+          <view class="opt {{length === item ? 'on' : ''}}" wx:for="{{lengths}}" wx:key="*this"
+            bindtap="choose" data-field="length" data-value="{{item}}">{{item}} 分钟</view>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="f-label">健身水平</view>
+        <view class="opts">
+          <view class="opt {{level === item ? 'on' : ''}}" wx:for="{{levels}}" wx:key="*this"
+            bindtap="choose" data-field="level" data-value="{{item}}">{{item}}</view>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="f-label">
+          休息日
+          <text class="f-hint">（可选，留空则自动安排）</text>
+          <text class="f-clear" wx:if="{{restDays.length}}" bindtap="clearRest">清空</text>
+        </view>
+        <view class="opts week-opts">
+          <view class="wchip {{restOn[index] ? 'on' : ''}}" wx:for="{{weekLabels}}" wx:key="index"
+            bindtap="toggleRest" data-idx="{{index}}">周{{item}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="gen-btn" bindtap="build">✨ 生成我的 4 周计划</view>
+  </block>
+
+  <!-- 结果态 -->
+  <block wx:else>
+    <view class="header">
+      <view class="h-title">{{plan.goal}} · 4 周动态训练计划</view>
+      <view class="h-sub">{{plan.days}} 练 / 周 · 单次 {{plan.length}} 分钟 · {{plan.level}}</view>
+    </view>
+
+    <!-- 周期切换（W1 适应 → W2 进阶 → W3 强化 → W4 恢复） -->
+    <view class="phase-tabs" wx:if="{{weekTabs.length}}">
+      <view class="pt {{weekIndex === item.i ? 'on' : ''}}" wx:for="{{weekTabs}}" wx:key="i"
+        bindtap="switchWeek" data-i="{{item.i}}">
+        <view class="pt-i">第{{item.i + 1}}周</view>
+        <view class="pt-l">{{item.label}}</view>
+        <view class="pt-d" wx:if="{{item.days}}">{{item.days}}天</view>
+      </view>
+    </view>
+    <view class="phase-tip" wx:if="{{weekTip}}">📌 {{weekTip}}</view>
+
+    <!-- 教练总述：计划为什么这样排 -->
+    <view class="coach-intro" wx:if="{{plan.intro}}">🧑‍🏫 {{plan.intro}}</view>
+
+    <!-- 个性化徽章：有多少动作参考了你的成绩历史 -->
+    <view class="level-note fit" wx:if="{{customTotal}}">🧠 本计划 {{customTotal}} 个动作目标已按你的历史成绩定制——练过的动作越多，计划越贴你</view>
+
+    <view class="summary card">
+      <view class="sm"><view class="sm-num">{{summaryDays}}</view><view class="sm-lab">训练天/周</view></view>
+      <view class="sm"><view class="sm-num">{{summaryMin}}</view><view class="sm-lab">分钟/周</view></view>
+      <view class="sm"><view class="sm-num">{{summaryKcal}}</view><view class="sm-lab">千卡/周</view></view>
+    </view>
+
+    <view class="level-note" wx:if="{{plan.restDayText}}">📅 {{plan.restDayText}}</view>
+    <view class="level-note">💡 {{plan.levelNote}}</view>
+
+    <!-- 周视图：每个训练日是一节动态编排的训练（主项×组数+收尾+冷身），点击查看 -->
+    <view class="week">
+      <view class="day {{item.rest ? 'rest' : ''}}" wx:for="{{planWeek}}" wx:key="wd"
+        bindtap="openDay" data-i="{{index}}">
+        <view class="day-wd">{{item.wd}}</view>
+        <block wx:if="{{item.rest}}">
+          <view class="day-rest">💤 休息</view>
+        </block>
+        <block wx:else>
+          <view class="day-icon">{{item.icon}}</view>
+          <view class="day-name">{{item.typeName}}</view>
+          <view class="day-meta">{{item.muscle}}</view>
+          <view class="day-meta2">约{{item.duration}}′ · {{item.nActs}}位</view>
+          <view class="day-custom" wx:if="{{item.custom}}">🧠 按你成绩</view>
+          <view class="day-go" catchtap="quickRun" data-i="{{index}}">开练 ▸</view>
+        </block>
+      </view>
+    </view>
+
+    <view class="today-bar {{todayCourse.rest ? 'rest' : ''}}" wx:if="{{todayCourse}}">
+      <block wx:if="{{!todayCourse.rest}}">
+        <view class="tb-info">
+          <view class="tb-label">今日训练</view>
+          <view class="tb-name">{{todayCourse.icon}} {{todayCourse.name}} · 约{{todayCourse.duration}}分钟</view>
+        </view>
+        <view class="tb-btn" bindtap="startToday">开练</view>
+      </block>
+      <block wx:else>
+        <view class="tb-info">
+          <view class="tb-label">今日安排</view>
+          <view class="tb-name">💤 休息日，让身体恢复</view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 当日训练弹层：热身 → 主项×组数 → 收尾/冷身 + 教练按语 -->
+    <view class="mask" wx:if="{{daySheet.show}}" bindtap="closeSheet">
+      <view class="sheet" catchtap="noop">
+        <view class="sh-head">
+          <text class="sh-title">{{daySheet.wd}} · {{daySheet.icon}} {{daySheet.typeName}}</text>
+          <text class="sh-close" bindtap="closeSheet">✕</text>
+        </view>
+        <view class="sh-sub">{{daySheet.muscle}} · 约{{daySheet.duration}}分钟 · {{daySheet.kcal}}千卡 · {{daySheet.nSeq}}个执行位<text wx:if="{{daySheet.custom}}"> · 🧠 {{daySheet.custom}}个按你历史定制</text></view>
+        <scroll-view class="sh-list" scroll-y>
+          <view class="sh-warm" wx:if="{{daySheet.warm}}">🔥 热身：{{daySheet.warm}}</view>
+          <view class="sh-coach">💬 {{daySheet.coach}}</view>
+          <view class="sh-group" wx:for="{{daySheet.rows}}" wx:key="index"
+            bindtap="showCue" data-cue="{{item.cue}}">
+            <text class="sh-ic">{{item.icon}}</text>
+            <view class="sh-mid">
+              <view class="sh-name">
+                {{item.name}}
+                <text class="sh-tag tag-{{item.tag}}" wx:if="{{item.tag}}">{{item.tag}}</text>
+                <text class="sh-round" wx:if="{{item.round > 1}}">×{{item.round}}</text>
+              </view>
+              <view class="sh-last" wx:if="{{item.last}}">上次 {{item.last}} {{item.unit}}</view>
+            </view>
+            <view class="sh-goal">
+              <text class="sh-num {{item.fromHist ? 'fit' : ''}}">{{item.target}}</text>
+              <text class="sh-unit">{{item.unit}}</text>
+            </view>
+          </view>
+        </scroll-view>
+        <view class="sh-tip">💡 主项按组执行，组间自动休息；完成后成绩自动记录，下轮计划更贴你。点动作可看要点。</view>
+        <view class="sh-btn" bindtap="startSheet">按此训练开始 ▸</view>
+      </view>
+    </view>
+
+    <view class="regen" bindtap="regenerate">↻ 重新定制</view>
+  </block>
+
+</view>

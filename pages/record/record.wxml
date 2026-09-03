@@ -1,0 +1,141 @@
+<view class="page">
+  <view class="header">
+    <view class="title">训练记录</view>
+    <view class="subtitle">每一次开练，都在变强</view>
+  </view>
+
+  <view class="stats card">
+    <view class="stat">
+      <view class="num">{{streak}}</view>
+      <view class="lab">连续打卡</view>
+    </view>
+    <view class="stat">
+      <view class="num">{{count}}</view>
+      <view class="lab">累计天数</view>
+    </view>
+    <view class="stat">
+      <view class="num">{{totalMin}}</view>
+      <view class="lab">总分钟</view>
+    </view>
+    <view class="stat">
+      <view class="num">{{totalKcal}}</view>
+      <view class="lab">总千卡</view>
+    </view>
+  </view>
+
+  <!-- 动作最佳纪录：成绩历史 spark + 趋势（数据来自跟练页 action_best） -->
+  <view class="prs card" wx:if="{{progress.length}}">
+    <view class="pr-head">
+      <text class="pr-title">💪 动作最佳纪录</text>
+      <text class="pr-count">{{progress.length}} 个计数动作</text>
+    </view>
+    <view class="pr-sub">跟练计数动作自动记录 · 练得比上次多，就是进步</view>
+    <view class="pr-item {{index ? 'bd' : ''}}" wx:for="{{progress}}" wx:key="name">
+      <view class="pr-line">
+        <text class="pr-icon">{{item.icon}}</text>
+        <text class="pr-name">{{item.name}}</text>
+        <text class="pr-trend {{item.trend}}">{{item.trendTxt}}</text>
+        <view class="pr-gap"></view>
+        <text class="pr-bestlab">最佳 <text class="pr-best">{{item.best}}</text> 次</text>
+      </view>
+      <view class="pr-spark">
+        <view wx:for="{{item.bars}}" wx:for-item="b" wx:key="index"
+          class="pr-bar {{b.hi ? 'hi' : ''}}" style="height:{{b.h}}%"></view>
+      </view>
+      <view class="pr-meta">目标 {{item.goal}} 次 · 最近 {{item.last}} 次 · 已练 {{item.count}} 次</view>
+    </view>
+  </view>
+
+  <!-- 微信运动 -->
+  <view class="werun card">
+    <view class="wr-head">
+      <view class="wr-title">🏃 微信运动</view>
+      <view class="wr-sync" bindtap="syncWeRun">同步</view>
+    </view>
+    <view class="wr-today">
+      <view class="wr-num">{{werunToday}}</view>
+      <view class="wr-lab">今日步数</view>
+    </view>
+    <view class="wr-bars">
+      <view class="wr-bar" wx:for="{{weekSteps}}" wx:key="date">
+        <view class="wr-col" style="height:{{item.pct}}%"></view>
+        <view class="wr-bl">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 打卡日历 -->
+  <view class="cal card">
+    <view class="cal-head">
+      <text class="cal-month">{{calendar.monthLabel}}</text>
+      <text class="cal-tip">本月已打卡 {{monthTrained}} 天</text>
+    </view>
+    <view class="cal-week">
+      <text wx:for="{{week}}" wx:key="*this" class="cal-wd">{{item}}</text>
+    </view>
+    <view class="cal-grid">
+      <view wx:for="{{calendar.cells}}" wx:key="index"
+        class="cal-cell {{item.empty ? 'empty' : ''}} {{item.has ? 'on' : ''}} {{item.today ? 'today' : ''}}">
+        <text wx:if="{{!item.empty}}">{{item.day}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="list" wx:if="{{records.length}}">
+    <view class="rec card" wx:for="{{records}}" wx:key="ts"
+      hover-class="tap-dim" bindtap="openRec" data-i="{{index}}">
+      <view class="rec-dot"></view>
+      <view class="rec-info">
+        <view class="rec-name">{{item.name}}</view>
+        <view class="rec-date">{{item.date}}</view>
+      </view>
+      <view class="rec-meta">{{item.duration}}分钟 · {{item.kcal}}千卡<text wx:if="{{item.done != null}}"> · 完成 {{item.done}}/{{item.total}}</text> ›</view>
+    </view>
+  </view>
+
+  <view class="empty" wx:else>
+    <view class="empty-emoji">🏃</view>
+    <view class="empty-text">还没有记录，去开练一节课吧！</view>
+    <view class="empty-btn" bindtap="goTrain">去训练</view>
+  </view>
+
+  <view class="clear" wx:if="{{records.length}}" bindtap="clearAll">清空全部记录</view>
+
+  <!-- 单次训练动作明细（目标 vs 实际复盘） -->
+  <view class="mask" wx:if="{{showRecDetail}}" bindtap="closeRecDetail">
+    <view class="step-sheet rec-sheet" catchtap="noop">
+      <view class="ss-title">{{recDetail.name}}</view>
+      <view class="ss-sub">{{recDetail.date}} · 完成 {{recDetail.done}}/{{recDetail.total}}</view>
+      <view class="dr-list" wx:if="{{!recDetail.legacy}}">
+        <view class="dr-row" wx:for="{{recDetail.rows}}" wx:key="index">
+          <text class="dr-icon">{{item.icon}}</text>
+          <text class="dr-name">{{item.name}}</text>
+          <text class="dr-target">{{item.targetTxt}}</text>
+          <text class="dr-st {{item.state}}">{{item.stTxt}}</text>
+        </view>
+      </view>
+      <view class="dr-empty" wx:else>该记录为早期版本，暂无动作明细</view>
+      <view class="dr-legend">
+        <text class="lg ok">● 达标</text>
+        <text class="lg over">● 超额</text>
+        <text class="lg miss">● 未达目标</text>
+        <text class="lg skip">● 跳过</text>
+      </view>
+      <view class="ss-btns">
+        <view class="ss-btn ghost" bindtap="closeRecDetail">关闭</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 手动录入步数 -->
+  <view class="mask" wx:if="{{showStepInput}}" bindtap="closeStep">
+    <view class="step-sheet" catchtap="noop">
+      <view class="ss-title">录入今日步数</view>
+      <input class="ss-input" type="number" placeholder="例如 8000" value="{{stepInput}}" bindinput="onStepInput" focus="{{showStepInput}}" />
+      <view class="ss-btns">
+        <view class="ss-btn ghost" bindtap="closeStep">取消</view>
+        <view class="ss-btn" bindtap="confirmStep">保存</view>
+      </view>
+    </view>
+  </view>
+</view>

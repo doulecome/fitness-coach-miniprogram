@@ -1,0 +1,59 @@
+<view class="page">
+  <!-- 顶部开练区 -->
+  <view class="hero">
+    <view class="greeting">{{greeting}}，{{userName}} 👋</view>
+    <view class="hero-title">今天想练点什么？</view>
+    <view class="hero-sub">已坚持 {{streak}} 天 · 累计 {{totalMin}} 分钟 · 燃脂 {{totalKcal}} 千卡</view>
+
+    <view class="start-btn" bindtap="goTrain">
+      <text class="start-tri">▶</text>
+      <text>开始训练</text>
+    </view>
+
+    <view class="ai-banner" bindtap="goPlan">
+      <view class="ai-left">
+        <view class="ai-title">✨ AI 智能训练计划</view>
+        <view class="ai-sub">按目标/天数/水平，一键生成专属周课表</view>
+      </view>
+      <view class="ai-go">去定制 ›</view>
+    </view>
+  </view>
+
+  <!-- 推荐课程 -->
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">推荐课程</text>
+      <text class="section-more" bindtap="goTrain">全部 ›</text>
+    </view>
+    <scroll-view class="course-scroll" scroll-x enable-flex>
+      <view
+        class="course-card"
+        wx:for="{{recommend}}"
+        wx:key="id"
+        style="background:{{item.color}}"
+        bindtap="startCourse"
+        data-id="{{item.id}}"
+      >
+        <view class="course-top">
+          <text class="course-emoji">{{item.icon}}</text>
+          <text class="course-level">{{item.level}}</text>
+        </view>
+        <view class="course-name">{{item.name}}</view>
+        <view class="course-meta">{{item.duration}} 分钟 · {{item.kcal}} 千卡</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 训练目标 -->
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">训练目标</text>
+    </view>
+    <view class="goal-grid">
+      <view class="goal-item" wx:for="{{goals}}" wx:key="name" bindtap="goTrain">
+        <view class="goal-icon">{{item.icon}}</view>
+        <view class="goal-name">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+</view>

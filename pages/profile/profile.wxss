@@ -1,0 +1,90 @@
+.profile-head {
+  background: linear-gradient(135deg, #1FD6A8 0%, #16B892 100%);
+  padding: 64rpx 40rpx 80rpx;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64rpx;
+}
+.p-info {
+  margin-left: 28rpx;
+}
+.p-name {
+  font-size: 40rpx;
+  font-weight: 800;
+}
+.p-level {
+  font-size: 26rpx;
+  opacity: 0.9;
+  margin-top: 10rpx;
+}
+
+.badge {
+  margin: -44rpx 32rpx 24rpx;
+  display: flex;
+  align-items: center;
+  padding: 36rpx 0;
+  position: relative;
+}
+.b-item {
+  flex: 1;
+  text-align: center;
+}
+.b-num {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: var(--accent);
+}
+.b-lab {
+  font-size: 24rpx;
+  color: var(--sub);
+  margin-top: 8rpx;
+}
+.b-div {
+  width: 1rpx;
+  height: 56rpx;
+  background: #eee;
+}
+
+.menu {
+  margin: 0 32rpx 24rpx;
+  padding: 8rpx 28rpx;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f2f3f5;
+}
+.menu-item:last-child {
+  border-bottom: none;
+}
+.m-icon {
+  font-size: 40rpx;
+  width: 56rpx;
+}
+.m-name {
+  flex: 1;
+  font-size: 30rpx;
+}
+.m-arrow {
+  color: #c8ccd0;
+  font-size: 36rpx;
+}
+
+.tip {
+  margin: 0 32rpx;
+  padding: 28rpx;
+  font-size: 26rpx;
+  color: #5a6066;
+  line-height: 1.6;
+}

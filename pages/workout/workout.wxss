@@ -1,0 +1,387 @@
+.workout {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #1FD6A8 0%, #14B085 55%, #0E8F6C 100%);
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+/* 顶部栏 */
+.topbar {
+  display: flex;
+  align-items: center;
+  padding: 0 32rpx 0;
+  height: 80rpx;
+}
+.close {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  text-align: center;
+  line-height: 60rpx;
+  font-size: 30rpx;
+}
+.step {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  opacity: 0.95;
+}
+.spacer {
+  width: 60rpx;
+}
+
+/* 进度条 */
+.progress {
+  height: 8rpx;
+  background: rgba(255, 255, 255, 0.22);
+  margin: 16rpx 32rpx 0;
+  border-radius: 999rpx;
+  overflow: hidden;
+}
+.bar {
+  height: 100%;
+  background: #fff;
+  border-radius: 999rpx;
+  transition: width 0.4s ease;
+}
+
+/* 主舞台 */
+.stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32rpx;
+}
+.action-icon {
+  font-size: 150rpx;
+  line-height: 1;
+  margin-bottom: 32rpx;
+  filter: drop-shadow(0 8rpx 16rpx rgba(0, 0, 0, 0.15));
+}
+/* 动作真人示范大图（Keep 式跟练顶部图） */
+.action-visual {
+  position: relative;
+  margin-bottom: 32rpx;
+}
+.action-img {
+  width: 460rpx;
+  height: 320rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16rpx 40rpx rgba(0, 0, 0, 0.18);
+}
+.action-img-tip {
+  position: absolute;
+  left: 50%;
+  bottom: 12rpx;
+  transform: translateX(-50%);
+  font-size: 22rpx;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  padding: 6rpx 22rpx;
+  border-radius: 999rpx;
+  pointer-events: none;
+}
+.action-name {
+  font-size: 52rpx;
+  font-weight: 800;
+}
+.timer {
+  font-size: 130rpx;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-top: 16rpx;
+  font-variant-numeric: tabular-nums;
+}
+.reps {
+  font-size: 110rpx;
+  font-weight: 800;
+  margin-top: 16rpx;
+}
+.unit {
+  font-size: 40rpx;
+  font-weight: 600;
+  opacity: 0.85;
+  margin-left: 6rpx;
+}
+.action-hint {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  opacity: 0.85;
+}
+.demo-toggle {
+  margin-top: 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 16rpx 44rpx;
+  border-radius: 999rpx;
+}
+.rest-label {
+  font-size: 40rpx;
+  font-weight: 700;
+  opacity: 0.95;
+}
+.rest-next {
+  margin-top: 24rpx;
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+/* 控制区 */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48rpx 40rpx;
+}
+.ctrl {
+  width: 150rpx;
+  height: 96rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.18);
+}
+.ctrl.main {
+  width: 220rpx;
+  height: 110rpx;
+  background: #fff;
+  color: #14B085;
+  font-size: 34rpx;
+  font-weight: 800;
+  box-shadow: 0 12rpx 28rpx rgba(0, 0, 0, 0.15);
+}
+.next-preview {
+  text-align: center;
+  font-size: 24rpx;
+  opacity: 0.8;
+  padding-bottom: 48rpx;
+}
+
+/* 3-2-1 准备 */
+.ready-label {
+  font-size: 34rpx;
+  font-weight: 700;
+  opacity: 0.9;
+}
+.ready-count {
+  font-size: 200rpx;
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 24rpx 0;
+  font-variant-numeric: tabular-nums;
+}
+.ready-course {
+  font-size: 40rpx;
+  font-weight: 800;
+}
+.ready-first {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  opacity: 0.85;
+}
+.ready-note {
+  margin-top: 20rpx;
+  font-size: 22rpx;
+  color: #0e9f76;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 999rpx;
+  padding: 12rpx 28rpx;
+  font-weight: 600;
+}
+/* 最后 3 秒节奏放大（配合触觉振动当语音教练） */
+.hurrying {
+  animation: hurryPulse 1s ease-in-out infinite;
+}
+@keyframes hurryPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.16); }
+}
+
+/* 动作教练要点一行 */
+.action-cue {
+  margin-top: 12rpx;
+  max-width: 560rpx;
+  font-size: 24rpx;
+  line-height: 1.5;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(0, 0, 0, 0.16);
+  padding: 10rpx 26rpx;
+  border-radius: 14rpx;
+}
+
+/* 计数动作：可调实际次数 */
+.reps-row {
+  display: flex;
+  align-items: center;
+  margin-top: 16rpx;
+}
+.reps-row .reps {
+  margin-top: 0;
+  min-width: 230rpx;
+  text-align: center;
+}
+.reps-btn {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52rpx;
+  font-weight: 700;
+  margin: 0 36rpx;
+}
+.reps-target {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  opacity: 0.95;
+}
+.reps-hist {
+  opacity: 0.75;
+  margin-left: 4rpx;
+  font-size: 24rpx;
+}
+.reps-up {
+  margin-top: 10rpx;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #FFF3B0;
+}
+
+/* 休息：下一动作预览卡 + 休息时长切换 */
+.rest-next-card {
+  position: relative;
+  width: 440rpx;
+  height: 250rpx;
+  margin-top: 28rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 30rpx rgba(0, 0, 0, 0.16);
+}
+.rnext-icon {
+  font-size: 110rpx;
+}
+.rnext-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+}
+.rnext-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12rpx 0 10rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 700;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+}
+.rest-opts {
+  display: flex;
+  margin-top: 24rpx;
+  gap: 16rpx;
+}
+.ro {
+  padding: 10rpx 26rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  background: rgba(255, 255, 255, 0.18);
+  border: 2rpx solid rgba(255, 255, 255, 0.28);
+}
+.ro.on {
+  background: #fff;
+  color: #14B085;
+  font-weight: 700;
+}
+
+/* 完成页破纪录角标 */
+.done-record {
+  margin: -30rpx 0 34rpx;
+  padding: 10rpx 30rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 215, 0, 0.22);
+  color: #FFE27A;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+/* 完成结算 */
+.done {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 48rpx;
+}
+.done-emoji {
+  font-size: 140rpx;
+}
+.done-title {
+  font-size: 52rpx;
+  font-weight: 800;
+  margin-top: 16rpx;
+}
+.done-sub {
+  font-size: 28rpx;
+  opacity: 0.9;
+  margin-top: 12rpx;
+}
+.done-stats {
+  display: flex;
+  margin: 56rpx 0;
+}
+.ds {
+  text-align: center;
+  padding: 0 40rpx;
+}
+.ds-num {
+  font-size: 56rpx;
+  font-weight: 800;
+}
+.ds-label {
+  font-size: 24rpx;
+  opacity: 0.85;
+  margin-top: 6rpx;
+}
+.done-btns {
+  display: flex;
+  width: 100%;
+}
+.done-btn {
+  flex: 1;
+  height: 100rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 700;
+  background: #fff;
+  color: #14B085;
+  margin: 0 12rpx;
+}
+.done-btn.ghost {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
