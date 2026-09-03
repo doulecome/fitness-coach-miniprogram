@@ -6,7 +6,7 @@
 //  3) 单次时长真正作用于课程：15/30/45 分钟决定主项数量与轮次，而不是随便挑一门课
 //  4) 肌群恢复科学编排：胸/臀腿/核心/燃脂/恢复 均匀散布，不连续练同一部位；无背拉类
 //     器械动作时如实说明（居家无器械以推/蹲为主）
-//  5) 读成绩历史：单轮目标 = 历史最佳 + 阶段递进（W1 best → W2 best+2 → W3 best+4 → W4 70%）
+//  5) 读成绩历史：单轮目标 = 历史最佳 × 阶段比例（W1 重建 → W2 +8% → W3 +15% → W4 70%）
 //  6) 每个训练日附教练按语：为什么这么练、注意什么
 //
 // 周期：W1 适应 → W2 进阶 → W3 强化（渐进超负荷） → W4 恢复(Deload)，W4 后回到 W1 循环
@@ -103,8 +103,8 @@ const LEVEL_K = { '新手': 0.85, '进阶': 1.0, '老手': 1.15 };
 // 4 周周期阶段
 const PHASES = [
   { key: 'adapt', label: '适应期', tip: '第 1 周重建基线：主项目标 = 你的历史最佳（没练过的按水平起步），先标准后速度' },
-  { key: 'prog', label: '进阶期', tip: '第 2 周渐进超负荷：计数动作目标 = 历史最佳 + 2 次，计时 +5%，轮数不变' },
-  { key: 'peak', label: '强化期', tip: '第 3 周冲击峰值：计数目标 = 历史最佳 + 4 次，计时 +10%，主项各加 1 组' },
+  { key: 'prog', label: '进阶期', tip: '第 2 周渐进超负荷：计数目标 ≈ 你成绩的 +8%（保底 +1 次），计时 +5%，轮数不变' },
+  { key: 'peak', label: '强化期', tip: '第 3 周冲击峰值：计数目标 ≈ 你成绩的 +15%（保底 +2 次），计时 +10%，主项各加 1 组' },
   { key: 'deload', label: '恢复期', tip: '第 4 周主动减量：目标降至历史最佳约 70%，训练换低冲击恢复，等超量恢复' }
 ];
 
@@ -198,12 +198,18 @@ function computeGoal(act, phaseKey, level, hist) {
     const t = phaseKey === 'deload' ? Math.max(3, Math.round(base * k * 0.7)) : Math.max(1, Math.round(base * k));
     return { target: t, unit: '次' };
   }
-  let target;
-  if (phaseKey === 'deload') target = Math.max(3, Math.round(best * 0.7));
-  else if (phaseKey === 'prog') target = Math.max(base, best + 2);
-  else if (phaseKey === 'peak') target = Math.max(base, best + 4);
-  else target = Math.max(base, best);
-  return { target, unit: '次' };
+  // 渐进超负荷：按「比例」递增，基数越大每次加得越多；小基数靠保底增量兜底，避免固定 +2/+4 失真
+  const start = Math.max(base, best); // W1 起点 = 课程量或历史最佳的地板
+  if (phaseKey === 'deload') return { target: Math.max(3, Math.round(best * 0.7)), unit: '次' };
+  if (phaseKey === 'prog') {
+    const t = Math.max(start + 1, Math.round(start * 1.08)); // ≈ +8%，保底 +1
+    return { target: t, unit: '次' };
+  }
+  if (phaseKey === 'peak') {
+    const t = Math.max(start + 2, Math.round(start * 1.15)); // ≈ +15%，保底 +2
+    return { target: t, unit: '次' };
+  }
+  return { target: start, unit: '次' };
 }
 
 const CORE_FIN_POOL = ['卷腹', '死虫式', '仰卧起坐']; // 力量日收尾（轮换）
@@ -408,7 +414,7 @@ function generatePlan(opts, hist) {
     coachIntro: cfg.intro,
     generatedAt: new Date().toISOString(),
     weeks,
-    weeksNote: '个性化法则：练过的动作按「历史最佳 + 阶段递进」定单轮目标（W2 +2 / W3 +4 / W4 减至 70%），主项组数随水平与时长自动设定。W4 后回到第 1 周循环。',
+    weeksNote: '个性化法则：练过的动作按「历史最佳 × 阶段比例」定单轮目标（W2 +8% / W3 +15% / W4 减至 70%，基数小则保底 +1/+2 次），主项组数随水平与时长自动设定。W4 后回到第 1 周循环。',
     week: weeks[0].week,
     totalMin: weeks[0].totalMin,
     totalKcal: weeks[0].totalKcal
