@@ -41,6 +41,7 @@ Page({
     // v4 之前生成的计划结构已不兼容（旧=排课表，新=动态编排训练），引导重新生成
     if (saved && saved.v !== 4) {
       try { wx.removeStorageSync('ai_plan'); } catch (e) {}
+      try { wx.removeStorageSync('ai_plan_start'); } catch (e) {}
       saved = null;
       wx.showToast({ title: '旧版计划已升级，请重新生成', icon: 'none' });
     }
@@ -105,6 +106,9 @@ Page({
     const plan = generatePlan({ goal, days: day, length, level, restDays }, hist);
     plan.restDayText = this.restDayText(plan.restDays);
     try { wx.setStorageSync('ai_plan', plan); } catch (e) {}
+    // 记录计划开始日：首页据此自动定位"当前处于第几周"（W1→W4 循环）
+    const _d = new Date(), _m = '0' + (_d.getMonth() + 1), _dd = '0' + _d.getDate();
+    try { wx.setStorageSync('ai_plan_start', _d.getFullYear() + '-' + _m.slice(-2) + '-' + _dd.slice(-2)); } catch (e) {}
     this.applyPlan(plan, 0);
     if (plan.adjusted) {
       wx.showToast({ title: `已按休息日定为${plan.days}训练天`, icon: 'none' });

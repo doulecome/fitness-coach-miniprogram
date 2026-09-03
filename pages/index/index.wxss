@@ -43,6 +43,15 @@
   color: #fff;
   box-shadow: 0 10rpx 24rpx rgba(255, 92, 119, 0.22);
 }
+/* 今日计划卡：训练日=主绿强调；休息日=沉稳深蓝 */
+.ai-banner.today.go {
+  background: linear-gradient(135deg, #1FD6A8 0%, #0fb98c 100%);
+  box-shadow: 0 10rpx 24rpx rgba(31, 214, 168, 0.28);
+}
+.ai-banner.today.rest {
+  background: linear-gradient(135deg, #5f6b7a 0%, #3e4855 100%);
+  box-shadow: 0 10rpx 24rpx rgba(62, 72, 85, 0.22);
+}
 .ai-left {
   flex: 1;
 }

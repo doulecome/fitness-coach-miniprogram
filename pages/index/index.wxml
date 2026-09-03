@@ -10,7 +10,24 @@
       <text>开始训练</text>
     </view>
 
-    <view class="ai-banner" bindtap="goPlan">
+    <!-- 有 v4 计划·训练日：整卡看计划，按钮直接按处方开练 -->
+    <view class="ai-banner today go" wx:if="{{today && !today.rest}}" bindtap="goPlan">
+      <view class="ai-left">
+        <view class="ai-title">📅 {{today.wd}} · {{today.icon}} {{today.typeName}}</view>
+        <view class="ai-sub">第{{today.week}}周 · 约{{today.duration}}分钟 · {{today.nActs}} 个动作，已按你的成绩定制</view>
+      </view>
+      <view class="ai-go" catchtap="startPlanToday">开练 ▸</view>
+    </view>
+    <!-- 有 v4 计划·休息日 -->
+    <view class="ai-banner today rest" wx:elif="{{today}}" bindtap="goPlan">
+      <view class="ai-left">
+        <view class="ai-title">💤 {{today.wd}} 休息日</view>
+        <view class="ai-sub">第{{today.week}}周恢复 · 肌肉在休息中生长，明天再战</view>
+      </view>
+      <view class="ai-go">看计划 ›</view>
+    </view>
+    <!-- 无计划：引导定制 -->
+    <view class="ai-banner" wx:else bindtap="goPlan">
       <view class="ai-left">
         <view class="ai-title">✨ AI 智能训练计划</view>
         <view class="ai-sub">按目标/天数/水平，一键生成专属周课表</view>
