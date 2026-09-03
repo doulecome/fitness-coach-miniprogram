@@ -59,7 +59,8 @@ const KEYS = {
 
 // 手校精校表：中文动作 -> ExerciseDB v1 的 media_id（从 exdb_full.json 对照真实动作名选出，零误匹配）
 // GIF URL = https://static.exercisedb.dev/media/{media_id}.gif（官方 CDN，已验证 200 image/gif）
-// 注：未列入的动作（瑜伽体式/蚌式/侧卧抬腿等）库中无合适动图，保留 WGER 静态图或火柴人回退。
+// ⚠️ 同步规则：本表键集必须与 utils/gif_map.js 一致（gif_map 由本表生成）。手改过 gif_map.js 后，
+//    须把新增条目同步进本表，否则重跑本脚本会把多手加的映射丢掉（曾发生 v2 新增 15 条未并入的教训）。
 const PICK = {
   '卷腹': 'TFqbd8t',           // crunch floor
   '俄罗斯转体': 'XVDdcoj',     // russian twist
@@ -81,7 +82,23 @@ const PICK = {
   '等长收缩': 'HbSG1Pw',       // isometric chest squeeze
   '水瓶飞鸟': 'yz9nUhF',       // dumbbell fly
   '深蹲': '75Bgtjy',           // potty squat（徒手蹲，最贴近基础深蹲）
-  '臀桥': 'u0cNiij'            // low glute bridge on floor
+  '臀桥': 'u0cNiij',           // low glute bridge on floor
+  // —— v2 新增（去瑜伽/蚌式等无图动作后补位，2026-09 课程重构）——
+  '仰卧举腿': '9IxJdtC',       // lying leg-hip raise
+  '死虫式': 'iny3m5y',         // dead bug
+  '弓步跳': 'PM1PZjg',         // lunge with jump
+  '下斜俯卧撑': 'i5cEhka',     // decline push-up
+  '屈膝礼蹲': 'gUjqdei',       // curtsey squat
+  '臀桥踏步': 'GibBPPg',       // glute bridge march
+  '站姿提踵': 'bJYHBIN',       // bodyweight standing calf raise
+  '速滑跳': 'zfNHMN9',         // skater hops
+  '肩胸拉伸': 'Uto7l43',       // chest and front of shoulder stretch
+  '仰卧臀腿拉伸': 'yn0LjwL',   // assisted lying glutes stretch
+  '仰卧梨状肌拉伸': 'RQNVT10', // assisted lying gluteus and piriformis stretch
+  '蝴蝶式': 'bWlZvXh',         // butterfly yoga pose
+  '俯卧大腿前侧拉伸': 'YUYAMEj', // assisted prone lying quads stretch
+  '俯卧腿后侧拉伸': 'VedGSby', // assisted prone hamstring
+  '侧卧大腿内侧拉伸': 'hC6oYY5' // assisted side lying adductor stretch
 };
 
 function httpGet(u) {
