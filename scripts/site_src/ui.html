@@ -144,6 +144,41 @@
 .rec-list .rl .rm .l { font-size:10px; color:var(--sub); }
 .ok { color:var(--gd); } .no { color:#c3c8cf; }
 
+/* ===== 饮食规划 / 趋势图 / 表单输入 ===== */
+.flds { display:flex; gap:8px; }
+.fld { flex:1; border:1px solid var(--line); background:#fff; border-radius:12px; padding:11px 12px; font-size:15px; color:var(--ink); font-weight:700; outline:none; font-family:inherit; }
+.fld:focus { border-color:var(--gd); }
+.diet-sum { background:linear-gradient(135deg,#0d8f6f,#07c08b); color:#fff; box-shadow:0 10px 26px rgba(13,143,111,.2); }
+.diet-sum .ds-row { display:flex; gap:10px; }
+.diet-sum .ds-b { flex:1; text-align:center; }
+.diet-sum .n { font-size:25px; font-weight:900; letter-spacing:-.5px; }
+.diet-sum .l { font-size:10px; opacity:.85; margin-top:2px; }
+.diet-sum .ds-target { text-align:center; margin-top:13px; font-size:13px; opacity:.96; }
+.diet-sum .ds-k { font-size:21px; font-weight:900; }
+.macro-bar { display:flex; height:14px; border-radius:999px; overflow:hidden; background:#eee; margin:4px 0 10px; }
+.macro-bar .mp { display:block; }
+.macro-bar .mp.p { background:var(--gd); }
+.macro-bar .mp.c { background:#f0a23a; }
+.macro-bar .mp.f { background:#6a78d6; }
+.macro-leg { display:flex; justify-content:space-between; font-size:12px; color:var(--sub); }
+.macro-leg b { font-size:14px; }
+.meal-card { background:var(--card); border-radius:14px; padding:11px 13px; margin-bottom:9px; box-shadow:0 2px 8px rgba(20,30,40,.04); }
+.meal-card .mc-h { display:flex; align-items:center; gap:8px; }
+.meal-card .mc-t { font-weight:800; font-size:14px; color:var(--ink); }
+.meal-card .mc-pct { font-size:10px; color:#fff; background:var(--gd); padding:1px 7px; border-radius:999px; }
+.meal-card .mc-k { margin-left:auto; font-size:12px; color:var(--sub); font-weight:700; }
+.meal-card .mc-p { font-size:12px; color:#4a525c; padding:4px 0 0; }
+.meal-card .mc-a { color:var(--sub); font-size:11px; margin-left:4px; }
+
+/* ===== 记录趋势图 ===== */
+.trend { display:flex; align-items:flex-end; gap:6px; height:120px; background:var(--card); border-radius:16px; padding:14px 10px 10px; margin-bottom:6px; box-shadow:0 2px 8px rgba(20,30,40,.04); }
+.trend .tb { flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; }
+.trend .tb-c { flex:1; width:100%; display:flex; align-items:flex-end; justify-content:center; }
+.trend .tb-c i { width:62%; max-width:18px; border-radius:6px 6px 2px 2px; background:linear-gradient(180deg,#1FD6A8,#0fb98c); display:block; }
+.trend .tb-c i.e { background:#e3e7eb; }
+.trend .tb-l { font-size:9px; color:var(--sub); margin-top:5px; }
+.trend .tb-v { font-size:10px; font-weight:800; color:var(--gd); }
+
 /* ===== 跟练 ===== */
 #wko { position:absolute; inset:0; background:#0b0f13; color:#fff; display:flex; flex-direction:column; z-index:40; }
 .wk-top { padding:14px 16px 0; display:flex; align-items:center; }

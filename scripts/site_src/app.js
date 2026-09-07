@@ -58,7 +58,8 @@
   var S = {
     tab: 'home', seg: 'course', actMus: '全部',
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
-    form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std')
+    form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
+    diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' }
   };
   var app = $('#app');
 
@@ -76,11 +77,12 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); }
 
   /* ============ 外壳 ============ */
-  var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'record', i: '📈', l: '记录' }];
+  var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
     if (S.tab === 'train') return '训练';
     if (S.tab === 'plan') return S.plan ? '我的 4 周计划' : 'AI 定制计划';
+    if (S.tab === 'diet') return '饮食规划';
     return '我的记录';
   }
   function renderShell() {
@@ -100,6 +102,7 @@
     if (S.tab === 'home') v.innerHTML = vHome();
     else if (S.tab === 'train') v.innerHTML = vTrain();
     else if (S.tab === 'plan') v.innerHTML = S.plan ? vPlanResult() : vPlanForm();
+    else if (S.tab === 'diet') v.innerHTML = vDiet();
     else v.innerHTML = vRecord();
     v.scrollTop = 0;
   }
@@ -257,7 +260,8 @@
         '<div><div class="rn">' + esc(r.name) + '</div><div class="rd">' + r.date + (r.done != null ? ' · 完成 ' + r.done + '/' + r.total : '') + '</div></div>' +
         '<div class="rm"><div class="n">' + r.min + '′</div><div class="l">' + (r.kcal || '-') + ' 千卡</div></div></div></div>';
     }).join('');
-    return '<div class="stats-row"><div class="stat"><div class="n">' + S.records.length + '</div><div class="l">累计训练</div></div>' +
+    return trendHtml() +
+      '<div class="stats-row"><div class="stat"><div class="n">' + S.records.length + '</div><div class="l">累计训练</div></div>' +
       '<div class="stat"><div class="n">' + totalMin + '</div><div class="l">总分钟</div></div>' +
       '<div class="stat"><div class="n">' + names.length + '</div><div class="l">动作有纪录</div></div></div>' +
       (bestCards ? '<div class="h-sec">💪 动作最佳纪录</div>' + bestCards : '') +
@@ -372,6 +376,31 @@
     h.textContent = txt;
   }
 
+  /* ===== 组间节拍器：休息倒计时轻 tick，结束强 beep + 震动 ===== */
+  var AC = null;
+  function ensureAudio() {
+    if (AC) { if (AC.state === 'suspended') { try { AC.resume(); } catch (e) {} } return; }
+    try { var C = window.AudioContext || window.webkitAudioContext; if (C) AC = new C(); } catch (e) {}
+  }
+  function beep(freq, dur, vol) {
+    if (!AC) return;
+    try {
+      if (AC.state === 'suspended') AC.resume();
+      var o = AC.createOscillator(), g = AC.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      o.connect(g); g.connect(AC.destination);
+      var t = AC.currentTime;
+      g.gain.setValueAtTime(vol, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.start(t); o.stop(t + dur);
+    } catch (e) {}
+  }
+  function tick() { beep(760, 0.07, 0.08); }            // 倒计时每秒轻提示
+  function restEnd() {                                  // 休息结束 → 进下一动作
+    beep(1320, 0.22, 0.22);
+    if (navigator.vibrate) { try { navigator.vibrate([0, 110, 70, 110]); } catch (e) {} }
+  }
+
   /* ============ 难度模式 ============ */
   function diffCfg(d) {
     if (d === 'easy') return { mul: 0.7, restAdd: 5, kcal: 0.8, label: '轻松' };
@@ -400,6 +429,7 @@
       actual: 0, detail: [], t0: Date.now(), rest: (restSec != null ? restSec : S.restSec), paused: false, prs: 0, tag: tag };
     $('#wko').classList.remove('hide');
     keepAwake(true); // 跟练期间屏幕常亮
+    ensureAudio();   // 组间节拍器：在用户点击的 gesture 链内初始化音频
     renderW();
     updateHUD();
     speak('准备开始，共 ' + seq.length + ' 个动作');
@@ -416,8 +446,8 @@
       if (curA().type === 'time' || curA().type === 'reps') { W.rem--; if (W.rem <= 0) { W.actual = curA().value; leaveAct(); } else refreshN(); }
     } else if (W.phase === 'rest') {
       W.rem--;
-      if (W.rem <= 0) goNext();
-      else refreshN();
+      if (W.rem <= 0) { restEnd(); goNext(); }   // 休息结束：强 beep + 震动，进下一动作
+      else { tick(); refreshN(); }                // 倒计时每秒轻 tick
     }
     updateHUD();
   }
@@ -562,6 +592,142 @@
     startW(seq, '第' + (wIdx + 1) + '周 · ' + d.typeName, d.icon, kcal, '#1FD6A8', 'fit_plan_' + wIdx + '_' + i, Math.max(3, S.restSec + cfg.restAdd));
   }
 
+  /* ============ 饮食规划 ============ */
+  var BF = [
+    { n: '燕麦蛋奶早餐', kcal: 372, parts: [{ n: '燕麦', a: '40g' }, { n: '水煮蛋', a: '2个' }, { n: '脱脂牛奶', a: '200ml' }] },
+    { n: '全麦三明治', kcal: 298, parts: [{ n: '全麦面包', a: '2片' }, { n: '鸡蛋', a: '1个' }, { n: '生菜番茄' }, { n: '牛油果', a: '30g' }] },
+    { n: '紫薯豆浆', kcal: 393, parts: [{ n: '紫薯', a: '150g' }, { n: '水煮蛋', a: '1个' }, { n: '无糖豆浆', a: '300ml' }, { n: '核桃', a: '15g' }] },
+    { n: '鸡胸蔬菜卷', kcal: 276, parts: [{ n: '全麦饼', a: '1张' }, { n: '鸡胸肉', a: '80g' }, { n: '时蔬' }, { n: '低脂酸奶蘸' }] },
+    { n: '牛奶麦片', kcal: 430, parts: [{ n: '麦片', a: '50g' }, { n: '牛奶', a: '250ml' }, { n: '香蕉', a: '1根' }] },
+    { n: '希腊酸奶碗', kcal: 340, parts: [{ n: '希腊酸奶', a: '150g' }, { n: '蓝莓', a: '50g' }, { n: '燕麦', a: '30g' }, { n: '杏仁', a: '10g' }] }
+  ];
+  var LUN = [
+    { n: '糙米鸡胸', kcal: 404, parts: [{ n: '糙米饭', a: '150g' }, { n: '鸡胸肉', a: '120g' }, { n: '西兰花', a: '150g' }, { n: '橄榄油', a: '5g' }] },
+    { n: '牛肉杂粮', kcal: 422, parts: [{ n: '杂粮饭', a: '150g' }, { n: '牛里脊', a: '100g' }, { n: '青菜', a: '150g' }, { n: '麻油', a: '3g' }] },
+    { n: '清蒸鱼饭', kcal: 456, parts: [{ n: '米饭', a: '160g' }, { n: '鲈鱼', a: '150g' }, { n: '时蔬' }, { n: '豆油', a: '4g' }] },
+    { n: '豆腐鸡丁', kcal: 441, parts: [{ n: '米饭', a: '150g' }, { n: '豆腐', a: '150g' }, { n: '鸡丁', a: '80g' }, { n: '蔬菜' }] },
+    { n: '虾仁意面', kcal: 415, parts: [{ n: '意面', a: '60g(干)' }, { n: '虾仁', a: '120g' }, { n: '番茄酱' }, { n: '橄榄油', a: '5g' }] },
+    { n: '照烧鸡腿饭', kcal: 470, parts: [{ n: '米饭', a: '150g' }, { n: '去皮鸡腿', a: '120g' }, { n: '西兰花' }, { n: '照烧汁' }] }
+  ];
+  var DIN = [
+    { n: '鸡胸蔬菜沙拉', kcal: 395, parts: [{ n: '鸡胸肉', a: '100g' }, { n: '混合蔬菜', a: '200g' }, { n: '藜麦', a: '50g(干)' }, { n: '橄榄油', a: '5g' }] },
+    { n: '鱼蔬荞麦', kcal: 386, parts: [{ n: '荞麦面', a: '60g(干)' }, { n: '鳕鱼', a: '120g' }, { n: '蔬菜' }, { n: '油', a: '4g' }] },
+    { n: '番茄牛肉煲', kcal: 448, parts: [{ n: '牛肉', a: '100g' }, { n: '番茄', a: '150g' }, { n: '豆腐', a: '100g' }, { n: '米饭', a: '120g' }] },
+    { n: '鸡蛋豆腐羹', kcal: 340, parts: [{ n: '鸡蛋', a: '2个' }, { n: '嫩豆腐', a: '150g' }, { n: '虾仁', a: '60g' }, { n: '蔬菜' }] },
+    { n: '鸡腿时蔬', kcal: 402, parts: [{ n: '去皮鸡腿', a: '120g' }, { n: '红薯', a: '150g' }, { n: '西兰花' }, { n: '油', a: '3g' }] },
+    { n: '虾仁蒸蛋', kcal: 360, parts: [{ n: '鸡蛋', a: '2个' }, { n: '虾仁', a: '80g' }, { n: '冬瓜' }, { n: '米饭', a: '100g' }] }
+  ];
+  var SNK = [
+    { n: '酸奶蓝莓', kcal: 120, parts: [{ n: '希腊酸奶', a: '150g' }, { n: '蓝莓', a: '50g' }] },
+    { n: '苹果杏仁', kcal: 183, parts: [{ n: '苹果', a: '1个' }, { n: '杏仁', a: '15g' }] },
+    { n: '香蕉花生酱', kcal: 167, parts: [{ n: '香蕉', a: '1根' }, { n: '花生酱', a: '10g' }] },
+    { n: '牛奶核桃', kcal: 222, parts: [{ n: '牛奶', a: '200ml' }, { n: '核桃', a: '15g' }] },
+    { n: '蛋黄瓜', kcal: 155, parts: [{ n: '水煮蛋', a: '2个' }, { n: '黄瓜' }] },
+    { n: '豆浆燕麦', kcal: 175, parts: [{ n: '无糖豆浆', a: '300ml' }, { n: '燕麦', a: '25g' }] }
+  ];
+  function bmr(p) { var b = 10 * p.weight + 6.25 * p.height - 5 * p.age; return Math.round(p.gender === '女' ? b - 161 : b + 5); }
+  function tdee(b, act) { var f = ({ '久坐': 1.2, '轻度': 1.375, '中度': 1.55, '高强度': 1.725 })[act] || 1.2; return Math.round(b * f); }
+  function targetKcal(t, goal) { return goal === '减脂' ? Math.round(t - 400) : goal === '增肌' ? Math.round(t + 300) : t; }
+  function macroSplit(kcal, weight, goal, training) {
+    var pPerKg = goal === '减脂' ? 2.0 : goal === '增肌' ? 1.8 : 1.6;
+    var protein = Math.round(weight * pPerKg);
+    var fat = Math.round(weight * 0.9);
+    var pk = protein * 4, fk = fat * 9;
+    var ck = kcal - pk - fk;
+    if (ck < 0) ck = Math.round(kcal * 0.4);
+    var carb = Math.round(ck / 4);
+    if (training) { var shift = Math.round(kcal * 0.08); carb = Math.round((ck + shift) / 4); fat = Math.max(20, Math.round((fk - shift) / 9)); }
+    return { protein: protein, fat: fat, carb: carb, pk: protein * 4, fk: fat * 9, ck: carb * 4 };
+  }
+  function pickMeal(arr, target) {
+    var pool = arr.filter(function (t) { return Math.abs(t.kcal - target) <= 80; });
+    if (!pool.length) { var bd = 1e9, bn = arr[0]; arr.forEach(function (t) { var d = Math.abs(t.kcal - target); if (d < bd) { bd = d; bn = t; } }); pool = [bn]; }
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  function chipRowSel(arr, key, sel, aName) {
+    return '<div class="chips">' + arr.map(function (v) {
+      return '<span class="chip ' + (sel === v ? 'on' : '') + '" data-a="' + aName + '" data-k="' + key + '" data-v="' + v + '">' + v + '</span>';
+    }).join('') + '</div>';
+  }
+  function mealCard(title, pct, meal) {
+    var parts = meal.parts.map(function (x) { return '<div class="mc-p">' + esc(x.n) + (x.a ? ' <span class="mc-a">' + esc(x.a) + '</span>' : '') + '</div>'; }).join('');
+    return '<div class="meal-card"><div class="mc-h"><span class="mc-t">' + title + '</span><span class="mc-pct">' + pct + '%</span><span class="mc-k">' + meal.kcal + ' 千卡</span></div>' + parts + '</div>';
+  }
+  function vDietForm() {
+    var d = S.dietDraft;
+    return '<div class="form-t">⚧ 性别</div>' + chipRowSel(['男', '女'], 'gender', d.gender, 'dform') +
+      '<div class="form-t">🎂 年龄（岁）</div><div class="flds"><input class="fld" type="number" inputmode="numeric" data-k="age" value="' + d.age + '"></div>' +
+      '<div class="form-t">📏 身高（cm）</div><div class="flds"><input class="fld" type="number" inputmode="numeric" data-k="height" value="' + d.height + '"></div>' +
+      '<div class="form-t">⚖️ 体重（kg）</div><div class="flds"><input class="fld" type="number" inputmode="numeric" data-k="weight" value="' + d.weight + '"></div>' +
+      '<div class="form-t">🏃 日常活动量</div>' + chipRowSel(['久坐', '轻度', '中度', '高强度'], 'activity', d.activity, 'dform') +
+      '<div class="form-t">🎯 目标</div>' + chipRowSel(['减脂', '增肌', '维持'], 'goal', d.goal, 'dform') +
+      '<div class="gen-btn btn" data-a="saveDiet">✨ 生成我的饮食方案</div>' +
+      '<div style="text-align:center;font-size:11px;color:#a0a6ad;margin:14px 6px;line-height:1.7">按 Mifflin-St Jeor 公式估算基础代谢，结合活动系数与训练目标给出热量与营养素方案，并搭配一日餐单样例</div>';
+  }
+  function vDietResult() {
+    var d = S.diet;
+    var b = bmr(d), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
+    var dayK = d.training ? tgt + 150 : tgt;
+    var m = macroSplit(dayK, d.weight, d.goal, d.training);
+    var tot = m.pk + m.ck + m.fk || 1;
+    var shares = { bf: Math.round(dayK * 0.25), lunch: Math.round(dayK * 0.35), dinner: Math.round(dayK * 0.30) };
+    var bf = pickMeal(BF, shares.bf), lunch = pickMeal(LUN, shares.lunch), dinner = pickMeal(DIN, shares.dinner);
+    var snackK = dayK - (bf.kcal + lunch.kcal + dinner.kcal);
+    var snack = pickMeal(SNK, snackK > 60 ? snackK : 150);
+    var water = Math.round(d.weight * 35);
+    var goalTxt = d.goal === '减脂' ? '热量缺口，建议配合训练与充足蛋白以保留肌肉' : d.goal === '增肌' ? '热量盈余，保证蛋白摄入与力量训练刺激' : '维持当前体重，均衡搭配即可';
+    return '' +
+      '<div class="card diet-sum">' +
+      '<div class="ds-row"><div class="ds-b"><div class="n">' + b + '</div><div class="l">基础代谢 BMR</div></div>' +
+      '<div class="ds-b"><div class="n">' + td + '</div><div class="l">每日消耗 TDEE</div></div></div>' +
+      '<div class="ds-target"><span class="ds-k">' + dayK + '</span> 千卡/天 · ' + (d.training ? '训练日' : '休息日') + ' · ' + esc(d.goal) + '</div></div>' +
+      '<div class="card"><div class="form-t" style="margin:0 0 8px">🥗 三大营养素配比</div>' +
+      '<div class="macro-bar"><i class="mp p" style="width:' + Math.round(m.pk / tot * 100) + '%"></i><i class="mp c" style="width:' + Math.round(m.ck / tot * 100) + '%"></i><i class="mp f" style="width:' + Math.round(m.fk / tot * 100) + '%"></i></div>' +
+      '<div class="macro-leg"><span><b style="color:#0fb98c">' + m.protein + 'g</b> 蛋白 ' + Math.round(m.pk / tot * 100) + '%</span>' +
+      '<span><b style="color:#f0a23a">' + m.carb + 'g</b> 碳水 ' + Math.round(m.ck / tot * 100) + '%</span>' +
+      '<span><b style="color:#6a78d6">' + m.fat + 'g</b> 脂肪 ' + Math.round(m.fk / tot * 100) + '%</span></div>' +
+      '<div style="font-size:11px;color:#a0a6ad;margin-top:8px">💧 建议饮水 ' + water + ' ml/天（约 ' + Math.round(water / 250) + ' 杯）</div></div>' +
+      '<div class="diff-seg" style="margin:10px 0 6px"><span class="dl">当日类型</span>' +
+      '<div class="o' + (d.training ? '' : ' on') + '" data-a="dietTrain" data-v="0">休息日</div>' +
+      '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
+      '<div class="h-sec">今日餐单 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span></div>' +
+      mealCard('早餐', 25, bf) + mealCard('午餐', 35, lunch) + mealCard('晚餐', 30, dinner) + mealCard('加餐', 10, snack) +
+      '<div class="card" style="font-size:11.5px;color:#7a838e;line-height:1.6;background:#f5f7f8">📌 ' + goalTxt + '。餐单为参考样例，按热量目标搭配中式食材；如有代谢疾病或特殊饮食需求，请遵营养师/医嘱。</div>' +
+      '<div class="gen-btn btn ghost" data-a="dietEdit">↻ 重新填写资料</div>';
+  }
+  function vDiet() { return S.diet ? vDietResult() : vDietForm(); }
+
+  /* ============ 记录趋势图 ============ */
+  function weeklyTrend() {
+    var map = {};
+    S.records.forEach(function (r) {
+      var d = new Date(r.date + 'T00:00:00');
+      var y = d.getFullYear(); var start = new Date(y, 0, 1);
+      var wk = Math.floor((Math.floor((d - start) / 86400000) + start.getDay() + 1) / 7);
+      var key = y + '-' + wk;
+      map[key] = (map[key] || 0) + (r.min || 0);
+    });
+    var out = [], now = new Date();
+    for (var i = 7; i >= 0; i--) {
+      var d = new Date(now); d.setDate(d.getDate() - i * 7);
+      var y = d.getFullYear(); var start = new Date(y, 0, 1);
+      var wk = Math.floor((Math.floor((d - start) / 86400000) + start.getDay() + 1) / 7);
+      out.push({ label: i === 0 ? '本周' : i + '周前', min: map[y + '-' + wk] || 0 });
+    }
+    return out;
+  }
+  function trendHtml() {
+    if (!S.records.length) return '';
+    var data = weeklyTrend();
+    var max = Math.max.apply(null, data.map(function (x) { return x.min; }).concat([1]));
+    var bars = data.map(function (x) {
+      var h = Math.max(4, Math.round(x.min / max * 100));
+      return '<div class="tb"><div class="tb-c"><i class="' + (x.min > 0 ? '' : 'e') + '" style="height:' + h + '%"></i></div>' +
+        '<div class="tb-l">' + x.label + '</div><div class="tb-v">' + x.min + '</div></div>';
+    }).join('');
+    return '<div class="h-sec">📊 近 8 周训练时长（分钟）</div><div class="trend">' + bars + '</div>';
+  }
+
   /* ============ 事件委托 ============ */
   app.addEventListener('click', function (e) {
     var el = e.target.closest ? e.target.closest('[data-a]') : null;
@@ -595,6 +761,12 @@
       return;
     }
     if (a === 'recDetail') { sheetRec(Number(el.dataset.i)); return; }
+    /* 饮食规划 */
+    if (a === 'dform') { S.dietDraft[k] = v; renderView(); return; }
+    if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false }); saveK('fit_diet', S.diet); renderView(); return; }
+    if (a === 'dietEdit') { S.dietDraft = Object.assign({}, S.diet); S.diet = null; saveK('fit_diet', null); renderView(); return; }
+    if (a === 'dietTrain') { if (S.diet) { S.diet.training = (v === '1'); saveK('fit_diet', S.diet); renderView(); } return; }
+    if (a === 'dietRegen') { renderView(); return; }
     /* 跟练 */
     if (a === 'skipReady') { enterAct(); return; }
     if (a === 'addRep') {
@@ -617,6 +789,14 @@
   });
   /* 点遮罩关 sheet */
   app.addEventListener('click', function (e) { if (e.target && e.target.id === 'sheetMask') closeSheet(); });
+  /* 饮食表单：数字输入实时写草稿（不重渲染，避免丢失焦点） */
+  app.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t && t.classList && t.classList.contains('fld')) {
+      var k = t.dataset.k;
+      S.dietDraft[k] = (k === 'age' || k === 'height' || k === 'weight') ? (Number(t.value) || 0) : t.value;
+    }
+  });
 
   renderShell();
 })();
