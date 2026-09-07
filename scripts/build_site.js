@@ -8,6 +8,10 @@ const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
 
 // 1) 源码模块（含依赖顺序，惰性加载）
 const MODS = ['media_map.js', 'media_local.js', 'gif_map.js', 'data.js', 'plan.js'];
+// 网页版把 GIF 的 CDN 地址改写为本地相对路径 media/<id>.gif（本地已做统一底色处理）；
+// 小程序端共用同一 gif_map.js 源文件，仍走远程，不受影响。
+const CDN_BASE = 'https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/';
+const modContent = n => n === 'gif_map.js' ? read('utils/' + n).split(CDN_BASE).join('media/') : read('utils/' + n);
 
 // 2) mini-CommonJS loader
 const loader = `(function () {
@@ -21,7 +25,7 @@ const loader = `(function () {
     __fact[n](m, m.exports, __r);
     return m.exports;
   }
-  ${MODS.map(name => `__fact[${JSON.stringify(name)}] = new Function('module', 'exports', 'require', ${JSON.stringify(read('utils/' + name))});`).join('\n  ')}
+  ${MODS.map(name => `__fact[${JSON.stringify(name)}] = new Function('module', 'exports', 'require', ${JSON.stringify(modContent(name))});`).join('\n  ')}
   var __d = __r('data.js'), __p = __r('plan.js');
   window.__NS = {
     courses: __d.courses, ACTION_CUE: __d.ACTION_CUE, ACT_LIB: __d.ACT_LIB, actionByName: __d.actionByName,
