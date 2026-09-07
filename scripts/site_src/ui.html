@@ -10,7 +10,8 @@
 #tabbar { flex:none; background:var(--card); border-top:1px solid var(--line); display:flex; height:54px; }
 .tab { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:#9aa0a8; font-size:10px; cursor:pointer; }
 .tab .t-ic { font-size:20px; line-height:1; }
-.tab.on { color:var(--gd); font-weight:700; }
+.tab.on { color:var(--gd); font-weight:700; position:relative; }
+.tab.on::after { content:''; position:absolute; bottom:5px; left:50%; transform:translateX(-50%); width:20px; height:3px; border-radius:3px; background:var(--gd); }
 #sheetMask, #wkoMask { position:absolute; inset:0; z-index:30; }
 #sheetMask { background:rgba(15,20,25,.45); display:flex; align-items:flex-end; }
 #wkoMask { background:#0b0f13; display:none; }
@@ -185,5 +186,38 @@
 .wk-rest-opts .o { padding:6px 13px; border-radius:999px; background:rgba(255,255,255,.1); font-size:12px; cursor:pointer; }
 .wk-rest-opts .o.on { background:var(--g); color:#063; font-weight:800; }
 #wko.hide { display:none; }
+
+/* ===== 动效与交互细化（再优化显示） ===== */
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+@keyframes maskIn { from { opacity:0; } to { opacity:1; } }
+@keyframes sheetUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+@keyframes sheetDown { from { transform:translateY(0); } to { transform:translateY(100%); } }
+@keyframes shimmer { 0% { background-position:-180% 0; } 100% { background-position:180% 0; } }
+@keyframes popIn { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:none; } }
+
+/* 切 tab / 切视图：区块错峰淡入上浮 */
+#view > * { animation:fadeUp .32s ease both; }
+#view > *:nth-child(2) { animation-delay:.04s; }
+#view > *:nth-child(3) { animation-delay:.08s; }
+#view > *:nth-child(4) { animation-delay:.12s; }
+#view > *:nth-child(5) { animation-delay:.16s; }
+
+/* 底部弹层：遮罩淡入 + 面板从底部滑入 */
+#sheetMask.in { animation:maskIn .25s ease; }
+#sheetMask .sheet { animation:sheetUp .34s cubic-bezier(.22,1,.36,1); }
+#sheetMask.closing .sheet { animation:sheetDown .26s ease forwards; }
+
+/* 按压反馈 */
+.cs-card, .course-card, .day-card, .act-row, .tab, .pt, .chip { transition:transform .12s ease; }
+.cs-card:active, .course-card:active, .day-card:active:not(.rest), .act-row:active, .pt:active, .chip:active { transform:scale(.97); }
+.tab:active { transform:scale(.92); }
+.btn { transition:transform .12s ease, filter .12s ease; }
+.btn:active { transform:scale(.96); filter:brightness(.95); }
+
+/* 图片加载占位微光（CDN 加载途中不空不黑） */
+.cs-card img, .a-g img, .wk-gif img, .demo img, .hero-bg { background:linear-gradient(100deg, rgba(255,255,255,.05) 20%, rgba(255,255,255,.18) 50%, rgba(255,255,255,.05) 80%); background-size:200% 100%; animation:shimmer 1.4s linear infinite; }
+
+/* 跟练页阶段切换柔化 */
+#wko > * { animation:fadeUp .3s ease both; }
 </style>
 

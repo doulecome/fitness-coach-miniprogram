@@ -265,8 +265,20 @@
   }
 
   /* ============ Bottom sheet ============ */
-  function openSheet(html) { $('#sheetBody').innerHTML = html; $('#sheetMask').style.display = 'flex'; }
-  function closeSheet() { $('#sheetMask').style.display = 'none'; }
+  function openSheet(html) {
+    var m = $('#sheetMask'); m.style.display = 'flex'; m.classList.add('in');
+    var b = $('#sheetBody'); b.innerHTML = html;
+    // 重新触发滑入动画（.sheet 元素持久，需 reflow 才能再播）
+    b.style.animation = 'none'; void b.offsetWidth; b.style.animation = '';
+  }
+  function closeSheet() {
+    var m = $('#sheetMask'); if (!m) return;
+    m.classList.add('closing');
+    setTimeout(function () {
+      m.style.display = 'none'; m.classList.remove('in', 'closing');
+      var b = $('#sheetBody'); if (b) b.style.animation = '';
+    }, 250);
+  }
   function sheetCourse(c) {
     var rows = c.actions.map(function (a) {
       return '<div class="row-line"><span class="t main">' + (a.type === 'reps' ? '计数' : '计时') + '</span>' + a.icon + ' ' + esc(a.name) +
