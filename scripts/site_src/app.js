@@ -346,7 +346,7 @@
       W.rem--;
       if (W.rem <= 0) enterAct(); else refreshN();
     } else if (W.phase === 'act') {
-      if (curA().type === 'time') { W.rem--; if (W.rem <= 0) { W.actual = curA().value; leaveAct(); } else refreshN(); }
+      if (curA().type === 'time' || curA().type === 'reps') { W.rem--; if (W.rem <= 0) { W.actual = curA().value; leaveAct(); } else refreshN(); }
     } else if (W.phase === 'rest') {
       W.rem--;
       if (W.rem <= 0) goNext();
@@ -356,7 +356,8 @@
   function enterAct() {
     W.phase = 'act'; W.actual = 0;
     var a = curA();
-    W.rem = a.type === 'time' ? a.value : 0;
+    // 计时类按秒倒数；计数类按"每 reps 约 3 秒"估算时长自动跟练，免来回点屏幕
+    W.rem = a.type === 'time' ? a.value : Math.max(8, Math.round(a.value * 3));
     renderW();
   }
   function leaveAct() {   // 结束当前动作 → 休息（已记录）
@@ -395,7 +396,7 @@
     return Math.min(100, Math.round(((W.i + (W.phase === 'rest' || W.phase === 'done' ? 1 : 0.35)) / W.seq.length) * 100));
   }
   function refreshN() {
-    var n = $('#wnum'); if (n) n.textContent = W.phase === 'act' && curA().type === 'reps' ? Math.min(W.actual + 1, curA().value) : W.rem;
+    var n = $('#wnum'); if (n) n.textContent = W.rem;
     var p = $('#wprog'); if (p) p.style.width = wProg() + '%';
   }
   function renderW() {
@@ -428,11 +429,11 @@
       var isAct = W.phase === 'act';
       var isTime = isAct && a.type === 'time';
       var big;
-      if (isTime) big = '<div class="wk-big" data-a="skipRest"><span id="wnum">' + W.rem + '</span><small>秒 · 点击跳过</small></div>';
-      else if (isAct) big = '<div class="wk-big" data-a="addRep"><span id="wnum">1</span><small>做完一次点一下</small></div>';
-      else big = '<div class="wk-big" data-a="skipRest"><span id="wnum">' + W.rem + '</span><small>休息 · 点击跳过</small></div>';
+      if (isTime) big = '<div class="wk-big" data-a="skipRest"><span id="wnum">' + W.rem + '</span><small>秒 · 自动计时</small></div>';
+      else if (isAct) big = '<div class="wk-big" data-a="finishAct"><span id="wnum">' + W.rem + '</span><small>秒 · 自动跟练</small></div>';
+      else big = '<div class="wk-big" data-a="skipRest"><span id="wnum">' + W.rem + '</span><small>休息 · 自动进入下一动作</small></div>';
       var side;
-      if (isAct && !isTime) side = '<div class="wk-mini" data-a="repDec">−</div><div class="wk-mini" data-a="skipRest" style="font-size:13px">完成<br>本组</div>';
+      if (isAct && !isTime) side = '<div class="wk-mini" data-a="finishAct" style="font-size:13px">完成<br>本组</div>';
       else side = '<div class="wk-mini" data-a="skipRest">跳过</div>';
       var mid;
       if (W.phase === 'rest' && W.i + 1 < W.seq.length) {
@@ -512,6 +513,7 @@
       if (W.phase === 'rest') goNext(); else if (W.phase === 'act') leaveAct();
       return;
     }
+    if (a === 'finishAct') { if (W && W.phase === 'act') { W.actual = curA().value; leaveAct(); } return; }
     if (a === 'pauseW') { if (W) { W.paused = !W.paused; } return; }
     if (a === 'closeW') { closeW(); return; }
   });

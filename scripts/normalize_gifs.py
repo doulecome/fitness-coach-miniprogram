@@ -9,6 +9,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_BASE = "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/"
 TARGET = (245, 246, 248)   # #f5f6f8 与网页 --bg 一致
 TOL = 34                    # 背景色容差（欧氏距离）
+SPEED = 1.8                 # 放慢播放约 1.8 倍，便于跟练看清动作
 OUT_DIRS = [os.path.join(ROOT, "docs", "media"),
             os.path.join(ROOT, "preview", "media")]
 
@@ -65,15 +66,17 @@ def main():
         log("processing", name, "->", mid)
         data = download(url)
         im = Image.open(io.BytesIO(data))
-        bg = border_median(ImageSequence.Iterator(im).__iter__().__next__())
+        orig = [fr.copy() for fr in ImageSequence.Iterator(im)]   # 复本：迭代器复用同一帧对象，list()会得重复引用
+        bg = border_median(orig[0])
         log("  detected bg", bg)
-        frames = [recolor(fr, bg) for fr in ImageSequence.Iterator(im)]
-        dur = im.info.get("duration") or 80
+        frames = [recolor(fr, bg) for fr in orig]
+        # 逐帧时长 ×SPEED 放慢；0 时长按 60ms 兜底，下限 20ms 防过快
+        durs = [max(int(round((fr.info.get("duration") or 60) * SPEED)), 20) for fr in orig]
         for d in OUT_DIRS:
             os.makedirs(d, exist_ok=True)
             out = os.path.join(d, mid)
             frames[0].save(out, save_all=True, append_images=frames[1:],
-                           duration=dur, loop=0, disposal=2, optimize=True)
+                           duration=durs, loop=0, disposal=2, optimize=True)
             log("  wrote", out, os.path.getsize(out), "bytes")
 
 
