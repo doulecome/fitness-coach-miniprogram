@@ -41,7 +41,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
 
 /* ===== 首页 ===== */
 .hero { position:relative; border-radius:20px; overflow:hidden; color:#fff; margin-bottom:14px; background:linear-gradient(135deg,#0d8f6f,#07c08b); box-shadow:0 10px 26px rgba(13,143,111,.20); }
-.hero .hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.hero .hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; animation:heroKen 22s ease-in-out infinite alternate; transform-origin:center; }
 .hero .hero-veil { position:absolute; inset:0; background:linear-gradient(200deg,rgba(6,16,12,.06) 22%,rgba(6,16,12,.84) 80%); }
 .hero .hero-in { position:relative; display:flex; flex-direction:column; min-height:184px; padding:16px 16px 15px; }
 .hero .h-top { display:flex; align-items:center; gap:6px; position:relative; }
@@ -205,6 +205,26 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
 @keyframes sheetDown { from { transform:translateY(0); } to { transform:translateY(100%); } }
 @keyframes shimmer { 0% { background-position:-180% 0; } 100% { background-position:180% 0; } }
 @keyframes popIn { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:none; } }
+@keyframes heroKen { from { transform:scale(1); } to { transform:scale(1.14); } }
+
+/* hero 内文错峰浮现：沉浸大卡逐行入场 */
+.hero .h-top, .hero .h-t, .hero .h-desc, .hero .h-cta, .hero .h-em { animation:fadeUp .5s ease both; }
+.hero .h-t { animation-delay:.06s; }
+.hero .h-desc { animation-delay:.12s; }
+.hero .h-cta { animation-delay:.18s; }
+
+/* 课程横滑卡：逐张弹入，营造 Keep 式推荐流动感 */
+.course-strip { animation:none; }
+.course-strip .cs-card { animation:popIn .42s cubic-bezier(.22,1,.36,1) both; }
+.course-strip .cs-card:nth-child(1) { animation-delay:.03s; }
+.course-strip .cs-card:nth-child(2) { animation-delay:.08s; }
+.course-strip .cs-card:nth-child(3) { animation-delay:.13s; }
+.course-strip .cs-card:nth-child(4) { animation-delay:.18s; }
+.course-strip .cs-card:nth-child(5) { animation-delay:.23s; }
+.course-strip .cs-card:nth-child(6) { animation-delay:.28s; }
+
+/* tab 指示点：切换时轻轻弹出 */
+.tab.on::after { animation:popIn .25s ease both; }
 
 /* 切 tab / 切视图：区块错峰淡入上浮 */
 #view > * { animation:fadeUp .32s ease both; }
