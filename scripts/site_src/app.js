@@ -105,11 +105,25 @@
     var heroTxt, heroSub, heroBtn;
     if (day && day.rest) { heroTxt = '今天是休息日'; heroSub = '主动恢复也是训练的一部分——拉伸、散步，让身体回血'; heroBtn = '看本周计划'; }
     else if (day) {
-      heroTxt = '今日 · ' + day.icon + ' ' + day.typeName;
-      heroSub = day.muscle + ' · 约 ' + day.duration + ' 分钟' + (day.custom ? ' · 🧠 ' + day.custom + ' 个动作按你成绩定制' : '');
+      heroTxt = '今日 · ' + day.typeName;
+      heroSub = day.muscle + ' · 约 ' + day.duration + ' 分钟 · ' + (day.nActs || day.acts.length) + ' 个动作' + (day.custom ? ' · 🧠 ' + day.custom + ' 按你成绩定制' : '');
       heroBtn = '开始今日训练';
     } else { heroTxt = '开始你的第一练'; heroSub = '先生成一份 4 周 AI 计划，或直接挑一门课开练'; heroBtn = '去定制计划'; }
     var hb = day && !day.rest ? 'runDay' : 'tabplan';
+    // hero 背景：训练日取首个跟练动作的真人 GIF 当封面（Keep 式沉浸大卡），否则纯渐变+表情水印
+    var heroBg = (day && !day.rest && day.seq && day.seq[0] && day.seq[0].gif) ? day.seq[0].gif : '';
+    var heroEmoji = (day && !day.rest && !heroBg) ? (day.icon || '💪') : (!day ? '💪' : '💤');
+    var heroHtml =
+      '<div class="hero">' +
+      (heroBg ? '<img class="hero-bg" loading="lazy" data-fb="' + heroEmoji + '" src="' + heroBg + '"><div class="hero-veil"></div>' : '') +
+      '<div class="hero-in">' +
+      '<div class="h-top"><span class="h-day">' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · ' + WCN[jd] + '</span>' +
+      (S.plan && day && !day.rest ? '<span class="h-week">' + esc(day.typeName) + '</span>' : '') + '</div>' +
+      '<div class="h-t">' + esc(heroTxt) + '</div><div class="h-desc">' + esc(heroSub) + '</div>' +
+      '<div class="h-cta" data-a="' + hb + '" data-w="0" data-i="' + slot + '">' + heroBtn + ' <span style="font-size:11px">▸</span></div>' +
+      '</div>' +
+      (!heroBg ? '<span class="h-em">' + heroEmoji + '</span>' : '') +
+      '</div>';
     var lastR = S.records[0];
     var lastCard = '';
     if (lastR) {
@@ -118,16 +132,22 @@
         '<div><div class="lr-n">' + esc(lastR.name) + '</div><div class="lr-s">' + lastR.date + ' · ' + lastR.min + ' 分钟' + (lastR.done != null ? ' · 完成 ' + lastR.done + '/' + lastR.total : '') + '</div></div>' +
         (lb ? '<div class="btn" data-a="' + lb + '">再练一次</div>' : '') + '</div>';
     }
+    // 精选课程：真人 GIF 封面大卡（用每门课第一个动作的演示图），Keep 式推荐流
     var strip = '<div class="course-strip">' + courses.slice(0, 6).map(function (c) {
-      return '<div class="cs-card" data-a="openCourse" data-id="' + c.id + '"><div class="c-ic">' + c.icon + '</div><div class="c-n">' + esc(c.name) + '</div><div class="c-m">' + c.duration + '′ · ' + c.actions.length + ' 动作</div></div>';
+      var cover = (c.actions[0] && c.actions[0].gif) ? c.actions[0].gif : '';
+      var cbg = 'background:linear-gradient(135deg,' + (c.color || '#1FD6A8') + ',#0d8f6f)';
+      return '<div class="cs-card" style="' + cbg + '" data-a="openCourse" data-id="' + c.id + '">' +
+        (cover ? '<img loading="lazy" data-fb="' + c.icon + '" src="' + cover + '"><div class="cs-veil"></div>' : '<div class="img-fb">' + c.icon + '</div>') +
+        '<div class="cs-tag">' + esc(c.level) + ' · ' + esc(c.cat) + '</div>' +
+        '<div class="cs-txt"><div class="c-n">' + esc(c.name) + '</div>' +
+        '<div class="c-m">' + c.duration + '′ · ' + c.actions.length + ' 动作</div></div>' +
+        '</div>';
     }).join('') + '</div>';
-    return '<div class="hero"><div class="h-day">' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · ' + WCN[jd] + '</div>' +
-      '<div class="h-t">' + esc(heroTxt) + '</div><div class="h-desc">' + esc(heroSub) + '</div>' +
-      '<div class="h-cta" data-a="' + hb + '" data-w="0" data-i="' + slot + '">' + heroBtn + '</div></div>' +
+    return heroHtml +
       '<div class="stats-row"><div class="stat"><div class="n">' + minToday + '</div><div class="l">今日分钟</div></div>' +
       '<div class="stat"><div class="n">' + mdays + '</div><div class="l">本月练次</div></div>' +
       '<div class="stat"><div class="n">' + recCount + '</div><div class="l">动作有纪录</div></div></div>' +
-      '<div class="h-sec">精选课程<span class="more">点卡片看动作清单</span></div>' + strip + lastCard;
+      '<div class="h-sec">为你精选<span class="more">点卡片看动作清单</span></div>' + strip + lastCard;
   }
 
   /* ============ 训练库 ============ */
@@ -360,13 +380,18 @@
     var wk = $('#wko');
     if (!W) return;
     var a = W.seq[Math.min(W.i, W.seq.length - 1)];
+    var total = W.seq.length;
+    var posHtml = '';
+    if (W.phase === 'ready') posHtml = '<div class="wk-pos">即将开始 · 共 <b>' + total + '</b> 个动作</div>';
+    else if (W.phase === 'act') posHtml = '<div class="wk-pos">动作 <b>' + (W.i + 1) + '</b> / ' + total + ' · ' + (a.type === 'reps' ? '计数' : '计时') + '</div>';
+    else if (W.phase === 'rest') posHtml = '<div class="wk-pos">已完成 <b>' + Math.min(W.i, total) + '</b> / ' + total + ' · 休息</div>';
     var body = '', top = '<div class="wk-top"><div class="wk-back" data-a="closeW">‹</div><div class="wk-title">' + esc(W.title) + '</div>' +
       (W.phase !== 'done' ? '<div class="wk-close" data-a="closeW">退出</div>' : '') + '</div>';
     if (W.phase === 'ready') {
-      body = top + '<div class="wk-prog"><i style="width:2%"></i></div>' +
+      body = top + posHtml + '<div class="wk-prog"><i style="width:2%"></i></div>' +
         '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;text-align:center">' +
         '<div class="r-l" style="font-size:15px;color:rgba(255,255,255,.75)">' + esc(W.title) + '</div>' +
-        '<div class="r-n" id="wnum" style="font-size:96px">' + W.rem + '</div><div class="r-l">准备开始</div>' +
+        '<div class="r-n" id="wnum" style="font-size:110px">' + W.rem + '</div><div class="r-l">准备开始</div>' +
         '<div class="wk-rest-l" style="margin-top:16px">第 1 个动作 · ' + a.icon + ' ' + esc(a.name) + ' · ' + (a.type === 'reps' ? a.value + ' 次' : a.value + ' 秒') + '</div>' +
         '<div class="wk-ctrl"><div class="wk-big" data-a="skipReady" style="width:150px;height:64px;border-radius:999px;font-size:17px">直接开练 ▸</div></div></div>';
     } else if (W.phase === 'done') {
@@ -395,9 +420,10 @@
       } else if (isAct) {
         mid = '<div class="wk-cue">' + esc(a.cue || '保持标准动作，注意呼吸节奏') + '</div>';
       } else mid = '<div class="wk-rest-l" style="margin-top:6px">上一组完成，喘口气</div>';
-      body = top + '<div class="wk-prog"><i id="wprog" style="width:' + wProg() + '%"></i></div>' +
+      body = top + posHtml + '<div class="wk-prog"><i id="wprog" style="width:' + wProg() + '%"></i></div>' +
         '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 20px;min-height:0">' +
-        (W.phase === 'act' && !isTime ? '<div class="wk-act-tag" id="wl1" style="margin-bottom:8px">目标 ' + a.value + ' 次</div>' : '') +
+        (isAct ? '<div class="wk-act-name" style="margin-bottom:4px">' + a.icon + ' ' + esc(a.name) + '</div>' : '') +
+        (W.phase === 'act' && !isTime ? '<div class="wk-act-tag" id="wl1" style="margin-bottom:4px">目标 ' + a.value + ' 次</div>' : '') +
         '<div class="wk-gif">' + (a.gif ? '<img id="wgif" data-fb="' + a.icon + '" src="' + a.gif + '">' : '<div class="bf">' + a.icon + '</div>') + '</div>' +
         mid + '</div>' +
         '<div class="wk-ctrl">' + side + big + '<div class="wk-mini" data-a="pauseW">⏸</div></div>';
@@ -436,8 +462,8 @@
     }
     if (a === 'replan') { S.plan = null; saveK(KP, null); renderView(); return; }
     if (a === 'week') { S.weekIdx = Number(el.dataset.i); renderView(); return; }
-    if (a === 'openCourse') { var c = courses.filter(function (x) { return x.id === v; })[0]; if (c) sheetCourse(c); return; }
-    if (a === 'runCourse') { closeSheet(); runCourse(v); return; }
+    if (a === 'openCourse') { var c = courses.filter(function (x) { return x.id === el.dataset.id; })[0]; if (c) sheetCourse(c); return; }
+    if (a === 'runCourse') { closeSheet(); runCourse(el.dataset.id); return; }
     if (a === 'actInfo') { sheetAct(el.dataset.name); return; }
     if (a === 'openDay') { sheetDay(Number(el.dataset.w), Number(el.dataset.i)); return; }
     if (a === 'runDay') { closeSheet(); runPlanDay(Number(el.dataset.w), Number(el.dataset.i)); return; }

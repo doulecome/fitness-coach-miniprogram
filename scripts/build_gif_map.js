@@ -1,5 +1,5 @@
 // 接入 ExerciseDB 动画 GIF（Keep 式真人连贯动作演示）
-// 数据源：JahelCuadrado/ExerciseGymGifsDB（ExerciseDB v1 镜像，jsDelivr 免费 CDN，1300+ 动作含 GIF）
+// 数据源：sovanndevid/my-exercisedb（ExerciseDB v1 media 镜像，经 jsDelivr 国内可达；media_id 同构，原 static.exercisedb.dev 已宕机）
 // 用法：
 //   node scripts/build_gif_map.js --fetch   # 抓全量索引到 scripts/exdb_cache.json
 //   node scripts/build_gif_map.js --probe   # 打印每个中文动作的候选（用于手校 PICK）
@@ -10,7 +10,7 @@ const https = require('https');
 
 const CACHE = path.join(__dirname, 'exdb_full.json');
 const OUT = path.join(__dirname, '..', 'utils', 'gif_map.js');
-const GIF_BASE = 'https://static.exercisedb.dev/media/';
+const GIF_BASE = 'https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/';
 const FETCH_URLS = [
   'https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@main/data/exercises.json',
   'https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@master/data/exercises.json',
