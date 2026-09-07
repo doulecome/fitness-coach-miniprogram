@@ -149,7 +149,7 @@
 .wk-top { padding:14px 16px 0; display:flex; align-items:center; }
 .wk-back { width:34px; height:34px; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; border-radius:50%; background:rgba(255,255,255,.12); }
 .wk-title { margin-left:10px; font-size:13px; font-weight:700; opacity:.9; }
-.wk-close { margin-left:auto; font-size:11px; opacity:.6; cursor:pointer; }
+.wk-close { margin-left:6px; font-size:11px; opacity:.6; cursor:pointer; }
 .wk-prog { margin:12px 16px 0; height:5px; background:rgba(255,255,255,.15); border-radius:99px; overflow:hidden; }
 .wk-prog i { display:block; height:100%; background:var(--g); border-radius:99px; transition:width .3s; }
 .wk-pos { align-self:center; margin-top:10px; font-size:12px; color:rgba(255,255,255,.55); font-weight:700; letter-spacing:.5px; }
@@ -186,6 +186,15 @@
 .wk-rest-opts .o { padding:6px 13px; border-radius:999px; background:rgba(255,255,255,.1); font-size:12px; cursor:pointer; }
 .wk-rest-opts .o.on { background:var(--g); color:#063; font-weight:800; }
 #wko.hide { display:none; }
+.wk-hud { margin-left:auto; font-size:12px; font-weight:700; color:rgba(255,255,255,.55); font-variant-numeric:tabular-nums; letter-spacing:.5px; padding:0 4px; }
+.wk-voice { width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,.12); cursor:pointer; font-size:14px; margin-left:4px; flex:none; }
+.wk-voice:active { transform:scale(.92); }
+.done-detail { width:100%; background:rgba(255,255,255,.06); border-radius:12px; padding:4px 12px; margin-top:14px; text-align:left; max-height:38vh; overflow-y:auto; }
+.done-detail .row-line { color:#fff; font-size:12px; border-bottom:1px solid rgba(255,255,255,.08); }
+.done-detail .row-line:last-child { border-bottom:none; }
+.done-detail .row-line .t { background:rgba(255,255,255,.16); color:#fff; }
+.done-detail .row-line .last { color:rgba(255,255,255,.55); }
+.done-detail .row-line .r { color:#fff; }
 
 /* ===== 动效与交互细化（再优化显示） ===== */
 @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }

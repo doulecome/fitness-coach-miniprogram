@@ -233,13 +233,14 @@ function estMin(seqActs, warmText) {
 const KCAL_PER_MIN = { push: 7.5, legs: 8, core: 6, fat: 10, recover: 3.5 };
 
 // 组装一个动作的"跟练位"（从库动作复制演示字段，只改执行量）
-function seqItem(name, value) {
+function seqItem(name, value, phase) {
   const src = actionByName[name] || { name, icon: '🏋️', type: 'reps' };
   return {
     name: src.name,
     icon: src.icon || '🏋️',
     type: src.type,
     value,
+    phase: phase || 'main',
     cue: src.cue || '',
     anim: src.anim || 'dynamic',
     gif: src.gif || '',
@@ -261,7 +262,7 @@ function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier) {
     const g = computeGoal(base, phaseKey, level, hist);
     if (g.target <= 0) return;
     acts.push({ name, icon: base.icon, type: base.type, unit: g.unit, target: g.target, round, fromHist: false, cue: base.cue || '' });
-    for (let r = 0; r < round; r++) seq.push(seqItem(name, g.target));
+    for (let r = 0; r < round; r++) seq.push(seqItem(name, g.target, 'main'));
   };
 
   if (isRecover) {
@@ -280,7 +281,7 @@ function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier) {
       const base = actionByName[name];
       const g = computeGoal(base, phaseKey, level, hist);
       acts.push({ name, icon: base.icon, type: base.type, unit: g.unit, target: g.target, round: rMain, fromHist: false, cue: base.cue || '' });
-      for (let r = 0; r < rMain; r++) seq.push(seqItem(name, g.target));
+      for (let r = 0; r < rMain; r++) seq.push(seqItem(name, g.target, 'main'));
     });
     // 力量日收尾：1 个核心动作 1 轮（刺激深层稳定）；减量日去掉收尾保留冷身
     if (!deloadTier && (type === 'push' || type === 'legs')) {
@@ -289,7 +290,7 @@ function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier) {
       const g = computeGoal(fin, phaseKey, level, hist);
       if (g.target > 0) {
         acts.push({ name: finName, icon: fin.icon, type: fin.type, unit: g.unit, target: g.target, round: 1, fromHist: false, fin: true, cue: fin.cue || '' });
-        seq.push(seqItem(finName, g.target));
+        seq.push(seqItem(finName, g.target, 'fin'));
       }
     }
     // 冷身：1 个拉伸动作
@@ -299,7 +300,7 @@ function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier) {
       const g = computeGoal(cool, phaseKey, level, hist);
       if (g.target > 0) {
         acts.push({ name: coolName, icon: cool.icon, type: cool.type, unit: g.unit, target: g.target, round: 1, fromHist: false, cool: true, cue: cool.cue || '' });
-        seq.push(seqItem(coolName, g.target));
+        seq.push(seqItem(coolName, g.target, 'cool'));
       }
     }
   }

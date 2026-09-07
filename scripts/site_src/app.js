@@ -156,7 +156,8 @@
     return heroHtml +
       '<div class="stats-row"><div class="stat"><div class="n">' + minToday + '</div><div class="l">今日分钟</div></div>' +
       '<div class="stat"><div class="n">' + mdays + '</div><div class="l">本月练次</div></div>' +
-      '<div class="stat"><div class="n">' + recCount + '</div><div class="l">动作有纪录</div></div></div>' +
+      '<div class="stat"><div class="n">' + recCount + '</div><div class="l">动作有纪录</div></div>' +
+      '<div class="stat"><div class="n">' + (streak() || 0) + '</div><div class="l">连续打卡</div></div></div>' +
       '<div class="h-sec">为你精选<span class="more">点卡片看动作清单</span></div>' + strip + lastCard;
   }
 
@@ -329,6 +330,40 @@
       '<div class="sh-sub">' + r.date + ' · ' + r.min + ' 分钟' + (r.done != null ? ' · 完成 ' + r.done + '/' + r.total : '') + '</div>' + rows);
   }
 
+  /* ============ 语音教练 / 连续打卡 / 实时 HUD ============ */
+  var VOICE_ON = loadK('fit_voice', true);
+  function phaseLabel(p) { return p === 'fin' ? '收尾' : p === 'cool' ? '冷身' : p === 'warm' ? '热身' : '正式'; }
+  function speak(text) {
+    if (!VOICE_ON || !('speechSynthesis' in window)) return;
+    try {
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-CN'; u.rate = 1.05; u.pitch = 1;
+      var vs = window.speechSynthesis.getVoices();
+      for (var i = 0; i < vs.length; i++) { if (vs[i].lang && vs[i].lang.toLowerCase().indexOf('zh') >= 0) { u.voice = vs[i]; break; } }
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  function streak() {
+    var days = {}; S.records.forEach(function (r) { days[r.date] = 1; });
+    var s = 0, d = new Date();
+    for (;;) {
+      var m = '0' + (d.getMonth() + 1), dd = '0' + d.getDate();
+      var key = d.getFullYear() + '-' + m.slice(-2) + '-' + dd.slice(-2);
+      if (days[key]) { s++; d.setDate(d.getDate() - 1); } else break;
+    }
+    return s;
+  }
+  function updateHUD() {
+    if (!W) return;
+    var h = $('#whud'); if (!h) return;
+    var sec = Math.floor((Date.now() - W.t0) / 1000);
+    var mm = Math.floor(sec / 60), ss = sec % 60;
+    var txt = (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
+    if (W.kcal) txt += ' · ≈' + Math.round(W.kcal * (sec / 60) / 20) + ' 千卡';
+    h.textContent = txt;
+  }
+
   /* ============ 跟练引擎 ============ */
   var W = null, WT = null;
   function startW(seq, title, icon, kcal, bg, tag) {
@@ -337,6 +372,9 @@
     $('#wko').classList.remove('hide');
     keepAwake(true); // 跟练期间屏幕常亮
     renderW();
+    updateHUD();
+    speak('准备开始，共 ' + seq.length + ' 个动作');
+    speak(String(W.rem)); // 3-2-1 起始数字
     WT = setInterval(onTick, 1000);
   }
   function curA() { return W.seq[W.i]; }
@@ -344,7 +382,7 @@
     if (!W || W.paused) return;
     if (W.phase === 'ready') {
       W.rem--;
-      if (W.rem <= 0) enterAct(); else refreshN();
+      if (W.rem <= 0) { speak('开始'); enterAct(); } else { speak(String(W.rem)); refreshN(); }
     } else if (W.phase === 'act') {
       if (curA().type === 'time' || curA().type === 'reps') { W.rem--; if (W.rem <= 0) { W.actual = curA().value; leaveAct(); } else refreshN(); }
     } else if (W.phase === 'rest') {
@@ -352,20 +390,28 @@
       if (W.rem <= 0) goNext();
       else refreshN();
     }
+    updateHUD();
   }
   function enterAct() {
     W.phase = 'act'; W.actual = 0;
     var a = curA();
     // 计时类按秒倒数；计数类按"每 reps 约 3 秒"估算时长自动跟练，免来回点屏幕
     W.rem = a.type === 'time' ? a.value : Math.max(8, Math.round(a.value * 3));
+    var lead = a.phase === 'fin' ? '收尾' : a.phase === 'cool' ? '冷身' : '第 ' + (W.i + 1) + ' 个';
+    speak(lead + '，' + a.name + '，' + (a.type === 'reps' ? a.value + ' 次' : '保持 ' + a.value + ' 秒'));
+    if (a.cue) setTimeout(function () { if (W && W.phase === 'act') speak(a.cue); }, 1500);
     renderW();
   }
   function leaveAct() {   // 结束当前动作 → 休息（已记录）
     var a = curA();
-    W.detail.push({ name: a.name, icon: a.icon, type: a.type, target: a.value, actual: W.actual });
+    W.detail.push({ name: a.name, icon: a.icon, type: a.type, target: a.value, actual: W.actual, phase: a.phase });
     W.i++;
     if (W.i >= W.seq.length) { finishW(); return; }
-    W.phase = 'rest'; W.rem = Math.max(2, W.rest); renderW();
+    W.phase = 'rest'; W.rem = Math.max(2, W.rest);
+    var nx = W.seq[W.i];
+    speak('休息 ' + W.rem + ' 秒');
+    if (nx) setTimeout(function () { if (W && W.phase === 'rest') speak('下一个，' + nx.name); }, 700);
+    renderW();
   }
   function goNext() {     // 休息结束 → 下一动作
     W.i++;
@@ -384,6 +430,8 @@
     var kcal = W.kcal ? Math.round(W.kcal * min / 20) : 0;
     saveRecord({ date: todayStr(), ts: Date.now(), name: W.title, icon: W.icon, min: min, kcal: kcal,
       done: done, total: W.seq.length, detail: W.detail, bg: W.bg, tag: W.tag });
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    speak('训练完成，本次消耗约 ' + kcal + ' 千卡，完成 ' + done + ' 个动作');
     renderW();
   }
   function stopT() { if (WT) { clearInterval(WT); WT = null; } }
@@ -406,10 +454,10 @@
     var total = W.seq.length;
     var posHtml = '';
     if (W.phase === 'ready') posHtml = '<div class="wk-pos">即将开始 · 共 <b>' + total + '</b> 个动作</div>';
-    else if (W.phase === 'act') posHtml = '<div class="wk-pos">动作 <b>' + (W.i + 1) + '</b> / ' + total + ' · ' + (a.type === 'reps' ? '计数' : '计时') + '</div>';
+    else if (W.phase === 'act') posHtml = '<div class="wk-pos">动作 <b>' + (W.i + 1) + '</b> / ' + total + ' · ' + (a.phase && a.phase !== 'main' ? phaseLabel(a.phase) + ' · ' : '') + (a.type === 'reps' ? '计数' : '计时') + '</div>';
     else if (W.phase === 'rest') posHtml = '<div class="wk-pos">已完成 <b>' + Math.min(W.i, total) + '</b> / ' + total + ' · 休息</div>';
     var body = '', top = '<div class="wk-top"><div class="wk-back" data-a="closeW">‹</div><div class="wk-title">' + esc(W.title) + '</div>' +
-      (W.phase !== 'done' ? '<div class="wk-close" data-a="closeW">退出</div>' : '') + '</div>';
+      (W.phase !== 'done' ? '<div class="wk-hud" id="whud">00:00</div><div class="wk-voice" data-a="toggleVoice" title="语音教练开关">' + (VOICE_ON ? '🔊' : '🔇') + '</div><div class="wk-close" data-a="closeW">退出</div>' : '') + '</div>';
     if (W.phase === 'ready') {
       body = top + posHtml + '<div class="wk-prog"><i style="width:2%"></i></div>' +
         '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;text-align:center">' +
@@ -420,11 +468,23 @@
     } else if (W.phase === 'done') {
       var doneN = W.detail.filter(function (x) { return x.actual > 0; }).length;
       var hit = W.detail.filter(function (x) { return x.actual >= (x.target || 1); }).length;
-      body = top + '<div class="wk-done" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px">' +
+      var stk = streak();
+      var secDone = Math.floor((Date.now() - W.t0) / 1000);
+      var kcalDone = W.kcal ? Math.round(W.kcal * fmtMin(secDone) / 20) : 0;
+      var rows = W.detail.map(function (x) {
+        var st = (!x.actual || x.actual <= 0) ? '<span style="color:#a0a6ad">未做</span>'
+          : (x.actual >= (x.target || 1) ? '<span style="color:#0fb98c;font-weight:800">✓ 达标</span>'
+            : '<span style="color:#e08a00;font-weight:800">' + x.actual + '/' + (x.target || 1) + '</span>');
+        return '<div class="row-line"><span class="t ' + (x.phase === 'fin' ? 'fin' : x.phase === 'cool' ? 'cool' : 'main') + '">' + phaseLabel(x.phase) + '</span>' + (x.icon || '•') + ' ' + esc(x.name) +
+          '<span class="last">目标 ' + (x.target || '-') + (x.type === 'reps' ? ' 次' : ' 秒') + '</span><span class="r">' + st + '</span></div>';
+      }).join('');
+      body = top + '<div class="wk-done" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:0 18px;overflow-y:auto">' +
         '<div class="d-ic">🎉</div><div class="d-t">训练完成</div>' +
-        '<div class="d-p">' + esc(W.title) + '<br>' + doneN + '/' + W.detail.length + ' 个动作完成 · ' + fmtMin((Date.now() - W.t0) / 1000) + ' 分钟</div>' +
+        '<div class="d-p">' + esc(W.title) + '<br>' + doneN + '/' + W.detail.length + ' 个动作完成 · ' + fmtMin(secDone) + ' 分钟' + (kcalDone ? ' · ≈' + kcalDone + ' 千卡' : '') + (stk > 1 ? '<br>🔥 连续打卡 ' + stk + ' 天' : '') + '</div>' +
         (hit ? '<div class="d-rec">🏆 ' + hit + ' 个动作达标' + (W.prs ? ' · 打破 ' + W.prs + ' 项个人纪录' : '') + '</div>' : (W.prs ? '<div class="d-rec">✨ 打破 ' + W.prs + ' 项个人纪录</div>' : '')) +
-        '<div class="wk-ctrl"><div class="wk-big" data-a="closeW" style="width:160px;height:60px;border-radius:999px;font-size:16px">完成</div></div></div>';
+        '<div class="done-detail">' + rows + '</div>' +
+        '<div class="wk-ctrl" style="width:100%"><div class="wk-big" data-a="recDetail" data-i="0" style="width:150px;height:54px;font-size:14px">查看明细 ▸</div>' +
+        '<div class="wk-mini" data-a="closeW">完成</div></div></div>';
     } else {
       var isAct = W.phase === 'act';
       var isTime = isAct && a.type === 'time';
@@ -443,12 +503,13 @@
       } else if (isAct) {
         mid = '<div class="wk-cue">' + esc(a.cue || '保持标准动作，注意呼吸节奏') + '</div>';
       } else mid = '<div class="wk-rest-l" style="margin-top:6px">上一组完成，喘口气</div>';
+      var optsHtml = (W.phase === 'rest') ? '<div class="wk-rest-opts"><div class="o" data-a="restLess">−5s</div><div class="o" data-a="restMore">+10s</div><div class="o on" data-a="skipRest">跳过</div></div>' : '';
       body = top + posHtml + '<div class="wk-prog"><i id="wprog" style="width:' + wProg() + '%"></i></div>' +
         '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 20px;min-height:0">' +
         (isAct ? '<div class="wk-act-name" style="margin-bottom:4px">' + a.icon + ' ' + esc(a.name) + '</div>' : '') +
         (W.phase === 'act' && !isTime ? '<div class="wk-act-tag" id="wl1" style="margin-bottom:4px">目标 ' + a.value + ' 次</div>' : '') +
         '<div class="wk-gif">' + (a.gif ? '<img id="wgif" data-fb="' + a.icon + '" src="' + a.gif + '">' : '<div class="bf">' + a.icon + '</div>') + '</div>' +
-        mid + '</div>' +
+        mid + '</div>' + optsHtml +
         '<div class="wk-ctrl">' + side + big + '<div class="wk-mini" data-a="pauseW">⏸</div></div>';
     }
     wk.innerHTML = body;
@@ -458,13 +519,13 @@
   function runCourse(id) {
     var c = courses.filter(function (x) { return x.id === id; })[0];
     if (!c) return;
-    var seq = c.actions.map(function (a) { return { name: a.name, icon: a.icon, type: a.type, value: a.value, gif: a.gif, cue: a.cue }; });
+    var seq = c.actions.map(function (a) { return { name: a.name, icon: a.icon, type: a.type, value: a.value, gif: a.gif, cue: a.cue, phase: 'main' }; });
     startW(seq, c.name, c.icon, c.kcal, c.color, 'fit_course_' + c.id);
   }
   function runPlanDay(wIdx, i) {
     var d = S.plan.weeks[wIdx].week[i];
     if (!d || d.rest) return;
-    var seq = d.seq.map(function (s) { return { name: s.name, icon: s.icon, type: s.type, value: s.value, gif: s.gif, cue: s.cue }; });
+    var seq = d.seq.map(function (s) { return { name: s.name, icon: s.icon, type: s.type, value: s.value, gif: s.gif, cue: s.cue, phase: s.phase || 'main' }; });
     startW(seq, '第' + (wIdx + 1) + '周 · ' + d.typeName, d.icon, d.kcal || 0, '#1FD6A8', 'fit_plan_' + wIdx + '_' + i);
   }
 
@@ -516,6 +577,9 @@
     if (a === 'finishAct') { if (W && W.phase === 'act') { W.actual = curA().value; leaveAct(); } return; }
     if (a === 'pauseW') { if (W) { W.paused = !W.paused; } return; }
     if (a === 'closeW') { closeW(); return; }
+    if (a === 'toggleVoice') { VOICE_ON = !VOICE_ON; saveK('fit_voice', VOICE_ON); if (!VOICE_ON && 'speechSynthesis' in window) window.speechSynthesis.cancel(); renderW(); return; }
+    if (a === 'restMore') { if (W && W.phase === 'rest') { W.rem += 10; refreshN(); speak('休息 ' + W.rem + ' 秒'); } return; }
+    if (a === 'restLess') { if (W && W.phase === 'rest') { W.rem = Math.max(2, W.rem - 5); refreshN(); } return; }
   });
   /* 点遮罩关 sheet */
   app.addEventListener('click', function (e) { if (e.target && e.target.id === 'sheetMask') closeSheet(); });
