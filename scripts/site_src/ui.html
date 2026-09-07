@@ -185,8 +185,15 @@
 .wk-rest-opts { display:flex; gap:8px; margin-top:14px; }
 .wk-rest-opts .o { padding:6px 13px; border-radius:999px; background:rgba(255,255,255,.1); font-size:12px; cursor:pointer; }
 .wk-rest-opts .o.on { background:var(--g); color:#063; font-weight:800; }
+/* 难度选择器（课程/计划弹层内） */
+.diff-seg { display:flex; align-items:center; gap:6px; margin:14px 0 6px; }
+.diff-seg .dl { font-size:12px; color:#6a727c; font-weight:700; margin-right:2px; }
+.diff-seg .o { flex:1; text-align:center; padding:9px 0; font-size:13px; font-weight:700; color:#6a727c; background:#eef0f2; border-radius:10px; cursor:pointer; transition:background .15s,color .15s; }
+.diff-seg .o.on { background:var(--g); color:#043; }
+.diff-seg .o:active { transform:scale(.97); }
+.dhint { font-size:11px; color:#9aa1a9; margin:2px 0 4px; }
 #wko.hide { display:none; }
-.wk-hud { margin-left:auto; font-size:12px; font-weight:700; color:rgba(255,255,255,.55); font-variant-numeric:tabular-nums; letter-spacing:.5px; padding:0 4px; }
+.wk-hud { margin-left:auto; font-size:13px; font-weight:800; color:rgba(255,255,255,.96); font-variant-numeric:tabular-nums; letter-spacing:.5px; padding:4px 10px; background:rgba(255,255,255,.14); border-radius:999px; display:flex; align-items:center; gap:4px; }
 .wk-voice { width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,255,255,.12); cursor:pointer; font-size:14px; margin-left:4px; flex:none; }
 .wk-voice:active { transform:scale(.92); }
 .done-detail { width:100%; background:rgba(255,255,255,.06); border-radius:12px; padding:4px 12px; margin-top:14px; text-align:left; max-height:38vh; overflow-y:auto; }

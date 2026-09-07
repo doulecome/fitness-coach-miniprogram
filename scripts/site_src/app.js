@@ -58,7 +58,7 @@
   var S = {
     tab: 'home', seg: 'course', actMus: '全部',
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
-    form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10)
+    form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std')
   };
   var app = $('#app');
 
@@ -281,13 +281,17 @@
     }, 250);
   }
   function sheetCourse(c) {
+    S._course = c;
+    var cfg = diffCfg(S.diff);
     var rows = c.actions.map(function (a) {
+      var sv = a.type === 'reps' ? Math.max(5, Math.round(a.value * cfg.mul)) : Math.max(10, Math.round(a.value * cfg.mul));
       return '<div class="row-line"><span class="t main">' + (a.type === 'reps' ? '计数' : '计时') + '</span>' + a.icon + ' ' + esc(a.name) +
-        '<span class="r">' + a.value + (a.type === 'reps' ? ' 次' : ' 秒') + '</span></div>';
+        '<span class="r">' + sv + (a.type === 'reps' ? ' 次' : ' 秒') + '</span></div>';
     }).join('');
     openSheet('<div class="sh-h"><div class="sh-t">' + c.icon + ' ' + esc(c.name) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
-      '<div class="sh-sub">' + c.level + ' · ' + c.duration + ' 分钟 · 约 ' + c.kcal + ' 千卡 · ' + c.actions.length + ' 个动作</div>' +
+      '<div class="sh-sub">' + c.level + ' · ' + c.duration + ' 分钟 · 约 ' + Math.round(c.kcal * cfg.kcal) + ' 千卡 · ' + c.actions.length + ' 个动作</div>' +
       '<div class="card" style="background:#f5f7f8;font-size:12px;line-height:1.6;color:#4a525c;padding:10px 12px">' + esc(c.desc) + '</div>' + rows +
+      diffSeg() +
       '<div class="sh-go btn" data-a="runCourse" data-id="' + c.id + '">开始训练 ▸</div>');
   }
   function sheetAct(name) {
@@ -303,15 +307,19 @@
   function sheetDay(wIdx, i) {
     var d = S.plan.weeks[wIdx].week[i];
     if (!d || d.rest) return;
+    S._day = { w: wIdx, i: i };
+    var cfg = diffCfg(S.diff);
     var rows = d.acts.map(function (a) {
       var tag = a.fin ? 'fin' : a.cool ? 'cool' : 'main';
       var tl = a.fin ? '收尾' : a.cool ? '冷身' : '主项';
+      var sv = Math.max(a.unit === '次' ? 5 : 10, Math.round(a.target * cfg.mul));
       return '<div class="row-line"><span class="t ' + tag + '">' + tl + '</span>' + a.icon + ' ' + esc(a.name) +
-        '<span class="r">×' + (a.round || 1) + ' ' + a.target + a.unit + '</span></div>';
+        '<span class="r">×' + (a.round || 1) + ' ' + sv + a.unit + '</span></div>';
     }).join('');
     openSheet('<div class="sh-h"><div class="sh-t">' + d.wd + ' · ' + d.icon + ' ' + esc(d.typeName) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
       '<div class="sh-sub">' + esc(d.muscle) + ' · 约 ' + d.duration + ' 分钟' + (d.custom ? ' · 🧠 ' + d.custom + ' 按成绩定制' : '') + '</div>' +
       '<div class="warm-box">🔥 ' + esc(d.warm || '') + '</div>' + rows +
+      diffSeg() +
       (d.coach ? '<div class="coach-box">💬 ' + esc(d.coach) + '</div>' : '') +
       '<div class="sh-go btn" data-a="runDay" data-w="' + wIdx + '" data-i="' + i + '">按此训练开始 ▸</div>');
   }
@@ -359,16 +367,37 @@
     var h = $('#whud'); if (!h) return;
     var sec = Math.floor((Date.now() - W.t0) / 1000);
     var mm = Math.floor(sec / 60), ss = sec % 60;
-    var txt = (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
+    var txt = '⏱ ' + (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
     if (W.kcal) txt += ' · ≈' + Math.round(W.kcal * (sec / 60) / 20) + ' 千卡';
     h.textContent = txt;
   }
 
+  /* ============ 难度模式 ============ */
+  function diffCfg(d) {
+    if (d === 'easy') return { mul: 0.7, restAdd: 5, kcal: 0.8, label: '轻松' };
+    if (d === 'hard') return { mul: 1.4, restAdd: -2, kcal: 1.25, label: '挑战' };
+    return { mul: 1, restAdd: 0, kcal: 1, label: '标准' };
+  }
+  function scaleAction(a, cfg) {
+    var b = {}; for (var k in a) b[k] = a[k];
+    var v = a.value;
+    b.value = a.type === 'reps' ? Math.max(5, Math.round(v * cfg.mul)) : Math.max(10, Math.round(v * cfg.mul));
+    return b;
+  }
+  function diffSeg() {
+    var on = function (k) { return S.diff === k ? ' on' : ''; };
+    return '<div class="diff-seg"><span class="dl">训练难度</span>' +
+      '<div class="o' + on('easy') + '" data-a="setDiff" data-v="easy">轻松</div>' +
+      '<div class="o' + on('std') + '" data-a="setDiff" data-v="std">标准</div>' +
+      '<div class="o' + on('hard') + '" data-a="setDiff" data-v="hard">挑战</div></div>' +
+      '<div class="dhint">难度实时套用：' + (S.diff === 'easy' ? '少做几组·休息更长' : S.diff === 'hard' ? '加量·休息更短' : '按原计划强度') + '</div>';
+  }
+
   /* ============ 跟练引擎 ============ */
   var W = null, WT = null;
-  function startW(seq, title, icon, kcal, bg, tag) {
+  function startW(seq, title, icon, kcal, bg, tag, restSec) {
     W = { seq: seq, title: title, icon: icon, kcal: kcal || 0, bg: bg || '#1FD6A8', i: 0, phase: 'ready', rem: 3,
-      actual: 0, detail: [], t0: Date.now(), rest: S.restSec, paused: false, prs: 0, tag: tag };
+      actual: 0, detail: [], t0: Date.now(), rest: (restSec != null ? restSec : S.restSec), paused: false, prs: 0, tag: tag };
     $('#wko').classList.remove('hide');
     keepAwake(true); // 跟练期间屏幕常亮
     renderW();
@@ -519,14 +548,18 @@
   function runCourse(id) {
     var c = courses.filter(function (x) { return x.id === id; })[0];
     if (!c) return;
-    var seq = c.actions.map(function (a) { return { name: a.name, icon: a.icon, type: a.type, value: a.value, gif: a.gif, cue: a.cue, phase: 'main' }; });
-    startW(seq, c.name, c.icon, c.kcal, c.color, 'fit_course_' + c.id);
+    var cfg = diffCfg(S.diff);
+    var seq = c.actions.map(function (a) { var b = scaleAction(a, cfg); b.phase = 'main'; return b; });
+    var kcal = Math.round((c.kcal || 0) * cfg.kcal);
+    startW(seq, c.name, c.icon, kcal, c.color, 'fit_course_' + c.id, Math.max(3, S.restSec + cfg.restAdd));
   }
   function runPlanDay(wIdx, i) {
     var d = S.plan.weeks[wIdx].week[i];
     if (!d || d.rest) return;
-    var seq = d.seq.map(function (s) { return { name: s.name, icon: s.icon, type: s.type, value: s.value, gif: s.gif, cue: s.cue, phase: s.phase || 'main' }; });
-    startW(seq, '第' + (wIdx + 1) + '周 · ' + d.typeName, d.icon, d.kcal || 0, '#1FD6A8', 'fit_plan_' + wIdx + '_' + i);
+    var cfg = diffCfg(S.diff);
+    var seq = d.seq.map(function (s) { var b = scaleAction(s, cfg); b.phase = s.phase || 'main'; return b; });
+    var kcal = Math.round((d.kcal || 0) * cfg.kcal);
+    startW(seq, '第' + (wIdx + 1) + '周 · ' + d.typeName, d.icon, kcal, '#1FD6A8', 'fit_plan_' + wIdx + '_' + i, Math.max(3, S.restSec + cfg.restAdd));
   }
 
   /* ============ 事件委托 ============ */
@@ -578,6 +611,7 @@
     if (a === 'pauseW') { if (W) { W.paused = !W.paused; } return; }
     if (a === 'closeW') { closeW(); return; }
     if (a === 'toggleVoice') { VOICE_ON = !VOICE_ON; saveK('fit_voice', VOICE_ON); if (!VOICE_ON && 'speechSynthesis' in window) window.speechSynthesis.cancel(); renderW(); return; }
+    if (a === 'setDiff') { S.diff = v; saveK('fit_diff', S.diff); if (S._course) sheetCourse(S._course); else if (S._day) sheetDay(S._day.w, S._day.i); return; }
     if (a === 'restMore') { if (W && W.phase === 'rest') { W.rem += 10; refreshN(); speak('休息 ' + W.rem + ' 秒'); } return; }
     if (a === 'restLess') { if (W && W.phase === 'rest') { W.rem = Math.max(2, W.rem - 5); refreshN(); } return; }
   });
