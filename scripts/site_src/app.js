@@ -14,10 +14,20 @@
   function loadK(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
   function saveK(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
-  /* ===== 图片兜底：GIF CDN 加载失败 → 替换为动作 emoji（error 不冒泡，须 capture 捕获） ===== */
+  /* ===== 图片兜底：GIF CDN 加载失败 → 依次切换备用节点，全失败才降级为 emoji =====
+     error 不冒泡，须 capture 捕获；容错链按可达性排序：cdn/gcore 直连 200、fastly 301 跟随 */
+  var GIF_HOSTS = ['cdn.jsdelivr.net', 'gcore.jsdelivr.net', 'fastly.jsdelivr.net'];
   document.addEventListener('error', function (e) {
     var t = e.target;
-    if (t && t.tagName === 'IMG' && t.parentNode) {
+    if (!t || t.tagName !== 'IMG') return;
+    var src = t.getAttribute('src') || '';
+    var cur = null;
+    for (var i = 0; i < GIF_HOSTS.length; i++) { if (src.indexOf(GIF_HOSTS[i]) >= 0) { cur = GIF_HOSTS[i]; break; } }
+    if (cur) {
+      var ni = GIF_HOSTS.indexOf(cur) + 1;
+      if (ni < GIF_HOSTS.length) { t.setAttribute('data-tried', String(ni)); t.src = src.replace(cur, GIF_HOSTS[ni]); return; }
+    }
+    if (t.parentNode) {
       var s = document.createElement('span');
       s.className = 'img-fb';
       s.textContent = t.getAttribute('data-fb') || '🏋️';
