@@ -24,7 +24,11 @@ const courses = [
       { name: '仰卧交替抬腿', icon: '🦵', type: 'reps', value: 30 },
       { name: '左侧平板', icon: '🤸', type: 'time', value: 30 },
       { name: '右侧平板', icon: '🤸', type: 'time', value: 30 },
-      { name: '死虫式', icon: '🐛', type: 'time', value: 40 }
+      { name: '死虫式', icon: '🐛', type: 'time', value: 40 },
+      { name: '平板支撑', icon: '🧘', type: 'time', value: 45 },
+      { name: '自行车卷腹', icon: '🚴', type: 'reps', value: 24 },
+      { name: 'V字起身', icon: '🔺', type: 'reps', value: 16 },
+      { name: '侧卷腹', icon: '🔄', type: 'reps', value: 20 }
     ]
   },
   {
@@ -46,7 +50,8 @@ const courses = [
       { name: '深蹲跳', icon: '🍑', type: 'reps', value: 20 },
       { name: '登山者', icon: '⛰️', type: 'time', value: 40 },
       { name: '仰卧起坐', icon: '🧎', type: 'reps', value: 25 },
-      { name: '弓步蹲', icon: '🦵', type: 'reps', value: 24 }
+      { name: '弓步蹲', icon: '🦵', type: 'reps', value: 24 },
+      { name: '拳击空击', icon: '🥊', type: 'time', value: 40 }
     ]
   },
   {
@@ -108,7 +113,12 @@ const courses = [
       { name: '臀桥踏步', icon: '🚶', type: 'reps', value: 20 },
       { name: '箭步蹲', icon: '🚶', type: 'reps', value: 16 },
       { name: '深蹲跳', icon: '🍑', type: 'reps', value: 15 },
-      { name: '站姿提踵', icon: '🦶', type: 'reps', value: 25 }
+      { name: '站姿提踵', icon: '🦶', type: 'reps', value: 25 },
+      { name: '罗马尼亚硬拉', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '臀推', icon: '🌉', type: 'reps', value: 15 },
+      { name: '髋外展', icon: '🦵', type: 'reps', value: 18 },
+      { name: '相扑深蹲', icon: '🦵', type: 'reps', value: 16 },
+      { name: '俯卧腿弯举', icon: '🦵', type: 'reps', value: 16 }
     ]
   },
   {
@@ -156,6 +166,48 @@ const courses = [
       { name: '保加利亚分腿蹲', icon: '🦵', type: 'reps', value: 12 },
       { name: '锤式弯举', icon: '💪', type: 'reps', value: 14 },
       { name: '弹力带面拉', icon: '🎯', type: 'reps', value: 15 }
+    ]
+  },
+  {
+    id: 'arms',
+    name: '手臂塑形',
+    level: '初级',
+    duration: 14,
+    kcal: 130,
+    cat: '增肌',
+    muscle: '手臂',
+    icon: '💪',
+    color: '#E8893B',
+    desc: '二头弯举 + 三头臂屈伸组合，哑铃/弹力带在家雕出手臂线条',
+    actions: [
+      { name: '哑铃弯举', icon: '💪', type: 'reps', value: 14 },
+      { name: '集中弯举', icon: '💪', type: 'reps', value: 12 },
+      { name: '哑铃颈后臂屈伸', icon: '💪', type: 'reps', value: 12 },
+      { name: '仰卧臂屈伸', icon: '💪', type: 'reps', value: 12 },
+      { name: '弹力带下压', icon: '🎯', type: 'reps', value: 15 },
+      { name: '双杠臂屈伸', icon: '🤸', type: 'reps', value: 10 }
+    ]
+  },
+  {
+    id: 'upupper',
+    name: '肩背雕刻',
+    level: '中级',
+    duration: 18,
+    kcal: 170,
+    cat: '增肌',
+    muscle: '肩背',
+    icon: '🏔️',
+    color: '#3D7EAA',
+    desc: '垂直拉 + 水平拉 + 推举，把肩练宽、背练厚',
+    actions: [
+      { name: '高位下拉', icon: '🎯', type: 'reps', value: 12 },
+      { name: '坐姿划船', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '反向飞鸟', icon: '🏋️', type: 'reps', value: 15 },
+      { name: '前平举', icon: '🏋️', type: 'reps', value: 14 },
+      { name: '俯身侧平举', icon: '🏋️', type: 'reps', value: 14 },
+      { name: '阿诺德推举', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '弹力带肩推', icon: '🎯', type: 'reps', value: 14 },
+      { name: '上斜哑铃卧推', icon: '🏋️', type: 'reps', value: 12 }
     ]
   }
 ];
@@ -266,7 +318,32 @@ const ACTION_CUE = {
   '高脚杯深蹲': '双手抱哑铃于胸前，屈髋下蹲至大腿平行，重心脚掌',
   '哑铃硬拉': '哑铃贴腿下放至小腿中，臀推发力站起，背挺直不圆',
   '壶铃摇摆': '髋铰链前后摆荡，靠臀部发力甩壶铃至肩高，核心绷紧',
-  '保加利亚分腿蹲': '后脚搭高，前腿下蹲至大腿平行，前膝对准脚尖'
+  '保加利亚分腿蹲': '后脚搭高，前腿下蹲至大腿平行，前膝对准脚尖',
+  // v5 扩充动作库教练要点（24 个）
+  '高位下拉': '握距略宽于肩，沉肩把横杠拉到锁骨，背阔肌主导，慢放不甩',
+  '坐姿划船': '挺胸沉肩，把手拉向腹部，肩胛后收挤背阔，控制回放',
+  '反向飞鸟': '俯身微屈髋，双臂向两侧后展，练后束，别耸肩',
+  '前平举': '双臂前举至肩高，肩前束发力，手腕放松不耸肩',
+  '俯身侧平举': '俯身约45°，双臂向侧后展，刺激后束，顶峰停顿',
+  '阿诺德推举': '推起时掌心由内旋转朝前，全程肩袖参与，核心收紧',
+  '弹力带肩推': '踩住弹力带，双手推过头顶，顶端阻力最强',
+  '上斜哑铃卧推': '上斜凳30-45°，推至胸上方，上胸与前束主导',
+  '双杠臂屈伸': '身体微前倾练胸、直立练三头，下落至大臂平行',
+  '哑铃弯举': '大臂贴身体，二头弯举至肩前，顶峰挤压，慢放',
+  '集中弯举': '肘抵大腿内侧，孤立弯举，顶峰强收缩二头',
+  '哑铃颈后臂屈伸': '单臂举过头顶向后屈伸，三头长头发力，肘朝前不晃',
+  '仰卧臂屈伸': '仰卧双手持铃于胸前，屈肘下放到额头上方，伸臂锁三头',
+  '弹力带下压': '弹力带固定高处，双手下压至大腿，三头收紧不耸肩',
+  '罗马尼亚硬拉': '微屈膝，髋铰链前倾，哑铃沿腿下放至小腿中，臀推站起',
+  '臀推': '上背靠凳，负重置髋，顶髋至肩膝一线，顶端夹臀停顿',
+  '髋外展': '侧卧或站姿，上腿外展打开，臀侧（臀中肌）发力',
+  '相扑深蹲': '双脚外八宽站，持铃于胸，屈髋下蹲，内收肌与臀发力',
+  '俯卧腿弯举': '俯卧勾脚向臀，股二头发力，慢放不借惯性',
+  '平板支撑': '前臂撑地，身体成直线，收核心夹臀，不塌腰不撅臀',
+  '自行车卷腹': '交替肘碰对侧膝，扭转腹斜肌，节奏稳不甩头',
+  'V字起身': '同时抬上身与腿成V，下腹与上腹齐发力，控制下落',
+  '侧卷腹': '侧躺卷向同侧膝，练腹斜肌，别用脖子借力',
+  '拳击空击': '站架护脸，左右直拳快出快收，步法轻快，心率拉满'
 };
 courses.forEach(c => c.actions.forEach(a => {
   if (!a.cue && ACTION_CUE[a.name]) a.cue = ACTION_CUE[a.name];
@@ -346,7 +423,32 @@ const ACT_LIB = {
   '高脚杯深蹲': { g: 'legs', d: 2, reg: '深蹲', adv: '保加利亚分腿蹲' },
   '哑铃硬拉': { g: 'legs', d: 2, reg: '臀桥' },
   '壶铃摇摆': { g: 'legs', d: 2, adv: '哑铃硬拉' },
-  '保加利亚分腿蹲': { g: 'legs', d: 3, reg: '高脚杯深蹲' }
+  '保加利亚分腿蹲': { g: 'legs', d: 3, reg: '高脚杯深蹲' },
+  // v5 扩充动作库（编排池，分组仅限 push/pull/legs/core/cardio/stretch）
+  '高位下拉': { g: 'pull', d: 2, reg: '弹力带下拉', adv: '引体向上' },
+  '坐姿划船': { g: 'pull', d: 2, reg: '哑铃划船' },
+  '反向飞鸟': { g: 'pull', d: 1 },
+  '前平举': { g: 'push', d: 1, reg: '哑铃侧平举' },
+  '俯身侧平举': { g: 'push', d: 2, reg: '反向飞鸟' },
+  '阿诺德推举': { g: 'push', d: 3, reg: '哑铃肩推' },
+  '弹力带肩推': { g: 'push', d: 1, reg: '哑铃肩推' },
+  '上斜哑铃卧推': { g: 'push', d: 2, reg: '哑铃卧推', adv: '双杠臂屈伸' },
+  '双杠臂屈伸': { g: 'push', d: 3, reg: '下斜俯卧撑' },
+  '哑铃弯举': { g: 'pull', d: 1, adv: '集中弯举' },
+  '集中弯举': { g: 'pull', d: 2, reg: '哑铃弯举' },
+  '哑铃颈后臂屈伸': { g: 'push', d: 2 },
+  '仰卧臂屈伸': { g: 'push', d: 2, reg: '哑铃颈后臂屈伸' },
+  '弹力带下压': { g: 'push', d: 2, reg: '哑铃颈后臂屈伸' },
+  '罗马尼亚硬拉': { g: 'legs', d: 2, reg: '哑铃硬拉' },
+  '臀推': { g: 'legs', d: 2, reg: '臀桥', adv: '保加利亚分腿蹲' },
+  '髋外展': { g: 'legs', d: 1 },
+  '相扑深蹲': { g: 'legs', d: 1, reg: '深蹲' },
+  '俯卧腿弯举': { g: 'legs', d: 2 },
+  '平板支撑': { g: 'core', d: 1, adv: '左侧平板' },
+  '自行车卷腹': { g: 'core', d: 2, reg: '卷腹' },
+  'V字起身': { g: 'core', d: 2, reg: '仰卧举腿' },
+  '侧卷腹': { g: 'core', d: 2, reg: '俄罗斯转体' },
+  '拳击空击': { g: 'cardio', d: 2, reg: '高抬腿' }
 };
 
 // 全部 36 个去重动作必须在 ACT_LIB 中有标注（脚本校验），未标注动作会被编排器视为不可用

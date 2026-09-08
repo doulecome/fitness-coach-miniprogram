@@ -54,7 +54,32 @@ const KW = {
   '标准俯卧撑': ['push up', 'push-up'],
   '窄距俯卧撑': ['close grip push', 'close-grip push'],
   '下斜俯卧撑': ['decline push'],
-  '钻石俯卧撑': ['diamond push']
+  '钻石俯卧撑': ['diamond push'],
+  // v5 扩充动作库（24 个，全部经 discover_new.py 验证含 GIF + 中文分步）
+  '高位下拉': ['lat pulldown', 'pulldown', 'pull down', 'pull-down'],
+  '坐姿划船': ['seated row', 'cable row', 'seated cable row'],
+  '反向飞鸟': ['reverse fly', 'rear delt fly', 'rear deltoid'],
+  '前平举': ['front raise', 'front dumbbell raise'],
+  '俯身侧平举': ['bent over lateral raise', 'bent-over lateral raise', 'rear lateral raise'],
+  '阿诺德推举': ['arnold press', 'arnold dumbbell press'],
+  '弹力带肩推': ['resistance band shoulder press', 'band shoulder press', 'band overhead press'],
+  '上斜哑铃卧推': ['incline dumbbell press', 'incline chest press'],
+  '双杠臂屈伸': ['dips', 'chest dips', 'bodyweight dips'],
+  '哑铃弯举': ['dumbbell curl', 'bicep curl'],
+  '集中弯举': ['concentration curl'],
+  '哑铃颈后臂屈伸': ['overhead triceps extension', 'dumbbell overhead triceps'],
+  '仰卧臂屈伸': ['lying triceps extension', 'skull crusher', 'supine triceps'],
+  '弹力带下压': ['resistance band triceps pushdown', 'band triceps pushdown', 'triceps pushdown'],
+  '罗马尼亚硬拉': ['romanian deadlift', 'r dl'],
+  '臀推': ['hip thrust'],
+  '髋外展': ['hip abduction', 'side lying hip abduction', 'seated hip abduction'],
+  '相扑深蹲': ['sumo squat', 'sumo deadlift'],
+  '俯卧腿弯举': ['lying leg curl', 'prone leg curl', 'leg curl'],
+  '平板支撑': ['plank', 'forearm plank'],
+  '自行车卷腹': ['bicycle crunch', 'bicycle abdominal'],
+  'V字起身': ['v-up', 'v sit up', 'v sit-up'],
+  '侧卷腹': ['side crunch', 'oblique crunch'],
+  '拳击空击': ['shadow boxing', 'boxing']
 };
 
 const src = path.join(ROOT, 'scripts', 'dset', 'exercises.json');
