@@ -1,0 +1,24 @@
+{
+  "name": "健身教练",
+  "short_name": "健身教练",
+  "description": "144 个真人示范动作 · AI 4 周计划 · HIIT 计时 · 打卡与趋势",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f1419",
+  "theme_color": "#1FD6A8",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

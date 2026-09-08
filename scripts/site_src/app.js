@@ -75,6 +75,8 @@
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
     form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
     recoveryOn: loadK('fit_recovery', false),
+    weights: loadK('fit_weight', {}), dietLog: loadK('fit_dietlog', {}),
+    hiit: { tpl: 'tabata', sel: {} }, badges: loadK('fit_badges', {}),
     diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' },
     builder: { sel: {}, rounds: 3 },
     dietPair: { staple: '', protein: '', veg: '', other: '' }, dietPairRes: null
@@ -92,7 +94,7 @@
     S.best[name] = rec; saveK(KB, S.best);
     return isPR;
   }
-  function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); }
+  function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
@@ -163,6 +165,14 @@
         '<div><div class="lr-n">' + esc(lastR.name) + '</div><div class="lr-s">' + lastR.date + ' · ' + lastR.min + ' 分钟' + (lastR.done != null ? ' · 完成 ' + lastR.done + '/' + lastR.total : '') + '</div></div>' +
         (lb ? '<div class="btn" data-a="' + lb + '">再练一次</div>' : '') + '</div>';
     }
+    // 呼吸放松（#24）：三种节奏，复用跟练全屏引擎做引导
+    var breathCard = '<div class="card breath-card"><div style="display:flex;align-items:center;gap:10px">' +
+      '<span style="font-size:24px">🌬</span><div style="flex:1;min-width:0"><div style="font-weight:800;font-size:13.5px;color:var(--ink)">呼吸放松 · 1-2 分钟</div>' +
+      '<div style="font-size:10.5px;color:#7a838e;margin-top:2px">睡前助眠 / 训练前专注 / 焦虑平复，跟随全屏节奏引导</div></div></div>' +
+      '<div style="display:flex;gap:8px;margin-top:10px">' +
+      '<div class="btn" style="flex:1;font-size:12px;padding:9px 0" data-a="breath" data-v="478">4-7-8 助眠</div>' +
+      '<div class="btn ghost" style="flex:1;font-size:12px;padding:9px 0" data-a="breath" data-v="box">盒式专注</div>' +
+      '<div class="btn ghost" style="flex:1;font-size:12px;padding:9px 0" data-a="breath" data-v="618">6-1-6 平复</div></div></div>';
     // 精选课程：真人 GIF 封面大卡（用每门课第一个动作的演示图），Keep 式推荐流
     var strip = '<div class="course-strip">' + courses.slice(0, 6).map(function (c) {
       var cover = (c.actions[0] && c.actions[0].gif) ? c.actions[0].gif : '';
@@ -179,7 +189,7 @@
       '<div class="stat"><div class="n">' + mdays + '</div><div class="l">本月练次</div></div>' +
       '<div class="stat"><div class="n">' + recCount + '</div><div class="l">动作有纪录</div></div>' +
       '<div class="stat"><div class="n">' + (streak() || 0) + '</div><div class="l">连续打卡</div></div></div>' +
-      '<div class="h-sec">为你精选<span class="more">点卡片看动作清单</span></div>' + strip + lastCard;
+      '<div class="h-sec">为你精选<span class="more">点卡片看动作清单</span></div>' + strip + lastCard + breathCard;
   }
 
   /* ============ 训练库 ============ */
@@ -198,7 +208,8 @@
     }).join('') + '</div>';
   }
   function vTrain() {
-    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div></div>';
+    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div><div class="sg ' + (S.seg === 'hiit' ? 'on' : '') + '" data-a="seg" data-v="hiit">HIIT</div></div>';
+    if (S.seg === 'hiit') return seg + equipChips() + '<div style="height:6px"></div>' + vHiit();
     if (S.seg === 'course') {
       return seg + '<div class="course-grid">' + courses.map(function (c) {
         return '<div class="course-card" data-a="openCourse" data-id="' + c.id + '"><div class="cc-ic" style="background:' + esc(c.color || '#1FD6A8') + '22">' + c.icon + '</div>' +
@@ -257,6 +268,133 @@
     startW(seq, '自定义训练 · ' + names.length + ' 动作', '🎯', 0, '#7C5CFF', 'fit_custom_' + Date.now(), Math.max(3, S.restSec + cfg.restAdd), buildWarmSeq(warmKindFromBuilder(S.builder.sel)));
   }
 
+  /* ============ HIIT/Tabata 计时模式（#22）：模板 + 动作循环，全部转计时复用跟练引擎 ============ */
+  var HIT_TPL = {
+    tabata: { n: 'Tabata', desc: '经典 8 轮 · 动 20s / 休 10s · 共 4 分钟', work: 20, rest: 10, rounds: 8 },
+    hiit30: { n: 'HIIT 30/15', desc: '10 轮 · 动 30s / 休 15s · 共 7.5 分钟', work: 30, rest: 15, rounds: 10 },
+    emom:   { n: 'EMOM', desc: '每分钟完成该动作，共 10 轮', work: 60, rest: 1, rounds: 10 },
+    amrap:  { n: 'AMRAP', desc: '12 分钟 · 尽可能多循环', work: 45, rest: 15, rounds: 9 }
+  };
+  function vHiit() {
+    var t = HIT_TPL[S.hiit.tpl];
+    var chips = Object.keys(HIT_TPL).map(function (k) {
+      return '<span class="chip ' + (S.hiit.tpl === k ? 'on' : '') + '" data-a="hitTpl" data-v="' + k + '">' + HIT_TPL[k].n + '</span>';
+    }).join('');
+    var nSel = Object.keys(S.hiit.sel).length;
+    var groups = [['胸·肩', 'push'], ['背·臂', 'pull'], ['臀·腿', 'legs'], ['核心', 'core'], ['燃脂', 'cardio']];
+    var list = '';
+    groups.forEach(function (g) {
+      var seen = {}, items = [];
+      courses.forEach(function (c) { c.actions.forEach(function (a) {
+        var lib = NS.ACT_LIB[a.name];
+        if (!seen[a.name] && lib && lib.g === g[1] && equipOk(a)) { seen[a.name] = 1; items.push(a); }
+      }); });
+      if (!items.length) return;
+      list += '<div class="bld-g">' + g[0] + '</div>' + items.slice(0, 8).map(function (a) {
+        var on = S.hiit.sel[a.name] ? ' on' : '';
+        return '<div class="bld-it' + on + '" data-a="hitToggle" data-name="' + esc(a.name) + '"><div class="b-ic">' + a.icon + '</div>' +
+          '<div class="b-n">' + esc(a.name) + '</div><div class="b-go">' + (on ? '✓' : '＋') + '</div></div>';
+      }).join('');
+    });
+    return '<div class="bld-hint">⚡ 间歇训练：选 1-4 个动作，按模板节奏动休交替</div>' +
+      '<div class="chips">' + chips + '</div>' +
+      '<div class="card" style="margin:8px 0;font-size:12px;color:#4a525c;padding:10px 12px;background:#fff4ec">⏱ ' + esc(t.desc) + '</div>' + list +
+      '<div class="bld-foot"><div class="bld-ct">已选 <b>' + nSel + '</b> / 4 项</div>' +
+      '<div class="btn' + (nSel ? '' : ' ghost') + '" data-a="hitStart">开练 ▸</div></div>';
+  }
+  function hiitStart() {
+    var t = HIT_TPL[S.hiit.tpl], names = Object.keys(S.hiit.sel);
+    if (!names.length) { toast('先勾选 1-4 个动作'); return; }
+    if (names.length > 4) { toast('最多选 4 个动作'); return; }
+    var seq = [];
+    for (var r = 0; r < t.rounds; r++) names.forEach(function (nm) {
+      var a = NS.actionByName[nm]; if (!a) return;
+      seq.push({ name: nm, icon: a.icon || '⚡', type: 'time', value: t.work, cue: a.cue || '' });
+    });
+    var kcal = Math.round(t.rounds * (t.work / 60) * 9 * (names.length / 2 + 0.5));
+    startW(seq, t.n + ' · ' + names.length + ' 动作 × ' + t.rounds + ' 轮', '⚡', kcal, '#FF6B4A', 'fit_hiit_' + S.hiit.tpl + '_' + Date.now(), t.rest, []);
+  }
+
+  /* ============ 呼吸放松（#24）：4-7-8 / 盒式 / 6-1-6，纯计时序列复用跟练引擎 ============ */
+  var BREATH = {
+    '478': { n: '4-7-8 助眠', seq: [[4, '用鼻吸气'], [7, '屏住呼吸'], [8, '用嘴缓呼']], round: 5 },
+    box:   { n: '盒式专注', seq: [[4, '用鼻吸气'], [4, '屏住呼吸'], [4, '用嘴呼气'], [4, '保持空杯']], round: 6 },
+    '618': { n: '6-1-6 平复', seq: [[6, '深吸气'], [1, '轻停'], [6, '慢呼气']], round: 8 }
+  };
+  function startBreath(k) {
+    var b = BREATH[k]; if (!b) return;
+    var seq = [];
+    for (var r = 0; r < b.round; r++) b.seq.forEach(function (s) {
+      seq.push({ name: s[1], icon: '🌬', type: 'time', value: s[0], cue: '跟随节奏，不要刻意用力' });
+    });
+    startW(seq, b.n + ' · ' + b.round + ' 轮', '🌬', 5, '#7C5CFF', 'fit_breath_' + k + '_' + Date.now(), 1, []);
+  }
+
+  /* ============ 体重记录（#20）：每日 10 秒，趋势 sparkline + 7 日变化 ============ */
+  function weightCard() {
+    var w = S.weights, days = Object.keys(w).sort();
+    var latest = days.length ? w[days[days.length - 1]] : null;
+    var pts = days.slice(-14).map(function (k) { return w[k]; });
+    var d7 = '';
+    if (days.length >= 2) {
+      var a = w[days[Math.max(0, days.length - 8)]], bb = w[days[days.length - 1]], diff = Math.round((bb - a) * 10) / 10;
+      if (days.length >= 8) d7 = '<span style="margin-left:10px;color:' + (diff <= 0 ? '#0fb98c' : '#e08a00') + '">7 日 ' + (diff > 0 ? '+' : '') + diff + ' kg</span>';
+    }
+    var spark = '';
+    if (pts.length >= 2) {
+      var mn = Math.min.apply(null, pts) - 0.5, mx = Math.max.apply(null, pts) + 0.5;
+      var W = 300, H = 54;
+      var poly = pts.map(function (v, i) {
+        return Math.round(i / (pts.length - 1) * (W - 8) + 4) + ',' + Math.round(H - 6 - (v - mn) / (mx - mn) * (H - 14));
+      }).join(' ');
+      spark = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:' + H + 'px;margin-top:6px">' +
+        '<polyline points="' + poly + '" fill="none" stroke="#1FD6A8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+    }
+    return '<div class="card"><div class="form-t" style="margin:0 0 8px">⚖️ 体重记录</div>' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+      (latest != null ? '<div><span style="font-size:26px;font-weight:800;color:var(--ink)">' + latest + '</span><span style="font-size:11px;color:#7a838e"> kg · 最新</span></div>' + d7 : '<div style="font-size:12px;color:#7a838e">记录第一笔体重，开始追踪趋势</div>') +
+      '</div>' + spark +
+      '<div style="display:flex;gap:8px;margin-top:10px">' +
+      '<input type="number" step="0.1" id="wgtIn" class="fld" style="flex:1" placeholder="今日体重 kg">' +
+      '<div class="btn" style="padding:9px 18px" data-a="weightSave">记录</div></div></div>';
+  }
+
+  /* ============ 成就徽章（#21）：数据全来自 records/best/streak/dietLog，纯展示层 ============ */
+  function badgeDefs() {
+    var totalMin = S.records.reduce(function (a, r) { return a + (r.min || 0); }, 0);
+    var uniq = {};
+    S.records.forEach(function (r) { (r.detail || []).forEach(function (x) { uniq[x.name] = 1; }); });
+    var nPR = Object.keys(S.best).filter(function (n) { return S.best[n].best > 0; }).length;
+    var dietDays = Object.keys(S.dietLog).filter(function (k) { var d = S.dietLog[k]; return d && (d.bf || d.lunch || d.dinner || d.snack); }).length;
+    var stk = streak() || 0;
+    return [
+      { id: 'first',  ic: '🥇', n: '第一练',     d: '完成首次训练',       ok: S.records.length >= 1,  p: S.records.length / 1 },
+      { id: 'rec10',  ic: '🎯', n: '小有所成',   d: '累计 10 次训练',     ok: S.records.length >= 10, p: S.records.length / 10 },
+      { id: 'rec50',  ic: '🏆', n: '训练成瘾',   d: '累计 50 次训练',     ok: S.records.length >= 50, p: S.records.length / 50 },
+      { id: 'st3',    ic: '🔥', n: '三连击',     d: '连续打卡 3 天',       ok: stk >= 3,  p: stk / 3 },
+      { id: 'st7',    ic: '⚡', n: '一周不断',   d: '连续打卡 7 天',       ok: stk >= 7,  p: stk / 7 },
+      { id: 'st30',   ic: '🌟', n: '月度habit',  d: '连续打卡 30 天',      ok: stk >= 30, p: stk / 30 },
+      { id: 'pr1',    ic: '💪', n: '首个 PR',    d: '拿下第一个个人最佳',  ok: nPR >= 1,  p: nPR / 1 },
+      { id: 'pr10',   ic: '🚀', n: 'PR 收集家',  d: '10 个动作有 PR',      ok: nPR >= 10, p: nPR / 10 },
+      { id: 'min100', ic: '⏱', n: '一小时',     d: '累计训练 100 分钟',   ok: totalMin >= 100, p: totalMin / 100 },
+      { id: 'min600', ic: '⌛', n: '十小时',     d: '累计训练 600 分钟',   ok: totalMin >= 600, p: totalMin / 600 },
+      { id: 'act100', ic: '📚', n: '百动解锁',   d: '练过 100 个不同动作', ok: Object.keys(uniq).length >= 100, p: Object.keys(uniq).length / 100 },
+      { id: 'diet7',  ic: '🥗', n: '吃练闭环',   d: '饮食打卡 7 天',       ok: dietDays >= 7, p: dietDays / 7 }
+    ];
+  }
+  function checkNewBadges() {
+    var defs = badgeDefs(), fresh = [];
+    defs.forEach(function (b) { if (b.ok && !S.badges[b.id]) { S.badges[b.id] = 1; fresh.push(b); } });
+    if (fresh.length) { saveK('fit_badges', S.badges); toast('🏆 解锁成就：' + fresh[0].n + (fresh.length > 1 ? ' 等 ' + fresh.length + ' 项' : '')); }
+  }
+  function badgeWall() {
+    var items = badgeDefs().map(function (b) {
+      return '<div class="bdg' + (b.ok ? ' on' : '') + '"><div class="bdg-ic">' + b.ic + '</div><div class="bdg-n">' + esc(b.n) + '</div><div class="bdg-d">' + esc(b.d) + '</div>' +
+        (b.ok ? '<div class="bdg-done">✓ 已达成</div>' : '<div class="bdg-bar"><i style="width:' + Math.min(100, Math.round(b.p * 100)) + '%"></i></div>') + '</div>';
+    }).join('');
+    return '<div class="h-sec">🏅 成就墙</div><div class="bdg-grid">' + items + '</div>';
+  }
+
   /* ============ 计划 ============ */
   var GOALS = ['减脂', '增肌', '塑形', '保持健康', '拉伸放松'], DAYS = [3, 4, 5, 6], LENS = [15, 30, 45], LEVELS = ['新手', '进阶', '老手'];
   function chipRow(arr, key, fmt) {
@@ -306,12 +444,14 @@
     }).join('');
     return '<div class="phase-tabs">' + tabs + '</div>' +
       '<div class="phase-tip">📌 ' + esc(p.weeks[S.weekIdx].tip) + '</div>' +
+      (p.cycle && p.cycle > 1 ? '<div class="phase-tip" style="background:#eef0ff">🚀 第 ' + p.cycle + ' 进阶周期 · 目标已按你的个人最佳自动上调</div>' : '') +
       (p.customTotal ? '<div class="phase-tip" style="background:#e8f7f2">🧠 本计划 ' + p.customTotal + ' 个动作目标已按你的成绩历史自动定制</div>' : '') +
       (p.edited ? '<div class="phase-tip" style="background:#fff4ec;color:#c4691f">✏️ 你已手动调整本计划（替换动作 / 组数），重新定制将还原改动</div>' : '') +
       '<div class="sum-chips"><div class="sc"><div class="n">' + w.days + '</div><div class="l">训练天</div></div>' +
       '<div class="sc"><div class="n">' + w.totalMin + '</div><div class="l">分钟/周</div></div>' +
       '<div class="sc"><div class="n">' + w.totalKcal + '</div><div class="l">千卡/周</div></div></div>' +
       '<div class="card" style="font-size:12px;color:#4a525c;line-height:1.7">💬 ' + esc(p.levelNote) + '<br>🔁 ' + esc(p.weeksNote) + '</div>' + days +
+      (S.weekIdx === p.weeks.length - 1 ? '<div class="gen-btn btn" data-a="nextCycle">🚀 4 周完成 · 生成下一进阶周期</div>' : '') +
       '<div class="gen-btn btn" data-a="sharePlan">📤 复制周计划 · 分享</div>' +
       '<div class="gen-btn btn ghost" data-a="replan">↻ 重新定制</div>';
   }
@@ -487,10 +627,11 @@
       '<div style="font-size:11.5px;color:#7a838e;line-height:1.6;margin-bottom:8px">一键导出全部动作纪录 / 训练历史 / 计划 / 饮食方案到 JSON，换设备或清缓存前先备份，避免数据丢失。</div>' +
       '<div class="bk-btns"><div class="btn" data-a="exportData">⬇ 导出备份</div><div class="btn ghost" data-a="importData">⬆ 导入备份</div></div>' +
       '<input type="file" id="impFile" accept="application/json" style="display:none"></div>';
-    return trendHtml() + prTrendHtml() + radarHtml + volHtml + backup +
+    return trendHtml() + prTrendHtml() + weightCard() + radarHtml + volHtml + backup +
       '<div class="stats-row"><div class="stat"><div class="n">' + S.records.length + '</div><div class="l">累计训练</div></div>' +
       '<div class="stat"><div class="n">' + totalMin + '</div><div class="l">总分钟</div></div>' +
       '<div class="stat"><div class="n">' + names.length + '</div><div class="l">动作有纪录</div></div></div>' +
+      badgeWall() +
       (bestCards ? '<div class="h-sec">💪 动作最佳纪录</div>' + bestCards : '') +
       '<div class="h-sec">训练历史</div>' +
       (list || '<div class="empty"><div class="e-ic">🏋️</div>还没有训练记录<br>去首页开练一次吧</div>');
@@ -1083,6 +1224,18 @@
     var snackK = dayK - (bf.kcal + lunch.kcal + dinner.kcal);
     var snack = pickMeal(SNK, snackK > 60 ? snackK : 150);
     var water = Math.round(d.weight * 35);
+    // 饮食打卡（#23）：勾选已吃的餐 → 已摄入 vs 目标进度
+    var today = todayStr();
+    var dl = S.dietLog[today] || (S.dietLog[today] = {});
+    var eaten = (dl.bf ? bf.kcal : 0) + (dl.lunch ? lunch.kcal : 0) + (dl.dinner ? dinner.kcal : 0) + (dl.snack ? snack.kcal : 0);
+    var mealChips = [['bf', '🌅 早餐'], ['lunch', '☀️ 午餐'], ['dinner', '🌙 晚餐'], ['snack', '🍪 加餐']].map(function (x) {
+      return '<span class="chip ' + (dl[x[0]] ? 'on' : '') + '" data-a="mealChk" data-k="' + x[0] + '">' + x[1] + (dl[x[0]] ? ' ✓' : '') + '</span>';
+    }).join('');
+    var mealChkHtml = '<div class="card" style="margin-top:8px"><div class="form-t" style="margin:0 0 8px">🍽 今日饮食打卡</div>' +
+      '<div class="chips">' + mealChips + '</div>' +
+      '<div class="macro-bar" style="margin-top:10px"><i class="mp p" style="width:' + Math.min(100, Math.round(eaten / dayK * 100)) + '%"></i></div>' +
+      '<div style="font-size:11px;color:#7a838e;margin-top:6px">已摄入 <b style="color:var(--ink)">' + eaten + '</b> / 目标 ' + dayK + ' 千卡' +
+      (eaten > dayK ? ' · <span style="color:#e08a00">超 ' + (eaten - dayK) + ' 千卡</span>' : ' · 还剩 ' + (dayK - eaten) + ' 千卡') + '</div></div>';
     var goalTxt = d.goal === '减脂' ? '热量缺口，建议配合训练与充足蛋白以保留肌肉' : d.goal === '增肌' ? '热量盈余，保证蛋白摄入与力量训练刺激' : '维持当前体重，均衡搭配即可';
     // 热量闭环（#16）：把训练消耗汇入饮食预算视角——展示本周训练消耗，训练日已 +150 千卡
     var cutoff7 = Date.now() - 7 * 86400000;
@@ -1109,6 +1262,7 @@
       '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
       '<div class="h-sec">今日餐单 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span></div>' +
       mealCard('早餐', 25, bf, mealFindings(bf)) + mealCard('午餐', 35, lunch, mealFindings(lunch)) + mealCard('晚餐', 30, dinner, mealFindings(dinner)) + mealCard('加餐', 10, snack, mealFindings(snack)) +
+      mealChkHtml +
       trainCard +
       vDietPair() +
       '<div class="card" style="font-size:11.5px;color:#7a838e;line-height:1.6;background:#f5f7f8">📌 ' + goalTxt + '。餐单为参考样例，按热量目标搭配中式食材；如有代谢疾病或特殊饮食需求，请遵营养师/医嘱。</div>' +
@@ -1278,6 +1432,37 @@
     if (a === 'setRecovery') { S.recoveryOn = (v === '1'); saveK('fit_recovery', S.recoveryOn); renderView(); return; }
     if (a === 'exportData') { exportData(); return; }
     if (a === 'sharePlan') { sharePlan(); return; }
+    /* 体重 / 饮食打卡 */
+    if (a === 'weightSave') {
+      var wi = $('#wgtIn'), wv = wi ? Number(wi.value) : 0;
+      if (!wv || wv < 20 || wv > 400) { toast('请输入合理体重 (20-400 kg)'); return; }
+      S.weights[todayStr()] = Math.round(wv * 10) / 10; saveK('fit_weight', S.weights);
+      renderView(); toast('⚖️ 已记录 ' + S.weights[todayStr()] + ' kg'); return;
+    }
+    if (a === 'mealChk') {
+      var td = todayStr(), log = S.dietLog[td] || (S.dietLog[td] = {});
+      log[k] = !log[k]; saveK('fit_dietlog', S.dietLog); renderView(); return;
+    }
+    /* 呼吸放松 */
+    if (a === 'breath') { startBreath(v); return; }
+    /* HIIT */
+    if (a === 'hitTpl') { S.hiit.tpl = v; renderView(); return; }
+    if (a === 'hitToggle') {
+      var hn = el.dataset.name;
+      if (S.hiit.sel[hn]) delete S.hiit.sel[hn]; else if (Object.keys(S.hiit.sel).length >= 4) { toast('最多选 4 个动作'); } else S.hiit.sel[hn] = 1;
+      renderView(); return;
+    }
+    if (a === 'hitStart') { hiitStart(); return; }
+    /* 进阶周期 */
+    if (a === 'nextCycle') {
+      if (!S.plan) return;
+      var cyc = (S.plan.cycle || 1) + 1;
+      S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: S.form.level }, histForPlan());
+      S.plan.cycle = cyc;
+      if (S.recoveryOn) applyRecovery(S.plan);
+      S.weekIdx = 0; saveK(KP, S.plan); renderView();
+      toast('🚀 第 ' + cyc + ' 周期已生成 · 目标按个人最佳自动上调'); return;
+    }
     if (a === 'importData') { var fi = $('#impFile'); if (fi) fi.click(); return; }
     if (a === 'dayRecover') {
       var dw = Number(el.dataset.w), di = Number(el.dataset.i);

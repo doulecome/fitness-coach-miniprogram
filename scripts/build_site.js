@@ -55,6 +55,9 @@ const html = `<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>健身教练 · 网页版预览</title>
+<meta name="theme-color" content="#1FD6A8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 /* ===== 桌面舞台 ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -70,6 +73,12 @@ ${loader}
 <script>
 ${app}
 </script>
+<script>
+/* PWA：Service Worker 注册（仅 https / localhost，file:// 预览静默跳过） */
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+}
+</script>
 </body>
 </html>
 `;
@@ -78,6 +87,62 @@ const out = path.join(ROOT, 'preview', 'site_app.html');
 fs.mkdirSync(path.dirname(out), { recursive: true });
 fs.writeFileSync(out, html);
 console.log('written', out, (html.length / 1024).toFixed(0) + 'KB');
+
+/* ===== PWA 资产：manifest + Service Worker（缓存版本取 index.html 内容 hash）===== */
+var crypto = require('crypto');
+var cv = 'fit-' + crypto.createHash('md5').update(html).digest('hex').slice(0, 10);
+fs.writeFileSync(path.join(ROOT, 'docs', 'manifest.json'), JSON.stringify({
+  name: '健身教练', short_name: '健身教练',
+  description: '144 个真人示范动作 · AI 4 周计划 · HIIT 计时 · 打卡与趋势',
+  start_url: './index.html', scope: './', display: 'standalone',
+  background_color: '#0f1419', theme_color: '#1FD6A8',
+  icons: [
+    { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+    { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+  ]
+}, null, 2));
+console.log('written docs/manifest.json');
+
+var sw = `/* 健身教练 Service Worker · cache ${cv}（由 build_site.js 生成，勿手改） */
+var CV = '${cv}';
+var SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+self.addEventListener('install', function (e) {
+  e.waitUntil(caches.open(CV).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
+});
+self.addEventListener('activate', function (e) {
+  e.waitUntil(caches.keys().then(function (ks) {
+    return Promise.all(ks.filter(function (k) { return k !== CV; }).map(function (k) { return caches.delete(k); }));
+  }).then(function () { return self.clients.claim(); }));
+});
+self.addEventListener('fetch', function (e) {
+  var u = new URL(e.request.url);
+  if (u.origin !== location.origin || e.request.method !== 'GET') return; // 只管同源 GET
+  if (u.pathname.indexOf('/media/') >= 0) {
+    // GIF 媒体：缓存优先，首次取回后入缓存（离线可跟练的关键）
+    e.respondWith(caches.open(CV).then(function (c) {
+      return c.match(e.request).then(function (r) {
+        if (r) return r;
+        return fetch(e.request).then(function (resp) {
+          if (resp.ok) c.put(e.request, resp.clone());
+          return resp;
+        });
+      });
+    }));
+    return;
+  }
+  // 页面/资产：网络优先（保证更新），断网回退缓存；导航请求兜底到 index.html
+  e.respondWith(fetch(e.request).then(function (resp) {
+    if (resp.ok) { var cl = resp.clone(); caches.open(CV).then(function (c) { c.put(e.request, cl); }); }
+    return resp;
+  }).catch(function () {
+    return caches.match(e.request).then(function (r) {
+      return r || (e.request.mode === 'navigate' ? caches.match('./index.html') : undefined);
+    });
+  }));
+});
+`;
+fs.writeFileSync(path.join(ROOT, 'docs', 'sw.js'), sw);
+console.log('written docs/sw.js (cache', cv + ')');
 
 // 同步三份产物（preview/site_app.html + preview/index.html + docs/index.html），
 // 保证本地预览与 GitHub Pages 三端字节一致（md5 相同）。
