@@ -41,8 +41,9 @@ try {
   click('[data-a="beginMain"]');
   ck('进入正式训练(主项 act)', !!q('[data-a="finishAct"]') || !!q('.wk-act-name'));
 
-  // 关闭跟练，清掉计时器
+  // 关闭跟练，清掉计时器（v13+ 退出保护：有进度时先进确认屏）
   click('[data-a="closeW"]');
+  if (q('[data-a="confirmExit"]')) click('[data-a="confirmExit"]');
   ck('workout closed', q('#wko').classList.contains('hide'));
 
   // —— 自定义训练 builder ——
@@ -67,6 +68,7 @@ try {
   const actName = q('.wk-act-name') ? q('.wk-act-name').textContent : '';
   ck('主项来自勾选动作(深蹲/卷腹)', actName.indexOf('深蹲') >= 0 || actName.indexOf('卷腹') >= 0);
   click('[data-a="closeW"]');
+  if (q('[data-a="confirmExit"]')) click('[data-a="confirmExit"]');
 
   ck('no fatal error', true);
 } catch (e) {

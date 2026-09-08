@@ -72,6 +72,7 @@
   /* ============ 状态 ============ */
   var S = {
     tab: 'home', seg: 'course', actMus: '全部', actQ: '', equipFilter: '全部',
+    theme: loadK('fit_theme', 'light'), favs: loadK('fit_favs', []),
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
     form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
     recoveryOn: loadK('fit_recovery', false),
@@ -105,9 +106,14 @@
     if (S.tab === 'diet') return '饮食规划';
     return '我的记录';
   }
+  function applyTheme() {
+    var p = document.querySelector('.phone');
+    if (p) p.classList.toggle('dark', S.theme === 'dark');
+  }
   function renderShell() {
+    applyTheme();
     app.innerHTML =
-      '<div id="topbar">' + esc(tabTitle()) + '<span class="tb-sub">网页预览 · 同款引擎</span></div>' +
+      '<div id="topbar">' + esc(tabTitle()) + '<span class="tb-sub">网页预览 · 同款引擎</span><span class="tb-theme" data-a="toggleTheme" title="深浅色切换">' + (S.theme === 'dark' ? '☀️' : '🌙') + '</span></div>' +
       '<div id="view"></div>' +
       '<div id="tabbar">' + TABS.map(function (t) {
         return '<div class="tab ' + (S.tab === t.k ? 'on' : '') + '" data-a="tab" data-v="' + t.k + '"><div class="t-ic">' + t.i + '</div><div>' + t.l + '</div></div>';
@@ -184,7 +190,14 @@
         '<div class="c-m">' + c.duration + '′ · ' + c.actions.length + ' 动作</div></div>' +
         '</div>';
     }).join('') + '</div>';
-    return heroHtml +
+    // 续练卡片：上次中途退出且有实质进度时显示（12 小时内有效）
+    var rs = loadK('fit_resume', null);
+    var resumeCard = (rs && rs.seq && rs.seq.length && rs.done > 0 && Date.now() - rs.ts < 12 * 3600e3)
+      ? '<div class="card resume-card"><div class="rc-l">⏸ 上次练到一半</div><div class="rc-t">' + (rs.icon || '🏋️') + ' ' + esc(rs.title) + '</div>' +
+        '<div class="rc-m">已完成 ' + rs.done + '/' + rs.seq.length + ' 个动作 · 进度已保存</div>' +
+        '<div class="rc-btns"><div class="btn" data-a="resumeRun">继续训练 ▸</div><div class="btn ghost" data-a="resumeDismiss">忽略</div></div></div>'
+      : '';
+    return heroHtml + resumeCard +
       '<div class="stats-row"><div class="stat"><div class="n">' + minToday + '</div><div class="l">今日分钟</div></div>' +
       '<div class="stat"><div class="n">' + mdays + '</div><div class="l">本月练次</div></div>' +
       '<div class="stat"><div class="n">' + recCount + '</div><div class="l">动作有纪录</div></div>' +
@@ -220,12 +233,13 @@
     if (S.seg === 'custom') return seg + equipChips() + '<div style="height:6px"></div>' + vBuilder();
     var seen = {}, list = [];
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (!seen[a.name]) { seen[a.name] = 1; list.push(a); } }); });
-    var mus = ['全部', '胸·肩', '臀·腿', '背·臂', '核心', '拉伸', '全身'];
-    var chips = mus.map(function (m) { return '<span class="chip ' + (S.actMus === m ? 'on' : '') + '" data-a="mus" data-v="' + m + '">' + m + '</span>'; }).join('');
-    var filtered = list.filter(function (a) { return equipOk(a) && (S.actMus === '全部' || (musclesOf(a) || '').indexOf(S.actMus) >= 0) && (!S.actQ || a.name.indexOf(S.actQ) >= 0); });
+    var mus = ['⭐', '全部', '胸·肩', '臀·腿', '背·臂', '核心', '拉伸', '全身'];
+    var chips = mus.map(function (m) { return '<span class="chip ' + (S.actMus === m ? 'on' : '') + '" data-a="mus" data-v="' + m + '">' + (m === '⭐' ? '⭐ 收藏' : m) + '</span>'; }).join('');
+    var filtered = list.filter(function (a) { return equipOk(a) && (S.actMus === '全部' || (S.actMus === '⭐' ? S.favs.indexOf(a.name) >= 0 : (musclesOf(a) || '').indexOf(S.actMus) >= 0)) && (!S.actQ || a.name.indexOf(S.actQ) >= 0); });
     var rows = filtered.map(function (a) {
+      var isFav = S.favs.indexOf(a.name) >= 0;
       return '<div class="act-row" data-a="actInfo" data-name="' + esc(a.name) + '"><div class="a-ic">' + a.icon + '</div>' +
-        '<div><div class="a-n">' + esc(a.name) + '</div><div class="a-s">' + (a.type === 'reps' ? a.value + ' 次' : a.value + ' 秒') + ' · ' + esc(musclesOf(a)) + ' · ' + esc(a.equip || '徒手') + '</div></div>' +
+        '<div><div class="a-n">' + (isFav ? '⭐ ' : '') + esc(a.name) + '</div><div class="a-s">' + (a.type === 'reps' ? a.value + ' 次' : a.value + ' 秒') + ' · ' + esc(musclesOf(a)) + ' · ' + esc(a.equip || '徒手') + '</div></div>' +
         (a.gif ? '<div class="a-g">' + mediaTag(a.gif, a.icon) + '</div>' : '') + '<div class="a-go">›</div></div>';
     }).join('');
     return seg + equipChips() + '<div style="height:6px"></div>' + '<input id="actSearch" class="srch-in" placeholder="🔍 搜索动作名…" value="' + esc(S.actQ || '') + '">' + '<div class="chips">' + chips + '</div><div style="height:10px"></div>' + (rows || '<div class="empty" id="actEmpty"><div class="e-ic">🤸</div>该筛选条件下暂无动作</div>');
@@ -691,7 +705,7 @@
     var zhSteps = act && act.zhSteps;
     var stepsHtml = zhSteps && zhSteps.length ? '<div class="zh-steps"><div class="zh-st-h">分步要领（真人示范要点）</div>' +
       zhSteps.map(function (s, i) { return '<div class="zh-st"><span>' + (i + 1) + '</span>' + esc(s) + '</div>'; }).join('') + '</div>' : '';
-    openSheet('<div class="sh-h"><div class="sh-t">' + (act ? act.icon : '🏋️') + ' ' + esc(name) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
+    openSheet('<div class="sh-h"><div class="sh-t">' + (act ? act.icon : '🏋️') + ' ' + esc(name) + '</div><span class="fav-btn" data-a="toggleFav" data-name="' + esc(name) + '">' + (S.favs.indexOf(name) >= 0 ? '⭐' : '☆') + '</span><div class="x" data-a="xSheet">✕</div></div>' +
       '<div class="sh-sub">' + sub + ' · ' + esc(musclesOf({ name: name })) + ' · ' + esc(act && act.equip ? act.equip : '徒手') + '</div>' +
       (act && act.gif ? '<div class="demo">' + mediaTag(act.gif, act.icon) + '</div>' : '') +
       overloadHint(name, act && act.type) +
@@ -929,15 +943,61 @@
     var kcal = W.kcal ? Math.round(W.kcal * min / 20) : 0;
     saveRecord({ date: todayStr(), ts: Date.now(), name: W.title, icon: W.icon, min: min, kcal: kcal,
       done: done, total: W.seq.length, detail: W.detail, bg: W.bg, tag: W.tag });
+    clearResume();
     spStop();
     speak('训练完成，本次消耗约 ' + kcal + ' 千卡，完成 ' + done + ' 个动作');
     renderW();
   }
   function stopT() { if (WT) { clearInterval(WT); WT = null; } }
+  /* 续练快照（#26）：中途退出时保存进度，首页可恢复 */
+  function saveResume() {
+    if (!W || W.phase === 'done' || !W.detail.length) return;
+    var ni = W.i + (W.phase === 'rest' ? 1 : 0);
+    if (ni >= W.seq.length) return;
+    try { localStorage.setItem('fit_resume', JSON.stringify({
+      seq: W.seq, firstMain: W.firstMain, title: W.title, icon: W.icon, kcal: W.kcal,
+      bg: W.bg, tag: W.tag, rest: W.rest, ni: ni, detail: W.detail, done: W.detail.length, ts: Date.now()
+    })); } catch (e) {}
+  }
+  function clearResume() { try { localStorage.removeItem('fit_resume'); } catch (e) {} }
+  function resumeRun() {
+    var r = loadK('fit_resume', null);
+    if (!r || !r.seq || !r.seq.length) { toast('没有可恢复的训练'); return; }
+    clearResume();
+    startW(r.seq, r.title, r.icon, r.kcal, r.bg, r.tag, r.rest, null);
+    W.firstMain = r.firstMain || 0;
+    W.warmAck = r.ni >= W.firstMain;
+    W.i = Math.max(0, Math.min(r.ni, r.seq.length - 1));
+    W.detail = r.detail || [];
+    renderW();
+  }
   function closeW() {
+    // 退出保护（#25）：有实质进度时先确认，防误触丢进度
+    if (W && W.phase !== 'done' && W.phase !== 'ready' && W.detail.length > 0) {
+      W._prev = { phase: W.phase, rem: W.rem };
+      W.phase = 'confirmExit';
+      renderW();
+      return;
+    }
+    doCloseW();
+  }
+  function resumePrev() {
+    if (W && W._prev) { W.phase = W._prev.phase; W.rem = W._prev.rem; W._prev = null; renderW(); }
+    else if (W) enterAct();
+  }
+  function doCloseW() {
+    saveResume();
     stopT(); keepAwake(false); W = null;
     $('#wko').classList.add('hide');
     S.tab = 'record'; renderShell();
+  }
+  /* 撤销（#27）：组间休息时可回退刚完成的动作重做 */
+  function undoLast() {
+    if (!W || !W.detail.length) return;
+    W.detail.pop();
+    W.i = Math.max(0, W.i - 1);
+    if (W.i < W.firstMain) W.warmAck = false;
+    enterAct();
   }
   function wProg() {
     if (W.phase === 'ready') return 0;
@@ -993,6 +1053,14 @@
         '<div class="done-detail">' + rows + '</div>' +
         '<div class="wk-ctrl" style="width:100%"><div class="wk-big" data-a="recDetail" data-i="0" style="width:150px;height:54px;font-size:14px">查看明细 ▸</div>' +
         '<div class="wk-mini" data-a="closeW">完成</div></div></div>';
+    } else if (W.phase === 'confirmExit') {
+      body = '<div class="wk-top"><div class="wk-title">' + esc(W.title) + '</div></div>' +
+        '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 30px;text-align:center">' +
+        '<div style="font-size:46px;margin-bottom:10px">⏸</div>' +
+        '<div class="wk-act-name" style="margin-bottom:8px">训练进行中</div>' +
+        '<div style="font-size:12.5px;color:#9aa4ad;line-height:1.8;margin-bottom:20px">已完成 ' + W.detail.length + ' / ' + W.seq.length + ' 个动作<br>退出后首页可「继续上次训练」恢复进度</div>' +
+        '<div class="wk-big" data-a="resumePrev" style="width:180px;height:58px;border-radius:999px;font-size:16px">继续训练 ▸</div>' +
+        '<div class="wk-mini" data-a="confirmExit" style="margin-top:16px;color:#ff7b6b">确认退出</div></div>';
     } else if (W.phase === 'warmDone') {
       var warmNames = W.seq.slice(0, W.firstMain).map(function (a) { return a.name; });
       var warmChips = warmNames.map(function (n) { return '<span class="wk-wc">' + esc(n) + '</span>'; }).join('');
@@ -1020,7 +1088,9 @@
       } else if (isAct) {
         mid = '<div class="wk-cue">' + esc(a.cue || '保持标准动作，注意呼吸节奏') + '</div>';
       } else mid = '<div class="wk-rest-l" style="margin-top:6px">上一组完成，喘口气</div>';
-      var optsHtml = (W.phase === 'rest') ? '<div class="wk-rest-opts"><div class="o" data-a="restLess">−5s</div><div class="o" data-a="restMore">+10s</div><div class="o on" data-a="skipRest">跳过</div></div>' : '';
+      var optsHtml = (W.phase === 'rest') ? '<div class="wk-rest-opts">' +
+        (W.detail.length ? '<div class="o" data-a="undoAct">↩ 撤销</div>' : '') +
+        '<div class="o" data-a="restLess">−5s</div><div class="o" data-a="restMore">+10s</div><div class="o on" data-a="skipRest">跳过</div></div>' : '';
       body = top + posHtml + '<div class="wk-prog"><i id="wprog" style="width:' + wProg() + '%"></i></div>' +
         '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 20px;min-height:0">' +
         (isAct ? '<div class="wk-act-name" style="margin-bottom:4px">' + a.icon + ' ' + esc(a.name) + '</div>' : '') +
@@ -1451,6 +1521,21 @@
     if (a === 'setRecovery') { S.recoveryOn = (v === '1'); saveK('fit_recovery', S.recoveryOn); renderView(); return; }
     if (a === 'exportData') { exportData(); return; }
     if (a === 'resetData') { resetData(); return; }
+    if (a === 'toggleTheme') { S.theme = S.theme === 'dark' ? 'light' : 'dark'; saveK('fit_theme', S.theme); applyTheme(); renderShell(); return; }
+    if (a === 'toggleFav') {
+      var nm = el.getAttribute('data-name');
+      var ix = S.favs.indexOf(nm);
+      if (ix >= 0) S.favs.splice(ix, 1); else S.favs.push(nm);
+      saveK('fit_favs', S.favs);
+      toast(ix >= 0 ? '已取消收藏' : '⭐ 已收藏，动作库可按收藏筛选');
+      sheetAct(nm);
+      return;
+    }
+    if (a === 'resumeRun') { resumeRun(); return; }
+    if (a === 'resumeDismiss') { clearResume(); renderShell(); toast('已忽略上次进度'); return; }
+    if (a === 'confirmExit') { doCloseW(); return; }
+    if (a === 'resumePrev') { resumePrev(); return; }
+    if (a === 'undoAct') { undoLast(); return; }
     if (a === 'sharePlan') { sharePlan(); return; }
     /* 体重 / 饮食打卡 */
     if (a === 'weightSave') {

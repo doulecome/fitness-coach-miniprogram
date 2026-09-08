@@ -151,6 +151,17 @@
 @keyframes pulse { 50% { opacity:.75; } }
 .srch-in { width:100%; box-sizing:border-box; padding:9px 14px; border-radius:999px; border:1px solid #e3e8ee; background:#f5f7f8; font-size:13px; color:#333; outline:none; margin-bottom:8px; }
 .srch-in:focus { border-color:#3ecf8e; background:#fff; }
+.tb-theme { font-size:17px; cursor:pointer; margin-left:6px; line-height:1; }
+.fav-btn { font-size:20px; cursor:pointer; padding:0 6px; }
+.resume-card { background:linear-gradient(135deg,#fff8ec,#fff); border:1px solid #f5dfb8; }
+.resume-card .rc-l { font-size:10.5px; color:#b98a1c; font-weight:800; margin-bottom:4px; }
+.resume-card .rc-t { font-size:15px; font-weight:800; color:#2b333c; margin-bottom:3px; }
+.resume-card .rc-m { font-size:11px; color:#8a94a0; margin-bottom:10px; }
+.resume-card .rc-btns { display:flex; gap:10px; }
+.resume-card .rc-btns .btn { flex:1; text-align:center; }
+/* 深色主题：整帧反色 + 媒体再反色还原 GIF 原色 */
+.phone.dark { filter: invert(1) hue-rotate(180deg); background:#0b0f13; }
+.phone.dark img, .phone.dark video { filter: invert(1) hue-rotate(180deg); }
 .train-loop .vol-row { display:flex; gap:8px; margin-top:4px; }
 .train-loop .vol-b { flex:1; background:#f5f7f8; border-radius:10px; padding:8px 6px; text-align:center; }
 .train-loop .vol-b .n { font-size:17px; font-weight:800; color:var(--gd); }
