@@ -230,7 +230,7 @@
     if (!seq.length) return;
     var cfg = diffCfg(S.diff);
     seq = seq.map(function (s) { return scaleAction(s, cfg); });
-    startW(seq, '自定义训练 · ' + names.length + ' 动作', '🎯', 0, '#7C5CFF', 'fit_custom_' + Date.now(), Math.max(3, S.restSec + cfg.restAdd), buildWarmSeq());
+    startW(seq, '自定义训练 · ' + names.length + ' 动作', '🎯', 0, '#7C5CFF', 'fit_custom_' + Date.now(), Math.max(3, S.restSec + cfg.restAdd), buildWarmSeq(warmKindFromBuilder(S.builder.sel)));
   }
 
   /* ============ 计划 ============ */
@@ -473,15 +473,39 @@
       '<div class="dhint">难度实时套用：' + (S.diff === 'easy' ? '少做几组·休息更长' : S.diff === 'hard' ? '加量·休息更短' : '按原计划强度') + '</div>';
   }
 
-  /* ============ 热身序列（开练前的独立引导屏） ============ */
+  /* ============ 热身序列（开练前的独立引导屏，按训练类型自适应） ============ */
   // 取动作库里带真人 GIF 的动感/激活类动作，保证一致观感
-  var WARM = [['开合跳', 30], ['高抬腿', 30], ['深蹲', 15], ['站姿提踵', 20], ['肩胸拉伸', 30]];
-  function buildWarmSeq() {
-    return WARM.map(function (p) {
+  // kind: cardio(燃脂) | strength(力量) | core(核心) | stretch(拉伸)
+  var WARM_SETS = {
+    cardio: [['开合跳', 30], ['高抬腿', 30], ['深蹲跳', 15], ['登山者', 30], ['弓步跳', 16], ['肩胸拉伸', 25]],
+    strength: [['肩胸拉伸', 30], ['深蹲', 15], ['弓步蹲', 16], ['站姿提踵', 20], ['标准俯卧撑', 12], ['开合跳', 20]],
+    core: [['肩胸拉伸', 30], ['臀桥', 15], ['登山者', 30], ['站姿提踵', 20], ['卷腹', 15]],
+    stretch: [['肩胸拉伸', 35], ['臀桥', 15], ['站姿提踵', 20], ['深蹲', 12], ['开合跳', 20]]
+  };
+  function buildWarmSeq(kind) {
+    var set = WARM_SETS[kind] || WARM_SETS.strength;
+    return set.map(function (p) {
       var src = NS.actionByName[p[0]]; if (!src) return null;
       return { name: src.name, icon: src.icon || '🏋️', type: src.type, value: p[1], phase: 'warm',
         cue: src.cue || '', anim: src.anim || 'dynamic', gif: src.gif || '', media: src.media || null };
     }).filter(Boolean);
+  }
+  function warmKindFromCourse(cat) {
+    if (cat === '减脂') return 'cardio';
+    if (cat === '核心') return 'core';
+    if (cat === '拉伸') return 'stretch';
+    return 'strength';
+  }
+  function warmKindFromDayType(type) {
+    if (type === 'fat') return 'cardio';
+    if (type === 'core') return 'core';
+    return 'strength'; // push / legs / 其他
+  }
+  function warmKindFromBuilder(sel) {
+    if (sel['燃脂']) return 'cardio';
+    if (sel['核心']) return 'core';
+    if (sel['拉伸']) return 'stretch';
+    return 'strength'; // 胸·肩 / 臀·腿 / 混合
   }
 
   /* ============ 跟练引擎 ============ */
@@ -525,20 +549,18 @@
     if (a.cue) setTimeout(function () { if (W && W.phase === 'act') speak(a.cue); }, 1500);
     renderW();
   }
-  function leaveAct() {   // 结束当前动作 → 休息（已记录）
+  function leaveAct() {   // 结束当前动作 → 休息（W.i 停在刚完成的动作上，不前进）
     var a = curA();
     W.detail.push({ name: a.name, icon: a.icon, type: a.type, target: a.value, actual: W.actual, phase: a.phase });
-    W.i++;
-    if (W.i >= W.seq.length) { finishW(); return; }
-    // 热身 → 正式训练 交界处：插入独立过渡屏，用户确认后再进入主项
-    if (W.i === W.firstMain && !W.warmAck) { W.phase = 'warmDone'; renderW(); speak('热身完成，开始正式训练'); return; }
+    // 热身 → 正式训练 交界处：刚完成最后一个热身动作时，插入独立过渡屏，用户确认后再进入主项
+    if (W.i === W.firstMain - 1 && !W.warmAck && W.firstMain < W.seq.length) { W.phase = 'warmDone'; renderW(); speak('热身完成，开始正式训练'); return; }
     W.phase = 'rest'; W.rem = Math.max(2, W.rest);
-    var nx = W.seq[W.i];
+    var nx = W.seq[W.i + 1];
     speak('休息 ' + W.rem + ' 秒');
     if (nx) setTimeout(function () { if (W && W.phase === 'rest') speak('下一个，' + nx.name); }, 700);
     renderW();
   }
-  function goNext() {     // 休息结束 → 下一动作
+  function goNext() {     // 休息结束 → 下一动作（W.i 前进 1）
     W.i++;
     if (W.i >= W.seq.length) { finishW(); return; }
     enterAct();
@@ -566,10 +588,16 @@
     S.tab = 'record'; renderShell();
   }
   function wProg() {
-    if (W.i < W.firstMain) return Math.max(1, Math.round(W.i / W.firstMain * 8)); // 热身占前 8%
-    var mainI = W.i - W.firstMain, mainLen = W.seq.length - W.firstMain;
-    var frac = mainLen > 0 ? mainI / mainLen : 1;
-    return Math.min(100, 8 + Math.round(frac * 92));
+    if (W.phase === 'ready') return 0;
+    if (W.phase === 'warmDone') return 8; // 热身处境固定 8%
+    var total = W.seq.length;
+    if (W.i < W.firstMain) {
+      var wdone = W.i + (W.phase === 'rest' ? 1 : 0);
+      return Math.max(1, Math.round(wdone / W.firstMain * 8));
+    }
+    var mainI = W.i - W.firstMain, mainLen = total - W.firstMain;
+    var frac = mainLen > 0 ? (mainI + (W.phase === 'rest' ? 1 : 0)) / mainLen : 1;
+    return Math.min(100, Math.round(8 + frac * 92));
   }
   function refreshN() {
     var n = $('#wnum'); if (n) n.textContent = W.rem;
@@ -614,9 +642,12 @@
         '<div class="wk-ctrl" style="width:100%"><div class="wk-big" data-a="recDetail" data-i="0" style="width:150px;height:54px;font-size:14px">查看明细 ▸</div>' +
         '<div class="wk-mini" data-a="closeW">完成</div></div></div>';
     } else if (W.phase === 'warmDone') {
+      var warmNames = W.seq.slice(0, W.firstMain).map(function (a) { return a.name; });
+      var warmChips = warmNames.map(function (n) { return '<span class="wk-wc">' + esc(n) + '</span>'; }).join('');
       body = top + '<div class="wk-done" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 18px">' +
         '<div class="d-ic">🔥</div><div class="d-t">热身完成</div>' +
         '<div class="d-p">身体已经热开了<br>准备好进入正式训练了吗？</div>' +
+        '<div class="wk-warm">' + warmChips + '</div>' +
         '<div class="wk-ctrl" style="width:100%"><div class="wk-big" data-a="beginMain" style="width:210px;height:64px;font-size:18px">开始正式训练 ▸</div>' +
         '<div class="wk-mini" data-a="closeW">退出</div></div></div>';
     } else {
@@ -656,7 +687,7 @@
     var cfg = diffCfg(S.diff);
     var seq = c.actions.map(function (a) { var b = scaleAction(a, cfg); b.phase = 'main'; return b; });
     var kcal = Math.round((c.kcal || 0) * cfg.kcal);
-    startW(seq, c.name, c.icon, kcal, c.color, 'fit_course_' + c.id, Math.max(3, S.restSec + cfg.restAdd), buildWarmSeq());
+    startW(seq, c.name, c.icon, kcal, c.color, 'fit_course_' + c.id, Math.max(3, S.restSec + cfg.restAdd), buildWarmSeq(warmKindFromCourse(c.cat)));
   }
   function runPlanDay(wIdx, i) {
     var d = S.plan.weeks[wIdx].week[i];
@@ -665,7 +696,7 @@
     var isRec = d.type === 'recover';
     var seq = d.seq.map(function (s) { var b = scaleAction(s, cfg); b.phase = s.phase || 'main'; return b; });
     var kcal = Math.round((d.kcal || 0) * cfg.kcal);
-    startW(seq, '第' + (wIdx + 1) + '周 · ' + d.typeName, d.icon, kcal, '#1FD6A8', 'fit_plan_' + wIdx + '_' + i, Math.max(3, S.restSec + cfg.restAdd), isRec ? [] : buildWarmSeq());
+    startW(seq, '第' + (wIdx + 1) + '周 · ' + d.typeName, d.icon, kcal, '#1FD6A8', 'fit_plan_' + wIdx + '_' + i, Math.max(3, S.restSec + cfg.restAdd), isRec ? [] : buildWarmSeq(warmKindFromDayType(d.type)));
   }
 
   /* ============ 饮食规划 ============ */
@@ -960,7 +991,7 @@
     }
     /* 跟练 */
     if (a === 'skipReady') { enterAct(); return; }
-    if (a === 'beginMain') { if (W && W.phase === 'warmDone') { W.warmAck = true; enterAct(); } return; }
+    if (a === 'beginMain') { if (W && W.phase === 'warmDone') { W.warmAck = true; W.i = W.firstMain; enterAct(); } return; }
     if (a === 'addRep') {
       if (W.actual < curA().value) { W.actual++; refreshN(); }
       else leaveAct();

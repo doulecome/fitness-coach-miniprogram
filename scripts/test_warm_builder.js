@@ -37,6 +37,7 @@ try {
   const warmOK = driveToWarmDone(40);
   ck('热身完成过渡屏出现(beginMain)', warmOK);
   ck('过渡屏有「开始正式训练」', !!q('[data-a="beginMain"]'));
+  ck('热身过渡屏展示自适应热身动作chips(核心课=5)', qa('.wk-warm .wk-wc').length === 5);
   click('[data-a="beginMain"]');
   ck('进入正式训练(主项 act)', !!q('[data-a="finishAct"]') || !!q('.wk-act-name'));
 
