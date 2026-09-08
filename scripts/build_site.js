@@ -6,8 +6,19 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
 
+// 「开练」示范覆盖通道：打包时扫描 docs/media/kailian/，把 <动作名>.<gif|mp4|webm> 映射成
+// media/kailian/<file>，注入为 window.__KAILIAN，供 data.js 优先覆盖 ExerciseDB 的图。无该目录则为空对象。
+var KAILIAN_MAP = {};
+var klDir = path.join(ROOT, 'docs', 'media', 'kailian');
+if (fs.existsSync(klDir)) {
+  fs.readdirSync(klDir).forEach(function (f) {
+    var m = f.match(/^(.+)\.(gif|mp4|webm)$/i);
+    if (m) KAILIAN_MAP[m[1]] = 'media/kailian/' + f;
+  });
+}
+
 // 1) 源码模块（含依赖顺序，惰性加载）
-const MODS = ['media_map.js', 'media_local.js', 'gif_map.js', 'data.js', 'plan.js'];
+const MODS = ['media_map.js', 'media_local.js', 'gif_map.js', 'zh_steps.js', 'data.js', 'plan.js'];
 // 网页版把 GIF 的 CDN 地址改写为本地相对路径 media/<id>.gif（本地已做统一底色处理）；
 // 小程序端共用同一 gif_map.js 源文件，仍走远程，不受影响。
 const CDN_BASE = 'https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/';
@@ -15,6 +26,7 @@ const modContent = n => n === 'gif_map.js' ? read('utils/' + n).split(CDN_BASE).
 
 // 2) mini-CommonJS loader
 const loader = `(function () {
+  window.__KAILIAN = ${JSON.stringify(KAILIAN_MAP)};
   var __fact = {};
   var __cache = {};
   function __r(n) {
@@ -78,3 +90,12 @@ targets.forEach(function (t) {
   fs.copyFileSync(out, t);
   console.log('synced', t);
 });
+
+// 同步静态媒体目录 docs/media → preview/media（含开练覆盖通道的 docs/media/kailian/），保证本地预览与 Pages 一致
+var mediaSrc = path.join(ROOT, 'docs', 'media');
+var mediaDst = path.join(ROOT, 'preview', 'media');
+if (fs.existsSync(mediaSrc)) {
+  fs.mkdirSync(mediaDst, { recursive: true });
+  fs.cpSync(mediaSrc, mediaDst, { recursive: true });
+  console.log('synced media', mediaSrc);
+}

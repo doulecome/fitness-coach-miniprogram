@@ -11,6 +11,15 @@ preview/
 scripts/exdb_full.json
 scripts/exdb_cache.json
 
+# exercises-dataset 原始数据集（17MB 源，build_zh.js 可经 jsDelivr 重新拉取；同 ExerciseDB 同源）
+scripts/dset/
+
+# 已弃用路线（开练 Kailian 抓取管线，改接 exercises-dataset 后不再使用）
+scripts/dump_actions.js
+scripts/kailian_capture.py
+scripts/actions.json
+scripts/__pycache__/
+
 # 临时与日志
 *.log
 *.tmp

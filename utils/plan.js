@@ -207,16 +207,19 @@ function computeGoal(act, phaseKey, level, hist) {
   }
   // 渐进超负荷：按「比例」递增，基数越大每次加得越多；小基数靠保底增量兜底，避免固定 +2/+4 失真
   const start = Math.max(base, best); // W1 起点 = 课程量或历史最佳的地板
+  // 自适应回退：最近 3 次均值显著低于起点（<80%），说明没打满 → 目标回退到近期均值 +5%，避免越定越挫败
+  const recent = rec && rec.recent ? rec.recent : 0;
+  const baseStart = (recent && recent < start * 0.8) ? Math.max(base, recent) : start;
   if (phaseKey === 'deload') return { target: Math.max(3, Math.round(best * 0.7)), unit: '次' };
   if (phaseKey === 'prog') {
-    const t = Math.max(start + 1, Math.round(start * 1.08)); // ≈ +8%，保底 +1
+    const t = Math.max(Math.round(baseStart * 1.08), baseStart + 1); // ≈ +8%，保底 +1
     return { target: t, unit: '次' };
   }
   if (phaseKey === 'peak') {
-    const t = Math.max(start + 2, Math.round(start * 1.15)); // ≈ +15%，保底 +2
+    const t = Math.max(Math.round(baseStart * 1.15), baseStart + 2); // ≈ +15%，保底 +2
     return { target: t, unit: '次' };
   }
-  return { target: start, unit: '次' };
+  return { target: Math.round(baseStart), unit: '次' };
 }
 
 const CORE_FIN_POOL = ['卷腹', '死虫式', '仰卧起坐']; // 力量日收尾（轮换）

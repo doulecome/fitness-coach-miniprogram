@@ -181,9 +181,15 @@ courses.forEach(c => c.actions.forEach(a => {
 
 // 接入 ExerciseDB 真人动作 GIF（连贯动画，Keep 式）：优先用 GIF 播放，无 GIF 的动作回退到本地图
 const gifMap = require('./gif_map.js');
-courses.forEach(c => c.actions.forEach(a => {
-  if (!a.gif && gifMap[a.name]) a.gif = gifMap[a.name];
-}));
+// 开练示范覆盖通道：build_site.js 在打包时会把 docs/media/kailian/<动作名>.gif(或 .mp4/.webm)
+// 注入为 window.__KAILIAN；存在则优先使用，覆盖 ExerciseDB 的图。素材所有权在用户、零版权风险。
+(function () {
+  var KL = (typeof window !== 'undefined' && window.__KAILIAN) || (typeof globalThis !== 'undefined' ? globalThis.__KAILIAN : null) || null;
+  courses.forEach(c => c.actions.forEach(a => {
+    if (KL && KL[a.name]) { a.gif = KL[a.name]; return; }
+    if (!a.gif && gifMap[a.name]) a.gif = gifMap[a.name];
+  }));
+})();
 
 const ANIM_TIP = {
   dynamic: '发力阶段肌肉收缩，还原时控制速度，感受目标肌群酸胀',
@@ -264,6 +270,21 @@ const ACTION_CUE = {
 };
 courses.forEach(c => c.actions.forEach(a => {
   if (!a.cue && ACTION_CUE[a.name]) a.cue = ACTION_CUE[a.name];
+}));
+
+// 接入 exercises-dataset 中文分步说明（来源 hasaneyldrm/exercises-dataset，MIT 结构 / 媒体 © Gym visual）
+// 仅取文本层，不拉 GIF（与现有 ExerciseDB 真人 GIF 同源）
+const ZH = require('./zh_steps.js');
+// 器材分类（用于"只练我有的器材"筛选）：哑铃 / 弹力带 / 壶铃 / 徒手
+function equipOf(name) {
+  if (/哑铃/.test(name)) return '哑铃';
+  if (/弹力带/.test(name)) return '弹力带';
+  if (/壶铃/.test(name)) return '壶铃';
+  return '徒手';
+}
+courses.forEach(c => c.actions.forEach(a => {
+  if (ZH[a.name]) { a.zhSteps = ZH[a.name].steps; a.zhDesc = ZH[a.name].desc; }
+  if (!a.equip) a.equip = equipOf(a.name);
 }));
 
 // —— v4 动作编排元数据：供 AI 计划按肌群/难度动态组装每日训练 ——

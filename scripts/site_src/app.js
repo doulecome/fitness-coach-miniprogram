@@ -7,6 +7,13 @@
 
   /* ============ 工具 ============ */
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  // 渲染动作示范：gif 走 <img>，视频(开练覆盖通道的 .mp4/.webm)走 <video> 自动循环；无图时降级 emoji
+  function mediaTag(url, icon, extra) {
+    icon = icon || '🏋️'; extra = extra || '';
+    if (!url) return '<div class="bf">' + esc(icon) + '</div>';
+    if (/\.(mp4|webm|ogg|mov)$/i.test(url)) return '<video ' + extra + ' data-fb="' + esc(icon) + '" autoplay loop muted playsinline src="' + url + '"></video>';
+    return '<img ' + extra + ' loading="lazy" data-fb="' + esc(icon) + '" src="' + url + '">';
+  }
   function $(s, p) { return (p || document).querySelector(s); }
   function todayStr() { var d = new Date(), m = '0' + (d.getMonth() + 1), dd = '0' + d.getDate(); return d.getFullYear() + '-' + m.slice(-2) + '-' + dd.slice(-2); }
   function fmtMin(sec) { return Math.max(1, Math.round(sec / 60)); }
@@ -19,7 +26,7 @@
   var GIF_HOSTS = ['cdn.jsdelivr.net', 'gcore.jsdelivr.net', 'fastly.jsdelivr.net'];
   document.addEventListener('error', function (e) {
     var t = e.target;
-    if (!t || t.tagName !== 'IMG') return;
+    if (!t || (t.tagName !== 'IMG' && t.tagName !== 'VIDEO')) return;
     var src = t.getAttribute('src') || '';
     var cur = null;
     for (var i = 0; i < GIF_HOSTS.length; i++) { if (src.indexOf(GIF_HOSTS[i]) >= 0) { cur = GIF_HOSTS[i]; break; } }
@@ -56,9 +63,10 @@
 
   /* ============ 状态 ============ */
   var S = {
-    tab: 'home', seg: 'course', actMus: '全部',
+    tab: 'home', seg: 'course', actMus: '全部', equipFilter: '全部',
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
     form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
+    recoveryOn: loadK('fit_recovery', false),
     diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' },
     builder: { sel: {}, rounds: 3 },
     dietPair: { staple: '', protein: '', veg: '', other: '' }, dietPairRes: null
@@ -130,7 +138,7 @@
     var heroEmoji = (day && !day.rest && !heroBg) ? (day.icon || '💪') : (!day ? '💪' : '💤');
     var heroHtml =
       '<div class="hero">' +
-      (heroBg ? '<img class="hero-bg" loading="lazy" data-fb="' + heroEmoji + '" src="' + heroBg + '"><div class="hero-veil"></div>' : '') +
+      (heroBg ? mediaTag(heroBg, heroEmoji, 'class="hero-bg"') + '<div class="hero-veil"></div>' : '') +
       '<div class="hero-in">' +
       '<div class="h-top"><span class="h-day">' + (d.getMonth() + 1) + '月' + d.getDate() + '日 · ' + WCN[jd] + '</span>' +
       (S.plan && day && !day.rest ? '<span class="h-week">' + esc(day.typeName) + '</span>' : '') + '</div>' +
@@ -152,7 +160,7 @@
       var cover = (c.actions[0] && c.actions[0].gif) ? c.actions[0].gif : '';
       var cbg = 'background:linear-gradient(135deg,' + (c.color || '#1FD6A8') + ',#0d8f6f)';
       return '<div class="cs-card" style="' + cbg + '" data-a="openCourse" data-id="' + c.id + '">' +
-        (cover ? '<img loading="lazy" data-fb="' + c.icon + '" src="' + cover + '"><div class="cs-veil"></div>' : '<div class="img-fb">' + c.icon + '</div>') +
+        (cover ? mediaTag(cover, c.icon) + '<div class="cs-veil"></div>' : '<div class="img-fb">' + c.icon + '</div>') +
         '<div class="cs-tag">' + esc(c.level) + ' · ' + esc(c.cat) + '</div>' +
         '<div class="cs-txt"><div class="c-n">' + esc(c.name) + '</div>' +
         '<div class="c-m">' + c.duration + '′ · ' + c.actions.length + ' 动作</div></div>' +
@@ -174,6 +182,13 @@
     courses.forEach(function (c) { c.actions.forEach(function (x) { if (x.name === a.name && c.muscle) t = c.muscle; }); });
     return t || '全身';
   }
+  var EQUIPS = ['全部', '徒手', '哑铃', '弹力带', '壶铃'];
+  function equipOk(a) { return S.equipFilter === '全部' || (a.equip || '徒手') === S.equipFilter; }
+  function equipChips() {
+    return '<div class="chips eq-chips">' + EQUIPS.map(function (e) {
+      return '<span class="chip ' + (S.equipFilter === e ? 'on' : '') + '" data-a="equipF" data-v="' + e + '">' + (e === '全部' ? '全部器材' : e) + '</span>';
+    }).join('') + '</div>';
+  }
   function vTrain() {
     var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div></div>';
     if (S.seg === 'course') {
@@ -183,17 +198,18 @@
           '<div class="cc-btn btn">开始 ▸</div></div>';
       }).join('') + '</div>';
     }
-    if (S.seg === 'custom') return seg + vBuilder();
+    if (S.seg === 'custom') return seg + equipChips() + '<div style="height:6px"></div>' + vBuilder();
     var seen = {}, list = [];
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (!seen[a.name]) { seen[a.name] = 1; list.push(a); } }); });
     var mus = ['全部', '胸·肩', '臀·腿', '背·臂', '核心', '拉伸', '全身'];
     var chips = mus.map(function (m) { return '<span class="chip ' + (S.actMus === m ? 'on' : '') + '" data-a="mus" data-v="' + m + '">' + m + '</span>'; }).join('');
-    var rows = list.filter(function (a) { return S.actMus === '全部' || (musclesOf(a) || '').indexOf(S.actMus) >= 0; }).map(function (a) {
+    var filtered = list.filter(function (a) { return equipOk(a) && (S.actMus === '全部' || (musclesOf(a) || '').indexOf(S.actMus) >= 0); });
+    var rows = filtered.map(function (a) {
       return '<div class="act-row" data-a="actInfo" data-name="' + esc(a.name) + '"><div class="a-ic">' + a.icon + '</div>' +
-        '<div><div class="a-n">' + esc(a.name) + '</div><div class="a-s">' + (a.type === 'reps' ? a.value + ' 次' : a.value + ' 秒') + ' · ' + esc(musclesOf(a)) + '</div></div>' +
-        (a.gif ? '<div class="a-g"><img loading="lazy" data-fb="' + a.icon + '" src="' + a.gif + '"></div>' : '') + '<div class="a-go">›</div></div>';
+        '<div><div class="a-n">' + esc(a.name) + '</div><div class="a-s">' + (a.type === 'reps' ? a.value + ' 次' : a.value + ' 秒') + ' · ' + esc(musclesOf(a)) + ' · ' + esc(a.equip || '徒手') + '</div></div>' +
+        (a.gif ? '<div class="a-g">' + mediaTag(a.gif, a.icon) + '</div>' : '') + '<div class="a-go">›</div></div>';
     }).join('');
-    return seg + '<div class="chips">' + chips + '</div><div style="height:10px"></div>' + (rows || '<div class="empty"><div class="e-ic">🤸</div>该肌群暂无动作</div>');
+    return seg + equipChips() + '<div style="height:6px"></div>' + '<div class="chips">' + chips + '</div><div style="height:10px"></div>' + (rows || '<div class="empty"><div class="e-ic">🤸</div>该筛选条件下暂无动作</div>');
   }
 
   /* ============ 自定义训练 builder ============ */
@@ -203,7 +219,7 @@
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (!seen[a.name]) { seen[a.name] = 1; all.push(a); } }); });
     var html = '<div class="bld-hint">勾选动作，自由组合成你的专属训练</div>';
     BLD_GROUPS.forEach(function (g) {
-      var items = all.filter(function (a) { var lib = NS.ACT_LIB[a.name]; return lib && lib.g === g[1]; });
+      var items = all.filter(function (a) { var lib = NS.ACT_LIB[a.name]; return lib && lib.g === g[1] && equipOk(a); });
       if (!items.length) return;
       html += '<div class="bld-g">' + g[0] + '</div>' + items.map(function (a) {
         var on = S.builder.sel[a.name] ? ' on' : '';
@@ -245,12 +261,20 @@
       '<div class="form-t">📅 每周训练天数</div>' + chipRow(DAYS, 'day', function (v) { return v + ' 天'; }) +
       '<div class="form-t">⏱ 单次时长</div>' + chipRow(LENS, 'length', function (v) { return v + ' 分钟'; }) +
       '<div class="form-t">🏆 训练水平</div>' + chipRow(LEVELS, 'level', function (v) { return v; }) +
+      '<div class="diff-seg" style="margin:16px 0 8px"><span class="dl">🔄 恢复感知</span>' +
+      '<div class="o' + (S.recoveryOn ? '' : ' on') + '" data-a="setRecovery" data-v="0">关</div>' +
+      '<div class="o' + (S.recoveryOn ? ' on' : '') + '" data-a="setRecovery" data-v="1">开 · 避开 48h 内同肌群</div></div>' +
       '<div class="gen-btn btn" data-a="genPlan">✨ 生成我的 4 周计划</div>' +
-      '<div style="text-align:center;font-size:11px;color:#a0a6ad;margin:14px 6px;line-height:1.7">引擎与微信小程序完全一致：按目标 / 水平 / 时长从动作库动态编排每个训练日（主项×组数 + 热身 + 收尾 + 冷身），读取你的成绩历史逐动作定制目标</div>';
+      '<div style="text-align:center;font-size:11px;color:#a0a6ad;margin:14px 6px;line-height:1.7">引擎与微信小程序完全一致：按目标 / 水平 / 时长从动作库动态编排每个训练日（主项×组数 + 热身 + 收尾 + 冷身），读取你的成绩历史逐动作定制目标。开启"恢复感知"后，会根据你最近的训练记录自动把 48h 内刚练过的肌群当天改为恢复日。</div>';
   }
   function histForPlan() {
     var h = {};
-    Object.keys(S.best).forEach(function (n) { h[n] = { best: S.best[n].best, count: (S.best[n].hist || []).length }; });
+    Object.keys(S.best).forEach(function (n) {
+      var b = S.best[n], hist = b.hist || [];
+      var recent = hist.slice(-3);
+      var avg = recent.length ? Math.round(recent.reduce(function (a, x) { return a + x; }, 0) / recent.length) : 0;
+      h[n] = { best: b.best, count: hist.length, last: b.last, recent: avg };
+    });
     return h;
   }
   function vPlanResult() {
@@ -260,12 +284,15 @@
     }).join('');
     var days = w.week.map(function (d, i) {
       if (d.rest) return '<div class="day-card rest"><span class="rest-em">💤</span><div class="dc-rest">' + d.wd + ' · 休息日，让身体恢复</div></div>';
+      var grp = groupOfType(d.type);
+      var warn = !d.recovered && trainedRecently(grp);
       var acts = d.acts.slice(0, 5).map(function (a) {
         return '<div class="dc-act">' + (a.fin ? '🧯 收尾 · ' : a.cool ? '🧘 冷身 · ' : '') + esc(a.name) + (a.round > 1 ? ' <b>×' + a.round + '</b>' : '') + ' · ' + a.target + a.unit + '</div>';
       }).join('');
-      return '<div class="day-card" data-a="openDay" data-w="' + S.weekIdx + '" data-i="' + i + '">' +
+      var warnHtml = warn ? '<div class="rec-warn">🔴 该肌群 48h 内刚练过 · <span class="rec-fix" data-a="dayRecover" data-w="' + S.weekIdx + '" data-i="' + i + '">转恢复日</span></div>' : '';
+      return '<div class="day-card' + (warn ? ' warn' : '') + '" data-a="openDay" data-w="' + S.weekIdx + '" data-i="' + i + '">' +
         '<div class="dc-h"><span class="dc-wd">' + d.wd + '</span><span class="dc-t">' + d.icon + ' ' + esc(d.typeName) + '</span></div>' +
-        '<div class="dc-m">' + esc(d.muscle) + ' · 约 ' + d.duration + ' 分钟' + (d.custom ? ' · 🧠 ' + d.custom : '') + '</div>' + acts +
+        '<div class="dc-m">' + esc(d.muscle) + ' · 约 ' + d.duration + ' 分钟' + (d.custom ? ' · 🧠 ' + d.custom : '') + (d.recovered ? ' · 🌿已转恢复' : '') + '</div>' + warnHtml + acts +
         '<div class="dc-foot"><span class="dc-tag">' + (d.nActs || d.acts.length) + ' 个动作</span>' +
         '<span class="dc-run btn" data-a="runDay" data-w="' + S.weekIdx + '" data-i="' + i + '">开练 ▸</span></div></div>';
     }).join('');
@@ -278,6 +305,40 @@
       '<div class="sc"><div class="n">' + w.totalKcal + '</div><div class="l">千卡/周</div></div></div>' +
       '<div class="card" style="font-size:12px;color:#4a525c;line-height:1.7">💬 ' + esc(p.levelNote) + '<br>🔁 ' + esc(p.weeksNote) + '</div>' + days +
       '<div class="gen-btn btn ghost" data-a="replan">↻ 重新定制</div>';
+  }
+
+  /* ============ 恢复感知调度（#14） ============ */
+  function groupOfType(type) { return ({ push: 'push', pull: 'pull', legs: 'legs', core: 'core', fat: 'cardio', recover: 'stretch' })[type] || 'cardio'; }
+  function recordGroups(r) {
+    var s = {};
+    (r.detail || []).forEach(function (x) { var lib = NS.ACT_LIB[x.name]; if (lib) s[lib.g] = 1; });
+    return s;
+  }
+  function trainedRecently(group) {
+    var cutoff = Date.now() - 2 * 86400000; // 48h
+    for (var i = 0; i < S.records.length; i++) {
+      var r = S.records[i];
+      if (new Date(r.date + 'T00:00:00').getTime() < cutoff) continue;
+      if (recordGroups(r)[group]) return true;
+    }
+    return false;
+  }
+  function makeRecoverDay(wd, length) {
+    return {
+      wd: wd, rest: false, type: 'recover', typeName: '舒缓恢复日', icon: '🌿', muscle: '全身·深度放松',
+      duration: Math.max(10, Math.round((length || 30) * 0.5)), kcal: 30, nActs: 0, nUnique: 0, warm: '',
+      coach: '该肌群 48h 内刚练过，今天改为舒缓拉伸帮助恢复，避免连续刺激同一肌群。', custom: 0, acts: [], seq: [], recovered: true
+    };
+  }
+  function applyRecovery(plan) {
+    if (!plan || !plan.weeks) return;
+    plan.weeks.forEach(function (wk, wIdx) {
+      wk.week.forEach(function (d, i) {
+        if (d.rest || d.recovered) return;
+        if (trainedRecently(groupOfType(d.type))) plan.weeks[wIdx].week[i] = makeRecoverDay(d.wd, plan.length);
+      });
+    });
+    plan.edited = true;
   }
 
   /* ============ 肌群覆盖 / 训练量 / 计划可编辑 ============ */
@@ -413,7 +474,11 @@
       '<div class="vol-b"><div class="n">' + vol.weekReps + '</div><div class="l">近7天次数</div></div>' +
       '<div class="vol-b"><div class="n">' + vol.bestSession + '</div><div class="l">单日最高动作</div></div></div>' +
       '<div style="font-size:10.5px;color:#a0a6ad;margin-top:8px">个人最佳(PR)见下方"动作最佳纪录"</div></div>';
-    return trendHtml() + radarHtml + volHtml +
+    var backup = '<div class="card backup-card"><div class="zh-st-h" style="margin-bottom:6px">💾 训练档案备份</div>' +
+      '<div style="font-size:11.5px;color:#7a838e;line-height:1.6;margin-bottom:8px">一键导出全部动作纪录 / 训练历史 / 计划 / 饮食方案到 JSON，换设备或清缓存前先备份，避免数据丢失。</div>' +
+      '<div class="bk-btns"><div class="btn" data-a="exportData">⬇ 导出备份</div><div class="btn ghost" data-a="importData">⬆ 导入备份</div></div>' +
+      '<input type="file" id="impFile" accept="application/json" style="display:none"></div>';
+    return trendHtml() + prTrendHtml() + radarHtml + volHtml + backup +
       '<div class="stats-row"><div class="stat"><div class="n">' + S.records.length + '</div><div class="l">累计训练</div></div>' +
       '<div class="stat"><div class="n">' + totalMin + '</div><div class="l">总分钟</div></div>' +
       '<div class="stat"><div class="n">' + names.length + '</div><div class="l">动作有纪录</div></div></div>' +
@@ -463,10 +528,14 @@
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (a.name === name && !act) act = a; }); });
     var lib = NS.ACT_LIB[name];
     var sub = act ? (act.type === 'reps' ? (lib && lib.d ? '难度 ' + '★'.repeat(lib.d) + '☆☆'.slice(0, 3 - lib.d) + ' · ' : '') + '单轮 ' + act.value + ' 次' : act.value + ' 秒 · 保持稳定节奏') : '';
+    var zhSteps = act && act.zhSteps;
+    var stepsHtml = zhSteps && zhSteps.length ? '<div class="zh-steps"><div class="zh-st-h">分步要领（真人示范要点）</div>' +
+      zhSteps.map(function (s, i) { return '<div class="zh-st"><span>' + (i + 1) + '</span>' + esc(s) + '</div>'; }).join('') + '</div>' : '';
     openSheet('<div class="sh-h"><div class="sh-t">' + (act ? act.icon : '🏋️') + ' ' + esc(name) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
-      '<div class="sh-sub">' + sub + ' · ' + esc(musclesOf({ name: name })) + '</div>' +
-      (act && act.gif ? '<div class="demo"><img data-fb="' + act.icon + '" src="' + act.gif + '" alt=""></div>' : '') +
+      '<div class="sh-sub">' + sub + ' · ' + esc(musclesOf({ name: name })) + ' · ' + esc(act && act.equip ? act.equip : '徒手') + '</div>' +
+      (act && act.gif ? '<div class="demo">' + mediaTag(act.gif, act.icon) + '</div>' : '') +
       '<div class="cue-box">💡 ' + esc((act && act.cue) || '保持核心收紧，动作标准优先于数量') + '</div>' +
+      stepsHtml +
       variantChips(name));
   }
   function sheetDay(wIdx, i) {
@@ -785,7 +854,7 @@
       var mid;
       if (W.phase === 'rest' && W.i + 1 < W.seq.length) {
         var nx = W.seq[W.i + 1];
-        mid = '<div class="wk-next">' + (nx.gif ? '<img data-fb="' + nx.icon + '" src="' + nx.gif + '">' : '<div style="font-size:26px">' + nx.icon + '</div>') +
+        mid = '<div class="wk-next">' + (nx.gif ? mediaTag(nx.gif, nx.icon) : '<div style="font-size:26px">' + nx.icon + '</div>') +
           '<div><div class="wn-t">下一动作</div><div class="wn-n">' + esc(nx.name) + ' · ' + (nx.type === 'reps' ? nx.value + ' 次' : nx.value + ' 秒') + '</div></div></div>';
       } else if (isAct) {
         mid = '<div class="wk-cue">' + esc(a.cue || '保持标准动作，注意呼吸节奏') + '</div>';
@@ -795,7 +864,7 @@
         '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 20px;min-height:0">' +
         (isAct ? '<div class="wk-act-name" style="margin-bottom:4px">' + a.icon + ' ' + esc(a.name) + '</div>' : '') +
         (W.phase === 'act' && !isTime ? '<div class="wk-act-tag" id="wl1" style="margin-bottom:4px">目标 ' + a.value + ' 次</div>' : '') +
-        '<div class="wk-gif">' + (a.gif ? '<img id="wgif" data-fb="' + a.icon + '" src="' + a.gif + '">' : '<div class="bf">' + a.icon + '</div>') + '</div>' +
+        '<div class="wk-gif">' + (a.gif ? mediaTag(a.gif, a.icon, 'id="wgif"') : '<div class="bf">' + a.icon + '</div>') + '</div>' +
         mid + '</div>' + optsHtml +
         '<div class="wk-ctrl">' + side + big + '<div class="wk-mini" data-a="pauseW">⏸</div></div>';
     }
@@ -996,6 +1065,15 @@
     var snack = pickMeal(SNK, snackK > 60 ? snackK : 150);
     var water = Math.round(d.weight * 35);
     var goalTxt = d.goal === '减脂' ? '热量缺口，建议配合训练与充足蛋白以保留肌肉' : d.goal === '增肌' ? '热量盈余，保证蛋白摄入与力量训练刺激' : '维持当前体重，均衡搭配即可';
+    // 热量闭环（#16）：把训练消耗汇入饮食预算视角——展示本周训练消耗，训练日已 +150 千卡
+    var cutoff7 = Date.now() - 7 * 86400000;
+    var wkR = S.records.filter(function (r) { return new Date(r.date + 'T00:00:00').getTime() >= cutoff7; });
+    var wkK = wkR.reduce(function (a, r) { return a + (r.kcal || 0); }, 0);
+    var trainCard = '<div class="card train-loop"><div class="form-t" style="margin:0 0 6px">🏃 本周训练消耗（热量闭环）</div>' +
+      '<div class="vol-row"><div class="vol-b"><div class="n">' + wkK + '</div><div class="l">近 7 天消耗(千卡)</div></div>' +
+      '<div class="vol-b"><div class="n">' + wkR.length + '</div><div class="l">训练次数</div></div>' +
+      '<div class="vol-b"><div class="n">+' + (d.training ? 150 : 0) + '</div><div class="l">训练日追加</div></div></div>' +
+      '<div style="font-size:10.5px;color:#a0a6ad;margin-top:6px">训练日当天已在本方案热量基础上 +150 千卡（见上方"当日类型"）。练得越多、热量预算越贴合实际消耗，吃练自然闭环。</div></div>';
     return '' +
       '<div class="card diet-sum">' +
       '<div class="ds-row"><div class="ds-b"><div class="n">' + b + '</div><div class="l">基础代谢 BMR</div></div>' +
@@ -1012,6 +1090,7 @@
       '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
       '<div class="h-sec">今日餐单 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span></div>' +
       mealCard('早餐', 25, bf, mealFindings(bf)) + mealCard('午餐', 35, lunch, mealFindings(lunch)) + mealCard('晚餐', 30, dinner, mealFindings(dinner)) + mealCard('加餐', 10, snack, mealFindings(snack)) +
+      trainCard +
       vDietPair() +
       '<div class="card" style="font-size:11.5px;color:#7a838e;line-height:1.6;background:#f5f7f8">📌 ' + goalTxt + '。餐单为参考样例，按热量目标搭配中式食材；如有代谢疾病或特殊饮食需求，请遵营养师/医嘱。</div>' +
       '<div class="gen-btn btn ghost" data-a="dietEdit">↻ 重新填写资料</div>';
@@ -1049,6 +1128,85 @@
     return '<div class="h-sec">📊 近 8 周训练时长（分钟）</div><div class="trend">' + bars + '</div>';
   }
 
+  /* ============ 训练趋势时间线（#13）：PR 曲线 + 周训练量曲线 ============ */
+  function lineSvg(vals, color, w, h) {
+    if (!vals.length) return '<div style="font-size:11px;color:#a0a6ad;padding:8px 2px">数据不足（至少 2 次记录）</div>';
+    var max = Math.max.apply(null, vals.concat([1]));
+    var n = vals.length;
+    var pts = vals.map(function (v, i) {
+      var x = n === 1 ? w / 2 : (i / (n - 1)) * (w - 8) + 4;
+      var y = h - (v / max) * (h - 10) - 5;
+      return [x.toFixed(1), y.toFixed(1)];
+    });
+    var poly = '<polyline points="' + pts.map(function (p) { return p[0] + ',' + p[1]; }).join(' ') + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linejoin="round"/>';
+    var dots = pts.map(function (p) { return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.6" fill="' + color + '"/>'; }).join('');
+    return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" style="display:block">' + poly + dots + '</svg>';
+  }
+  function weeklyVol() {
+    var map = {};
+    S.records.forEach(function (r) {
+      var reps = 0; (r.detail || []).forEach(function (x) { if (x.type === 'reps' && x.actual > 0) reps += x.actual; });
+      var d = new Date(r.date + 'T00:00:00');
+      var y = d.getFullYear(); var start = new Date(y, 0, 1);
+      var wk = Math.floor((Math.floor((d - start) / 86400000) + start.getDay() + 1) / 7);
+      var key = y + '-' + wk;
+      map[key] = (map[key] || 0) + reps;
+    });
+    var out = [], now = new Date();
+    for (var i = 7; i >= 0; i--) {
+      var d = new Date(now); d.setDate(d.getDate() - i * 7);
+      var y = d.getFullYear(); var start = new Date(y, 0, 1);
+      var wk = Math.floor((Math.floor((d - start) / 86400000) + start.getDay() + 1) / 7);
+      out.push({ label: i === 0 ? '本周' : i + '周前', reps: map[y + '-' + wk] || 0 });
+    }
+    return out;
+  }
+  function prTrendHtml() {
+    var names = Object.keys(S.best).filter(function (n) { return S.best[n].best > 0 && (S.best[n].hist || []).length >= 2; });
+    if (!names.length) return '';
+    names.sort(function (a, b) { return (S.best[b].hist.length) - (S.best[a].hist.length); });
+    var top = names.slice(0, 3);
+    var cards = top.map(function (nm) {
+      var hist = (S.best[nm].hist || []).slice(-12);
+      return '<div class="card"><div class="zh-st-h" style="margin-bottom:4px">' + esc(nm) + ' · PR 曲线（近 ' + hist.length + ' 次）</div>' +
+        lineSvg(hist, '#0fb98c', 280, 70) +
+        '<div style="font-size:10px;color:#a0a6ad;margin-top:4px">最佳 ' + S.best[nm].best + ' · 最近 ' + hist[hist.length - 1] + '</div></div>';
+    }).join('');
+    var vol = weeklyVol().map(function (x) { return x.reps; });
+    var volCard = '<div class="card"><div class="zh-st-h" style="margin-bottom:4px">📈 近 8 周训练量（总次数）</div>' + lineSvg(vol, '#6a78d6', 280, 70) + '</div>';
+    return '<div class="h-sec">⏱ 训练趋势时间线</div>' + cards + volCard;
+  }
+
+  /* ============ 训练档案导出/备份（#15） ============ */
+  function exportData() {
+    var payload = { v: 1, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair };
+    try {
+      var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'fit_backup_' + todayStr() + '.json';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    } catch (e) { alert('导出失败：' + e.message); }
+  }
+  function importData(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var p = JSON.parse(reader.result);
+        if (p.best) { S.best = p.best; saveK(KB, S.best); }
+        if (p.records) { S.records = p.records; saveK(KR, S.records); }
+        if (p.plan !== undefined) { S.plan = p.plan; saveK(KP, S.plan); }
+        if (p.diet !== undefined) { S.diet = p.diet; saveK('fit_diet', S.diet); }
+        if (p.dietPair) S.dietPair = p.dietPair;
+        alert('已导入备份：动作纪录 ' + Object.keys(S.best).length + ' 项，训练记录 ' + S.records.length + ' 条');
+        renderShell();
+      } catch (e) { alert('导入失败：文件格式不正确'); }
+    };
+    reader.readAsText(file);
+  }
+
   /* ============ 事件委托 ============ */
   app.addEventListener('click', function (e) {
     var el = e.target.closest ? e.target.closest('[data-a]') : null;
@@ -1059,9 +1217,21 @@
     if (a === 'tabplan') { S.tab = 'plan'; renderShell(); return; }
     if (a === 'seg') { S.seg = v; renderView(); return; }
     if (a === 'mus') { S.actMus = v; renderView(); return; }
+    if (a === 'equipF') { S.equipFilter = v; renderView(); return; }
+    if (a === 'setRecovery') { S.recoveryOn = (v === '1'); saveK('fit_recovery', S.recoveryOn); renderView(); return; }
+    if (a === 'exportData') { exportData(); return; }
+    if (a === 'importData') { var fi = $('#impFile'); if (fi) fi.click(); return; }
+    if (a === 'dayRecover') {
+      var dw = Number(el.dataset.w), di = Number(el.dataset.i);
+      var d0 = S.plan && S.plan.weeks[dw] && S.plan.weeks[dw].week[di];
+      if (!d0 || d0.rest) return;
+      S.plan.weeks[dw].week[di] = makeRecoverDay(d0.wd, S.plan.length);
+      saveK(KP, S.plan); renderView(); return;
+    }
     if (a === 'form') { S.form[k] = (k === 'day' || k === 'length') ? Number(v) : v; renderView(); return; }
     if (a === 'genPlan') {
       S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: S.form.level }, histForPlan());
+      if (S.recoveryOn) applyRecovery(S.plan);
       S.weekIdx = 0; saveK(KP, S.plan); renderView(); return;
     }
     if (a === 'replan') { S.plan = null; saveK(KP, null); renderView(); return; }
@@ -1164,6 +1334,10 @@
       var k = t.dataset.k;
       S.dietDraft[k] = (k === 'age' || k === 'height' || k === 'weight') ? (Number(t.value) || 0) : t.value;
     }
+  });
+  app.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t && t.id === 'impFile') { importData(t.files && t.files[0]); t.value = ''; }
   });
 
   renderShell();
