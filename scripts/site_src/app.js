@@ -20,6 +20,14 @@
   var WCN = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
   function loadK(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
   function saveK(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  /* 轻提示 toast：底部浮层 2.2s 自动消失，复用单实例 */
+  var toastT = null;
+  function toast(msg) {
+    var t = $('#toast');
+    if (!t) { t = document.createElement('div'); t.id = 'toast'; app.appendChild(t); }
+    t.textContent = msg; t.classList.add('on');
+    clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove('on'); }, 2200);
+  }
 
   /* ===== 图片兜底：GIF CDN 加载失败 → 依次切换备用节点，全失败才降级为 emoji =====
      error 不冒泡，须 capture 捕获；容错链按可达性排序：cdn/gcore 直连 200、fastly 301 跟随 */
@@ -304,6 +312,7 @@
       '<div class="sc"><div class="n">' + w.totalMin + '</div><div class="l">分钟/周</div></div>' +
       '<div class="sc"><div class="n">' + w.totalKcal + '</div><div class="l">千卡/周</div></div></div>' +
       '<div class="card" style="font-size:12px;color:#4a525c;line-height:1.7">💬 ' + esc(p.levelNote) + '<br>🔁 ' + esc(p.weeksNote) + '</div>' + days +
+      '<div class="gen-btn btn" data-a="sharePlan">📤 复制周计划 · 分享</div>' +
       '<div class="gen-btn btn ghost" data-a="replan">↻ 重新定制</div>';
   }
 
@@ -523,6 +532,15 @@
     if (lib.adv && NS.actionByName[lib.adv]) chips += '<span class="vk adv" data-a="actVariant" data-name="' + esc(lib.adv) + '">进阶：' + esc(lib.adv) + ' ↪</span>';
     return chips ? '<div class="var-chips">变式链：' + chips + '</div>' : '';
   }
+  /* 渐进超负荷建议（#16）：按个人最佳给"本次冲击目标"——次数 +5%（至少+1），计时 +5 秒 */
+  function overloadHint(name, type) {
+    var rec = S.best[name];
+    if (!rec || !rec.best) return '';
+    var unit = type === 'reps' ? ' 次' : ' 秒';
+    var nxt = type === 'reps' ? Math.max(rec.best + 1, Math.ceil(rec.best * 1.05)) : rec.best + 5;
+    return '<div class="pr-hint">🏅 个人最佳 <b>' + rec.best + unit + '</b>' + (rec.lastDate ? '（' + esc(rec.lastDate) + '）' : '') +
+      ' · 渐进超负荷：本次建议冲 <b>' + nxt + unit + '</b>' + '</div>';
+  }
   function sheetAct(name) {
     var act = null;
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (a.name === name && !act) act = a; }); });
@@ -534,6 +552,7 @@
     openSheet('<div class="sh-h"><div class="sh-t">' + (act ? act.icon : '🏋️') + ' ' + esc(name) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
       '<div class="sh-sub">' + sub + ' · ' + esc(musclesOf({ name: name })) + ' · ' + esc(act && act.equip ? act.equip : '徒手') + '</div>' +
       (act && act.gif ? '<div class="demo">' + mediaTag(act.gif, act.icon) + '</div>' : '') +
+      overloadHint(name, act && act.type) +
       '<div class="cue-box">💡 ' + esc((act && act.cue) || '保持核心收紧，动作标准优先于数量') + '</div>' +
       stepsHtml +
       variantChips(name));
@@ -1177,6 +1196,44 @@
     return '<div class="h-sec">⏱ 训练趋势时间线</div>' + cards + volCard;
   }
 
+  /* ============ 周计划分享（#17）：生成可读文本并复制到剪贴板 ============ */
+  function planShareText() {
+    var p = S.plan; if (!p) return '';
+    var lines = ['🏋️ 我的 ' + p.weeks.length + ' 周健身计划'];
+    if (p.levelNote) lines.push('💬 ' + p.levelNote);
+    p.weeks.forEach(function (wk, wi) {
+      lines.push('');
+      lines.push('—— 第' + (wi + 1) + '周（' + wk.days + ' 练 · 约 ' + wk.totalMin + ' 分钟 · ' + wk.totalKcal + ' 千卡）——');
+      wk.week.forEach(function (d) {
+        if (d.rest) { lines.push(d.wd + '：💤 休息日'); return; }
+        var mains = d.acts.filter(function (a) { return !a.fin && !a.cool; }).slice(0, 4).map(function (a) { return a.name; }).join('、');
+        lines.push(d.wd + '：' + d.icon + ' ' + d.typeName + '（' + mains + (d.acts.length > 4 ? ' 等' : '') + '）');
+      });
+    });
+    lines.push('');
+    lines.push('—— 来自「健身教练」网页版');
+    return lines.join('\n');
+  }
+  function copyText(txt, okMsg) {
+    var done = function () { toast(okMsg); };
+    var fallback = function () {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); done();
+      } catch (e) { toast('复制失败，请手动选择文本'); }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(done, fallback);
+    } else fallback();
+  }
+  function sharePlan() {
+    var txt = planShareText();
+    if (!txt) { toast('先生成计划再分享'); return; }
+    copyText(txt, '📋 周计划已复制，去粘贴分享吧');
+  }
+
   /* ============ 训练档案导出/备份（#15） ============ */
   function exportData() {
     var payload = { v: 1, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair };
@@ -1220,6 +1277,7 @@
     if (a === 'equipF') { S.equipFilter = v; renderView(); return; }
     if (a === 'setRecovery') { S.recoveryOn = (v === '1'); saveK('fit_recovery', S.recoveryOn); renderView(); return; }
     if (a === 'exportData') { exportData(); return; }
+    if (a === 'sharePlan') { sharePlan(); return; }
     if (a === 'importData') { var fi = $('#impFile'); if (fi) fi.click(); return; }
     if (a === 'dayRecover') {
       var dw = Number(el.dataset.w), di = Number(el.dataset.i);
