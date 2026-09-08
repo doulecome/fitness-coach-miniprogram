@@ -59,7 +59,8 @@
     tab: 'home', seg: 'course', actMus: '全部',
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
     form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
-    diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' }
+    diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' },
+    builder: { sel: {}, rounds: 3 }
   };
   var app = $('#app');
 
@@ -173,7 +174,7 @@
     return t || '全身';
   }
   function vTrain() {
-    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div></div>';
+    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div></div>';
     if (S.seg === 'course') {
       return seg + '<div class="course-grid">' + courses.map(function (c) {
         return '<div class="course-card" data-a="openCourse" data-id="' + c.id + '"><div class="cc-ic" style="background:' + esc(c.color || '#1FD6A8') + '22">' + c.icon + '</div>' +
@@ -181,6 +182,7 @@
           '<div class="cc-btn btn">开始 ▸</div></div>';
       }).join('') + '</div>';
     }
+    if (S.seg === 'custom') return seg + vBuilder();
     var seen = {}, list = [];
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (!seen[a.name]) { seen[a.name] = 1; list.push(a); } }); });
     var mus = ['全部', '胸·肩', '臀·腿', '核心', '拉伸', '全身'];
@@ -191,6 +193,43 @@
         (a.gif ? '<div class="a-g"><img loading="lazy" data-fb="' + a.icon + '" src="' + a.gif + '"></div>' : '') + '<div class="a-go">›</div></div>';
     }).join('');
     return seg + '<div class="chips">' + chips + '</div><div style="height:10px"></div>' + (rows || '<div class="empty"><div class="e-ic">🤸</div>该肌群暂无动作</div>');
+  }
+
+  /* ============ 自定义训练 builder ============ */
+  var BLD_GROUPS = [['胸·肩', 'push'], ['臀·腿', 'legs'], ['核心', 'core'], ['燃脂', 'cardio'], ['拉伸', 'stretch']];
+  function vBuilder() {
+    var seen = {}, all = [];
+    courses.forEach(function (c) { c.actions.forEach(function (a) { if (!seen[a.name]) { seen[a.name] = 1; all.push(a); } }); });
+    var html = '<div class="bld-hint">勾选动作，自由组合成你的专属训练</div>';
+    BLD_GROUPS.forEach(function (g) {
+      var items = all.filter(function (a) { var lib = NS.ACT_LIB[a.name]; return lib && lib.g === g[1]; });
+      if (!items.length) return;
+      html += '<div class="bld-g">' + g[0] + '</div>' + items.map(function (a) {
+        var on = S.builder.sel[a.name] ? ' on' : '';
+        return '<div class="bld-it' + on + '" data-a="bldToggle" data-name="' + esc(a.name) + '"><div class="b-ic">' + a.icon + '</div>' +
+          '<div class="b-n">' + esc(a.name) + '</div><div class="b-go">' + (on ? '✓' : '＋') + '</div></div>';
+      }).join('');
+    });
+    var n = Object.keys(S.builder.sel).length;
+    html += '<div class="bld-foot"><div class="bld-ct">已选 <b>' + n + '</b> 项</div>' +
+      '<div class="bld-rd">组数 <span class="r-btn" data-a="bldRound" data-v="-1">−</span> <b>' + S.builder.rounds + '</b> <span class="r-btn" data-a="bldRound" data-v="1">＋</span></div>' +
+      '<div class="bld-go btn" data-a="bldStart"' + (n ? '' : ' style="opacity:.45;pointer-events:none"') + '>开始训练 ▸</div></div>';
+    return html;
+  }
+  function bldStart() {
+    var names = Object.keys(S.builder.sel);
+    if (!names.length) return;
+    var raw = names.map(function (nm) {
+      var a = NS.actionByName[nm]; if (!a) return null;
+      var arr = [];
+      for (var r = 0; r < S.builder.rounds; r++) arr.push({ name: a.name, icon: a.icon, type: a.type, value: a.value, phase: 'main', cue: a.cue || '', anim: a.anim || 'dynamic', gif: a.gif || '', media: a.media || null });
+      return arr;
+    }).filter(Boolean);
+    var seq = []; raw.forEach(function (arr) { arr.forEach(function (x) { seq.push(x); }); });
+    if (!seq.length) return;
+    var cfg = diffCfg(S.diff);
+    seq = seq.map(function (s) { return scaleAction(s, cfg); });
+    startW(seq, '自定义训练 · ' + names.length + ' 动作', '🎯', 0, '#7C5CFF', 'fit_custom_' + Date.now(), Math.max(3, S.restSec + cfg.restAdd), buildWarmSeq());
   }
 
   /* ============ 计划 ============ */
@@ -345,17 +384,28 @@
   /* ============ 语音教练 / 连续打卡 / 实时 HUD ============ */
   var VOICE_ON = loadK('fit_voice', true);
   function phaseLabel(p) { return p === 'fin' ? '收尾' : p === 'cool' ? '冷身' : p === 'warm' ? '热身' : '正式'; }
-  function speak(text) {
-    if (!VOICE_ON || !('speechSynthesis' in window)) return;
+  // 队列式播报：说完一条再播下一条，避免连续播报被 cancel 掐断；语速降到 0.9 更清晰
+  var SP_Q = [], SP_BUSY = false;
+  function spNext() {
+    if (SP_BUSY) return;
+    if (!SP_Q.length) { SP_BUSY = false; return; }
+    var txt = SP_Q.shift();
     try {
-      var u = new SpeechSynthesisUtterance(text);
-      u.lang = 'zh-CN'; u.rate = 1.05; u.pitch = 1;
+      var u = new SpeechSynthesisUtterance(txt);
+      u.lang = 'zh-CN'; u.rate = 0.9; u.pitch = 1; u.volume = 1;
       var vs = window.speechSynthesis.getVoices();
       for (var i = 0; i < vs.length; i++) { if (vs[i].lang && vs[i].lang.toLowerCase().indexOf('zh') >= 0) { u.voice = vs[i]; break; } }
-      window.speechSynthesis.cancel();
+      u.onend = spNext; u.onerror = spNext;
+      SP_BUSY = true;
       window.speechSynthesis.speak(u);
-    } catch (e) {}
+    } catch (e) { SP_BUSY = false; spNext(); }
   }
+  function speak(text) {
+    if (!VOICE_ON || !('speechSynthesis' in window) || !text) return;
+    SP_Q.push(text);
+    if (!SP_BUSY) spNext();
+  }
+  function spStop() { SP_Q = []; SP_BUSY = false; if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }
   function streak() {
     var days = {}; S.records.forEach(function (r) { days[r.date] = 1; });
     var s = 0, d = new Date();
@@ -422,17 +472,30 @@
       '<div class="dhint">难度实时套用：' + (S.diff === 'easy' ? '少做几组·休息更长' : S.diff === 'hard' ? '加量·休息更短' : '按原计划强度') + '</div>';
   }
 
+  /* ============ 热身序列（开练前的独立引导屏） ============ */
+  // 取动作库里带真人 GIF 的动感/激活类动作，保证一致观感
+  var WARM = [['开合跳', 30], ['高抬腿', 30], ['深蹲', 15], ['站姿提踵', 20], ['肩胸拉伸', 30]];
+  function buildWarmSeq() {
+    return WARM.map(function (p) {
+      var src = NS.actionByName[p[0]]; if (!src) return null;
+      return { name: src.name, icon: src.icon || '🏋️', type: src.type, value: p[1], phase: 'warm',
+        cue: src.cue || '', anim: src.anim || 'dynamic', gif: src.gif || '', media: src.media || null };
+    }).filter(Boolean);
+  }
+
   /* ============ 跟练引擎 ============ */
   var W = null, WT = null;
-  function startW(seq, title, icon, kcal, bg, tag, restSec) {
-    W = { seq: seq, title: title, icon: icon, kcal: kcal || 0, bg: bg || '#1FD6A8', i: 0, phase: 'ready', rem: 3,
+  function startW(seq, title, icon, kcal, bg, tag, restSec, warmSeq) {
+    var warm = (warmSeq && warmSeq.length) ? warmSeq : [];
+    var full = warm.concat(seq);
+    W = { seq: full, firstMain: warm.length, warmAck: warm.length === 0, title: title, icon: icon, kcal: kcal || 0, bg: bg || '#1FD6A8', i: 0, phase: 'ready', rem: 3,
       actual: 0, detail: [], t0: Date.now(), rest: (restSec != null ? restSec : S.restSec), paused: false, prs: 0, tag: tag };
     $('#wko').classList.remove('hide');
     keepAwake(true); // 跟练期间屏幕常亮
     ensureAudio();   // 组间节拍器：在用户点击的 gesture 链内初始化音频
     renderW();
     updateHUD();
-    speak('准备开始，共 ' + seq.length + ' 个动作');
+    speak(warm.length ? ('先做热身运动，共 ' + warm.length + ' 个热身动作') : ('准备开始，共 ' + seq.length + ' 个动作'));
     speak(String(W.rem)); // 3-2-1 起始数字
     WT = setInterval(onTick, 1000);
   }
@@ -466,6 +529,8 @@
     W.detail.push({ name: a.name, icon: a.icon, type: a.type, target: a.value, actual: W.actual, phase: a.phase });
     W.i++;
     if (W.i >= W.seq.length) { finishW(); return; }
+    // 热身 → 正式训练 交界处：插入独立过渡屏，用户确认后再进入主项
+    if (W.i === W.firstMain && !W.warmAck) { W.phase = 'warmDone'; renderW(); speak('热身完成，开始正式训练'); return; }
     W.phase = 'rest'; W.rem = Math.max(2, W.rest);
     var nx = W.seq[W.i];
     speak('休息 ' + W.rem + ' 秒');
@@ -489,7 +554,7 @@
     var kcal = W.kcal ? Math.round(W.kcal * min / 20) : 0;
     saveRecord({ date: todayStr(), ts: Date.now(), name: W.title, icon: W.icon, min: min, kcal: kcal,
       done: done, total: W.seq.length, detail: W.detail, bg: W.bg, tag: W.tag });
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    spStop();
     speak('训练完成，本次消耗约 ' + kcal + ' 千卡，完成 ' + done + ' 个动作');
     renderW();
   }
@@ -500,7 +565,10 @@
     S.tab = 'record'; renderShell();
   }
   function wProg() {
-    return Math.min(100, Math.round(((W.i + (W.phase === 'rest' || W.phase === 'done' ? 1 : 0.35)) / W.seq.length) * 100));
+    if (W.i < W.firstMain) return Math.max(1, Math.round(W.i / W.firstMain * 8)); // 热身占前 8%
+    var mainI = W.i - W.firstMain, mainLen = W.seq.length - W.firstMain;
+    var frac = mainLen > 0 ? mainI / mainLen : 1;
+    return Math.min(100, 8 + Math.round(frac * 92));
   }
   function refreshN() {
     var n = $('#wnum'); if (n) n.textContent = W.rem;
@@ -544,6 +612,12 @@
         '<div class="done-detail">' + rows + '</div>' +
         '<div class="wk-ctrl" style="width:100%"><div class="wk-big" data-a="recDetail" data-i="0" style="width:150px;height:54px;font-size:14px">查看明细 ▸</div>' +
         '<div class="wk-mini" data-a="closeW">完成</div></div></div>';
+    } else if (W.phase === 'warmDone') {
+      body = top + '<div class="wk-done" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 18px">' +
+        '<div class="d-ic">🔥</div><div class="d-t">热身完成</div>' +
+        '<div class="d-p">身体已经热开了<br>准备好进入正式训练了吗？</div>' +
+        '<div class="wk-ctrl" style="width:100%"><div class="wk-big" data-a="beginMain" style="width:210px;height:64px;font-size:18px">开始正式训练 ▸</div>' +
+        '<div class="wk-mini" data-a="closeW">退出</div></div></div>';
     } else {
       var isAct = W.phase === 'act';
       var isTime = isAct && a.type === 'time';
@@ -581,15 +655,16 @@
     var cfg = diffCfg(S.diff);
     var seq = c.actions.map(function (a) { var b = scaleAction(a, cfg); b.phase = 'main'; return b; });
     var kcal = Math.round((c.kcal || 0) * cfg.kcal);
-    startW(seq, c.name, c.icon, kcal, c.color, 'fit_course_' + c.id, Math.max(3, S.restSec + cfg.restAdd));
+    startW(seq, c.name, c.icon, kcal, c.color, 'fit_course_' + c.id, Math.max(3, S.restSec + cfg.restAdd), buildWarmSeq());
   }
   function runPlanDay(wIdx, i) {
     var d = S.plan.weeks[wIdx].week[i];
     if (!d || d.rest) return;
     var cfg = diffCfg(S.diff);
+    var isRec = d.type === 'recover';
     var seq = d.seq.map(function (s) { var b = scaleAction(s, cfg); b.phase = s.phase || 'main'; return b; });
     var kcal = Math.round((d.kcal || 0) * cfg.kcal);
-    startW(seq, '第' + (wIdx + 1) + '周 · ' + d.typeName, d.icon, kcal, '#1FD6A8', 'fit_plan_' + wIdx + '_' + i, Math.max(3, S.restSec + cfg.restAdd));
+    startW(seq, '第' + (wIdx + 1) + '周 · ' + d.typeName, d.icon, kcal, '#1FD6A8', 'fit_plan_' + wIdx + '_' + i, Math.max(3, S.restSec + cfg.restAdd), isRec ? [] : buildWarmSeq());
   }
 
   /* ============ 饮食规划 ============ */
@@ -748,6 +823,17 @@
     if (a === 'openCourse') { var c = courses.filter(function (x) { return x.id === el.dataset.id; })[0]; if (c) sheetCourse(c); return; }
     if (a === 'runCourse') { closeSheet(); runCourse(el.dataset.id); return; }
     if (a === 'actInfo') { sheetAct(el.dataset.name); return; }
+    /* 自定义训练 builder */
+    if (a === 'bldToggle') {
+      var nm = el.dataset.name;
+      if (S.builder.sel[nm]) delete S.builder.sel[nm]; else S.builder.sel[nm] = 1;
+      renderView(); return;
+    }
+    if (a === 'bldRound') {
+      S.builder.rounds = Math.max(1, Math.min(5, S.builder.rounds + (v === '1' ? 1 : -1)));
+      renderView(); return;
+    }
+    if (a === 'bldStart') { closeSheet(); bldStart(); return; }
     if (a === 'openDay') { sheetDay(Number(el.dataset.w), Number(el.dataset.i)); return; }
     if (a === 'runDay') { closeSheet(); runPlanDay(Number(el.dataset.w), Number(el.dataset.i)); return; }
     if (a === 'replay') {
@@ -769,6 +855,7 @@
     if (a === 'dietRegen') { renderView(); return; }
     /* 跟练 */
     if (a === 'skipReady') { enterAct(); return; }
+    if (a === 'beginMain') { if (W && W.phase === 'warmDone') { W.warmAck = true; enterAct(); } return; }
     if (a === 'addRep') {
       if (W.actual < curA().value) { W.actual++; refreshN(); }
       else leaveAct();
@@ -782,7 +869,7 @@
     if (a === 'finishAct') { if (W && W.phase === 'act') { W.actual = curA().value; leaveAct(); } return; }
     if (a === 'pauseW') { if (W) { W.paused = !W.paused; } return; }
     if (a === 'closeW') { closeW(); return; }
-    if (a === 'toggleVoice') { VOICE_ON = !VOICE_ON; saveK('fit_voice', VOICE_ON); if (!VOICE_ON && 'speechSynthesis' in window) window.speechSynthesis.cancel(); renderW(); return; }
+    if (a === 'toggleVoice') { VOICE_ON = !VOICE_ON; saveK('fit_voice', VOICE_ON); if (!VOICE_ON) spStop(); renderW(); return; }
     if (a === 'setDiff') { S.diff = v; saveK('fit_diff', S.diff); if (S._course) sheetCourse(S._course); else if (S._day) sheetDay(S._day.w, S._day.i); return; }
     if (a === 'restMore') { if (W && W.phase === 'rest') { W.rem += 10; refreshN(); speak('休息 ' + W.rem + ' 秒'); } return; }
     if (a === 'restLess') { if (W && W.phase === 'rest') { W.rem = Math.max(2, W.rem - 5); refreshN(); } return; }
