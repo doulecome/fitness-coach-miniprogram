@@ -89,5 +89,25 @@ module.exports = {
   "熊爬": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0Yz8WdV.gif",
   "坐姿前屈": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yRYyfdA.gif",
   "颈部拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/oQRJYkC.gif",
-  "举腿卷腹": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PQ2AtC3.gif"
+  "举腿卷腹": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PQ2AtC3.gif",
+  // v7 第三批扩充（17 个：5 个已有动作的 GIF 升级 + 12 个新增）
+  // —— 5 个已有动作的 GIF 升级（原先 emoji，现接真人 GIF）——
+  "箭步蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/t8iSghb.gif",
+  "俄罗斯转体": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/r7cT9YD.gif",
+  "登山者": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9c6T1YX.gif",
+  "仰卧起坐": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/AR0ig3o.gif",
+  "波比跳": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0JtKWum.gif",
+  // —— 12 个新增动作 ——
+  "弓箭手俯卧撑": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/A9qxk2F.gif",
+  "击掌俯卧撑": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wigSg76.gif",
+  "侧弓步": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/py1HSzx.gif",
+  "反向箭步蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VaP75jl.gif",
+  "早安式": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XlZ4lAC.gif",
+  "哑铃台阶训练": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/aXtJhlg.gif",
+  "俯卧撑转侧平板": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KhHJ338.gif",
+  "腘绳肌拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/99rWm7w.gif",
+  "股四头肌拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/tFGKm99.gif",
+  "髋屈肌拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2LQkNPW.gif",
+  "弹力带单臂划船": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/km0sQC0.gif",
+  "单腿提踵": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9JprnPh.gif"
 };

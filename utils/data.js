@@ -32,7 +32,8 @@ const courses = [
       { name: '反向卷腹', icon: '↩️', type: 'reps', value: 18 },
       { name: '负重卷腹', icon: '🎯', type: 'reps', value: 16 },
       { name: '举腿卷腹', icon: '⬆️', type: 'reps', value: 16 },
-      { name: '熊爬', icon: '🐻', type: 'time', value: 30 }
+      { name: '熊爬', icon: '🐻', type: 'time', value: 30 },
+      { name: '俯卧撑转侧平板', icon: '🔄', type: 'reps', value: 10 }
     ]
   },
   {
@@ -77,7 +78,10 @@ const courses = [
       { name: '俯卧腿后侧拉伸', icon: '🧘', type: 'time', value: 40 },
       { name: '侧卧大腿内侧拉伸', icon: '🧘', type: 'time', value: 40 },
       { name: '坐姿前屈', icon: '🧘', type: 'time', value: 40 },
-      { name: '颈部拉伸', icon: '💆', type: 'time', value: 30 }
+      { name: '颈部拉伸', icon: '💆', type: 'time', value: 30 },
+      { name: '腘绳肌拉伸', icon: '🧘', type: 'time', value: 40 },
+      { name: '股四头肌拉伸', icon: '🧘', type: 'time', value: 40 },
+      { name: '髋屈肌拉伸', icon: '🧘', type: 'time', value: 40 }
     ]
   },
   {
@@ -100,7 +104,9 @@ const courses = [
       { name: '等长收缩', icon: '⏱️', type: 'time', value: 30 },
       { name: '哑铃飞鸟', icon: '🏋️', type: 'reps', value: 16 },
       { name: '派克俯卧撑', icon: '🏔️', type: 'reps', value: 10 },
-      { name: '单臂俯卧撑', icon: '🦾', type: 'reps', value: 6 }
+      { name: '单臂俯卧撑', icon: '🦾', type: 'reps', value: 6 },
+      { name: '弓箭手俯卧撑', icon: '🏹', type: 'reps', value: 8 },
+      { name: '击掌俯卧撑', icon: '👏', type: 'reps', value: 10 }
     ]
   },
   {
@@ -129,7 +135,12 @@ const courses = [
       { name: '俯卧腿弯举', icon: '🦵', type: 'reps', value: 16 },
       { name: '单腿硬拉', icon: '⚖️', type: 'reps', value: 10 },
       { name: '过头深蹲', icon: '🕴️', type: 'reps', value: 10 },
-      { name: '坐姿提踵', icon: '👣', type: 'reps', value: 20 }
+      { name: '坐姿提踵', icon: '👣', type: 'reps', value: 20 },
+      { name: '侧弓步', icon: '↔️', type: 'reps', value: 14 },
+      { name: '反向箭步蹲', icon: '🔙', type: 'reps', value: 14 },
+      { name: '早安式', icon: '🌅', type: 'reps', value: 14 },
+      { name: '哑铃台阶训练', icon: '🪜', type: 'reps', value: 14 },
+      { name: '单腿提踵', icon: '🦶', type: 'reps', value: 20 }
     ]
   },
   {
@@ -221,7 +232,8 @@ const courses = [
       { name: '阿诺德推举', icon: '🏋️', type: 'reps', value: 12 },
       { name: '弹力带肩推', icon: '🎯', type: 'reps', value: 14 },
       { name: '上斜哑铃卧推', icon: '🏋️', type: 'reps', value: 12 },
-      { name: '反向划船', icon: '🚣', type: 'reps', value: 12 }
+      { name: '反向划船', icon: '🚣', type: 'reps', value: 12 },
+      { name: '弹力带单臂划船', icon: '🎯', type: 'reps', value: 14 }
     ]
   }
 ];
@@ -372,7 +384,20 @@ const ACTION_CUE = {
   '熊爬': '四足支撑同侧手脚交替移动，核心稳住背平直，别塌腰',
   '举腿卷腹': '仰卧双腿伸直上抬再下放，下腹主导，脚不触地',
   '坐姿前屈': '坐姿腿伸直，吸气延展脊柱，呼气从髋折叠前屈，背不弓',
-  '颈部拉伸': '缓慢左右侧倾与前后屈伸，到微酸即可，不猛甩头'
+  '颈部拉伸': '缓慢左右侧倾与前后屈伸，到微酸即可，不猛甩头',
+  // v7 第三批扩充教练要点（12 个新增；5 个已有动作要点已存在，不重复）
+  '弓箭手俯卧撑': '单臂承重身体侧倾，对侧手前伸指地，胸与肩前束主导发力',
+  '击掌俯卧撑': '推起离地时快速击掌，落地缓冲、核心绷紧不塌腰',
+  '侧弓步': '向侧大步跨出，屈膝重心落外侧腿，内侧腿伸直臀腿发力',
+  '反向箭步蹲': '后腿大步后撤下蹲，前膝对准脚尖，后膝轻触地再蹬回',
+  '早安式': '微屈膝髋部后推折叠，背挺直，腘绳肌与臀有拉伸感',
+  '哑铃台阶训练': '踩稳台阶，后跟发力蹬起，膝对脚尖不内扣',
+  '俯卧撑转侧平板': '推起时转身成侧支撑，肩髋成线，核心全程收紧',
+  '腘绳肌拉伸': '一腿伸直一腿屈曲，体前屈够脚尖，腿后侧有牵拉感',
+  '股四头肌拉伸': '单手拉同侧脚踝贴臀，大腿前侧有拉伸，骨盆中立',
+  '髋屈肌拉伸': '弓步前跪，骨盆前推下沉，髋前侧有牵拉感',
+  '弹力带单臂划船': '踩住弹力带，单臂向腰侧提拉，肩胛后收挤背阔',
+  '单腿提踵': '单脚前掌踩高，慢起慢落，顶峰夹停顿练小腿'
 };
 courses.forEach(c => c.actions.forEach(a => {
   if (!a.cue && ACTION_CUE[a.name]) a.cue = ACTION_CUE[a.name];
@@ -492,7 +517,20 @@ const ACT_LIB = {
   '熊爬': { g: 'core', d: 2 },
   '举腿卷腹': { g: 'core', d: 2, reg: '反向卷腹' },
   '坐姿前屈': { g: 'stretch', d: 1 },
-  '颈部拉伸': { g: 'stretch', d: 1 }
+  '颈部拉伸': { g: 'stretch', d: 1 },
+  // v7 第三批扩充（12 个新增；编排池分组仅限 push/pull/legs/core/cardio/stretch）
+  '弓箭手俯卧撑': { g: 'push', d: 2, reg: '标准俯卧撑', adv: '单臂俯卧撑' },
+  '击掌俯卧撑': { g: 'push', d: 3, reg: '派克俯卧撑' },
+  '侧弓步': { g: 'legs', d: 2, reg: '深蹲' },
+  '反向箭步蹲': { g: 'legs', d: 2, reg: '箭步蹲' },
+  '早安式': { g: 'legs', d: 2, reg: '罗马尼亚硬拉' },
+  '哑铃台阶训练': { g: 'legs', d: 2, reg: '深蹲' },
+  '俯卧撑转侧平板': { g: 'core', d: 2, reg: '平板支撑' },
+  '腘绳肌拉伸': { g: 'stretch', d: 1 },
+  '股四头肌拉伸': { g: 'stretch', d: 1 },
+  '髋屈肌拉伸': { g: 'stretch', d: 1 },
+  '弹力带单臂划船': { g: 'pull', d: 2, reg: '哑铃划船', adv: '反向划船' },
+  '单腿提踵': { g: 'legs', d: 1, reg: '站姿提踵' }
 };
 
 // 全部动作必须在 ACT_LIB 中有标注（脚本校验），未标注动作会被编排器视为不可用

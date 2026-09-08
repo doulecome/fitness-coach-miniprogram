@@ -94,7 +94,20 @@ const KW = {
   '熊爬': ['bear crawl'],
   '坐姿前屈': ['exercise ball seated hamstring stretch', 'seated forward fold', 'seated hamstring stretch'],
   '颈部拉伸': ['side push neck stretch', 'neck stretch'],
-  '举腿卷腹': ['lever seated leg raise crunch', 'leg raise crunch', 'lying leg raise crunch']
+  '举腿卷腹': ['lever seated leg raise crunch', 'leg raise crunch', 'lying leg raise crunch'],
+  // v7 第三批扩充（12 个新增动作；5 个已有动作的 KW 已能命中，不再重复）
+  '弓箭手俯卧撑': ['archer push up', 'archer push-up'],
+  '击掌俯卧撑': ['clap push up', 'clap push-up'],
+  '侧弓步': ['barbell lateral lunge', 'lateral lunge'],
+  '反向箭步蹲': ['barbell rear lunge', 'rear lunge'],
+  '早安式': ['good morning'],
+  '哑铃台阶训练': ['dumbbell step-up', 'dumbbell step up', 'step up'],
+  '俯卧撑转侧平板': ['push-up to side plank', 'push up to side plank'],
+  '腘绳肌拉伸': ['hamstring stretch'],
+  '股四头肌拉伸': ['quad stretch', 'quadriceps stretch', 'hip flexor and quad stretch'],
+  '髋屈肌拉伸': ['hip flexor stretch', 'hip flexor'],
+  '弹力带单臂划船': ['one arm standing low row', 'band low row', 'band row'],
+  '单腿提踵': ['single leg calf raise', 'single leg calf raises']
 };
 
 const src = path.join(ROOT, 'scripts', 'dset', 'exercises.json');
