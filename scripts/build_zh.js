@@ -79,7 +79,22 @@ const KW = {
   '自行车卷腹': ['bicycle crunch', 'bicycle abdominal'],
   'V字起身': ['v-up', 'v sit up', 'v sit-up'],
   '侧卷腹': ['side crunch', 'oblique crunch'],
-  '拳击空击': ['shadow boxing', 'boxing']
+  '拳击空击': ['shadow boxing', 'boxing'],
+  // v6 第二批扩充（14 个，KW 首位用数据集精确名保证命中，其次通用词兜底）
+  '派克俯卧撑': ['exercise ball pike push up', 'pike push up', 'pike press'],
+  '单臂俯卧撑': ['single arm push-up', 'one arm push up', 'one-arm pushup'],
+  '反向划船': ['inverted row', 'bodyweight row', 'supine row'],
+  '俯身臂屈伸': ['dumbbell kickback', 'triceps kickback', 'kickback'],
+  '斜托弯举': ['cable preacher curl', 'preacher curl', 'bicep preacher'],
+  '单腿硬拉': ['barbell single leg deadlift', 'single leg deadlift', 'single-leg rdl'],
+  '过头深蹲': ['barbell overhead squat', 'overhead squat'],
+  '坐姿提踵': ['lever seated calf press', 'seated calf raise', 'seated calf'],
+  '反向卷腹': ['reverse crunch'],
+  '负重卷腹': ['weighted crunch', 'cable crunch'],
+  '熊爬': ['bear crawl'],
+  '坐姿前屈': ['exercise ball seated hamstring stretch', 'seated forward fold', 'seated hamstring stretch'],
+  '颈部拉伸': ['side push neck stretch', 'neck stretch'],
+  '举腿卷腹': ['lever seated leg raise crunch', 'leg raise crunch', 'lying leg raise crunch']
 };
 
 const src = path.join(ROOT, 'scripts', 'dset', 'exercises.json');

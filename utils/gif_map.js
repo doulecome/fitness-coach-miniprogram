@@ -74,5 +74,20 @@ module.exports = {
   "自行车卷腹": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/tZkGYZ9.gif",
   "V字起身": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/H6ETwO9.gif",
   "侧卷腹": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/q2ADGqV.gif",
-  "拳击空击": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hoXt6wv.gif"
+  "拳击空击": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hoXt6wv.gif",
+  // v6 第二批扩充（14 个，GIF 已下载到 docs/media/<media_id>.gif）
+  "派克俯卧撑": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/sVvXT5J.gif",
+  "单臂俯卧撑": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/MUic5zN.gif",
+  "反向划船": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bZGHsAZ.gif",
+  "俯身臂屈伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/W6PxUkg.gif",
+  "斜托弯举": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/P2lNrGL.gif",
+  "单腿硬拉": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gEyURal.gif",
+  "过头深蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gfk9kD4.gif",
+  "坐姿提踵": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Ie9UGty.gif",
+  "反向卷腹": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nCU1Ekp.gif",
+  "负重卷腹": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/s8nrDXF.gif",
+  "熊爬": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0Yz8WdV.gif",
+  "坐姿前屈": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yRYyfdA.gif",
+  "颈部拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/oQRJYkC.gif",
+  "举腿卷腹": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PQ2AtC3.gif"
 };

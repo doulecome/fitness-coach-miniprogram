@@ -28,7 +28,11 @@ const courses = [
       { name: '平板支撑', icon: '🧘', type: 'time', value: 45 },
       { name: '自行车卷腹', icon: '🚴', type: 'reps', value: 24 },
       { name: 'V字起身', icon: '🔺', type: 'reps', value: 16 },
-      { name: '侧卷腹', icon: '🔄', type: 'reps', value: 20 }
+      { name: '侧卷腹', icon: '🔄', type: 'reps', value: 20 },
+      { name: '反向卷腹', icon: '↩️', type: 'reps', value: 18 },
+      { name: '负重卷腹', icon: '🎯', type: 'reps', value: 16 },
+      { name: '举腿卷腹', icon: '⬆️', type: 'reps', value: 16 },
+      { name: '熊爬', icon: '🐻', type: 'time', value: 30 }
     ]
   },
   {
@@ -71,7 +75,9 @@ const courses = [
       { name: '蝴蝶式', icon: '🦋', type: 'time', value: 40 },
       { name: '俯卧大腿前侧拉伸', icon: '🧘', type: 'time', value: 40 },
       { name: '俯卧腿后侧拉伸', icon: '🧘', type: 'time', value: 40 },
-      { name: '侧卧大腿内侧拉伸', icon: '🧘', type: 'time', value: 40 }
+      { name: '侧卧大腿内侧拉伸', icon: '🧘', type: 'time', value: 40 },
+      { name: '坐姿前屈', icon: '🧘', type: 'time', value: 40 },
+      { name: '颈部拉伸', icon: '💆', type: 'time', value: 30 }
     ]
   },
   {
@@ -92,7 +98,9 @@ const courses = [
       { name: '窄距俯卧撑', icon: '💪', type: 'reps', value: 12 },
       { name: '钻石俯卧撑', icon: '💎', type: 'reps', value: 10 },
       { name: '等长收缩', icon: '⏱️', type: 'time', value: 30 },
-      { name: '哑铃飞鸟', icon: '🏋️', type: 'reps', value: 16 }
+      { name: '哑铃飞鸟', icon: '🏋️', type: 'reps', value: 16 },
+      { name: '派克俯卧撑', icon: '🏔️', type: 'reps', value: 10 },
+      { name: '单臂俯卧撑', icon: '🦾', type: 'reps', value: 6 }
     ]
   },
   {
@@ -118,7 +126,10 @@ const courses = [
       { name: '臀推', icon: '🌉', type: 'reps', value: 15 },
       { name: '髋外展', icon: '🦵', type: 'reps', value: 18 },
       { name: '相扑深蹲', icon: '🦵', type: 'reps', value: 16 },
-      { name: '俯卧腿弯举', icon: '🦵', type: 'reps', value: 16 }
+      { name: '俯卧腿弯举', icon: '🦵', type: 'reps', value: 16 },
+      { name: '单腿硬拉', icon: '⚖️', type: 'reps', value: 10 },
+      { name: '过头深蹲', icon: '🕴️', type: 'reps', value: 10 },
+      { name: '坐姿提踵', icon: '👣', type: 'reps', value: 20 }
     ]
   },
   {
@@ -185,7 +196,9 @@ const courses = [
       { name: '哑铃颈后臂屈伸', icon: '💪', type: 'reps', value: 12 },
       { name: '仰卧臂屈伸', icon: '💪', type: 'reps', value: 12 },
       { name: '弹力带下压', icon: '🎯', type: 'reps', value: 15 },
-      { name: '双杠臂屈伸', icon: '🤸', type: 'reps', value: 10 }
+      { name: '双杠臂屈伸', icon: '🤸', type: 'reps', value: 10 },
+      { name: '俯身臂屈伸', icon: '🔨', type: 'reps', value: 14 },
+      { name: '斜托弯举', icon: '🤜', type: 'reps', value: 12 }
     ]
   },
   {
@@ -207,7 +220,8 @@ const courses = [
       { name: '俯身侧平举', icon: '🏋️', type: 'reps', value: 14 },
       { name: '阿诺德推举', icon: '🏋️', type: 'reps', value: 12 },
       { name: '弹力带肩推', icon: '🎯', type: 'reps', value: 14 },
-      { name: '上斜哑铃卧推', icon: '🏋️', type: 'reps', value: 12 }
+      { name: '上斜哑铃卧推', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '反向划船', icon: '🚣', type: 'reps', value: 12 }
     ]
   }
 ];
@@ -343,7 +357,22 @@ const ACTION_CUE = {
   '自行车卷腹': '交替肘碰对侧膝，扭转腹斜肌，节奏稳不甩头',
   'V字起身': '同时抬上身与腿成V，下腹与上腹齐发力，控制下落',
   '侧卷腹': '侧躺卷向同侧膝，练腹斜肌，别用脖子借力',
-  '拳击空击': '站架护脸，左右直拳快出快收，步法轻快，心率拉满'
+  '拳击空击': '站架护脸，左右直拳快出快收，步法轻快，心率拉满',
+  // v6 第二批扩充教练要点（14 个）
+  '派克俯卧撑': '臀部上顶成倒 V，头自然下垂，屈肘让头顶向地面，肩前束主导发力',
+  '单臂俯卧撑': '核心收紧身体不旋转，单手撑地另手背后，离心慢放保护肩关节',
+  '反向划船': '杠/桌下握稳身体绷直脚跟着地，胸口拉向支点，背阔肌主导',
+  '俯身臂屈伸': '俯身大臂贴身体固定，小臂向后上方伸展到直，三头长头发力',
+  '斜托弯举': '大臂贴斜板固定，二头弯举顶峰强收缩，慢放不借惯性',
+  '单腿硬拉': '微屈膝重心腿髋铰链前倾，哑铃沿腿下放，臀推站起练臀腿后侧',
+  '过头深蹲': '杠/物举过头顶，屈髋下蹲至大腿平行，核心收紧背挺直',
+  '坐姿提踵': '坐姿前脚掌踩实，慢起慢落练小腿，顶端停顿 1 秒',
+  '反向卷腹': '仰卧举腿屈膝，用下腹把骨盆卷向胸腔，腰不离地',
+  '负重卷腹': '抱负重物于胸前，卷起上身上腹发力，慢放不甩',
+  '熊爬': '四足支撑同侧手脚交替移动，核心稳住背平直，别塌腰',
+  '举腿卷腹': '仰卧双腿伸直上抬再下放，下腹主导，脚不触地',
+  '坐姿前屈': '坐姿腿伸直，吸气延展脊柱，呼气从髋折叠前屈，背不弓',
+  '颈部拉伸': '缓慢左右侧倾与前后屈伸，到微酸即可，不猛甩头'
 };
 courses.forEach(c => c.actions.forEach(a => {
   if (!a.cue && ACTION_CUE[a.name]) a.cue = ACTION_CUE[a.name];
@@ -448,10 +477,25 @@ const ACT_LIB = {
   '自行车卷腹': { g: 'core', d: 2, reg: '卷腹' },
   'V字起身': { g: 'core', d: 2, reg: '仰卧举腿' },
   '侧卷腹': { g: 'core', d: 2, reg: '俄罗斯转体' },
-  '拳击空击': { g: 'cardio', d: 2, reg: '高抬腿' }
+  '拳击空击': { g: 'cardio', d: 2, reg: '高抬腿' },
+  // v6 第二批扩充（编排池，分组仅限 push/pull/legs/core/cardio/stretch）
+  '派克俯卧撑': { g: 'push', d: 2, reg: '标准俯卧撑', adv: '单臂俯卧撑' },
+  '单臂俯卧撑': { g: 'push', d: 3, reg: '派克俯卧撑' },
+  '反向划船': { g: 'pull', d: 2, reg: '弹力带下拉', adv: '引体向上' },
+  '俯身臂屈伸': { g: 'push', d: 1, adv: '哑铃颈后臂屈伸' },
+  '斜托弯举': { g: 'pull', d: 2, reg: '哑铃弯举', adv: '集中弯举' },
+  '单腿硬拉': { g: 'legs', d: 2, reg: '哑铃硬拉', adv: '罗马尼亚硬拉' },
+  '过头深蹲': { g: 'legs', d: 3, reg: '深蹲' },
+  '坐姿提踵': { g: 'legs', d: 1, reg: '站姿提踵' },
+  '反向卷腹': { g: 'core', d: 1, reg: '卷腹', adv: '举腿卷腹' },
+  '负重卷腹': { g: 'core', d: 2, reg: '反向卷腹', adv: 'V字起身' },
+  '熊爬': { g: 'core', d: 2 },
+  '举腿卷腹': { g: 'core', d: 2, reg: '反向卷腹' },
+  '坐姿前屈': { g: 'stretch', d: 1 },
+  '颈部拉伸': { g: 'stretch', d: 1 }
 };
 
-// 全部 36 个去重动作必须在 ACT_LIB 中有标注（脚本校验），未标注动作会被编排器视为不可用
+// 全部动作必须在 ACT_LIB 中有标注（脚本校验），未标注动作会被编排器视为不可用
 const actionByName = {};
 courses.forEach(c => c.actions.forEach(a => { if (!actionByName[a.name]) actionByName[a.name] = a; }));
 
