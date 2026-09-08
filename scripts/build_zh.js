@@ -127,7 +127,26 @@ const KW = {
   '弹力带抗旋转推': ['band horizontal pallof press'],
   '垂悬举腿': ['captains chair straight leg raise'],
   '杠铃硬拉': ['barbell deadlift'],
-  '杠铃前蹲': ['barbell front squat']
+  '杠铃前蹲': ['barbell front squat'],
+  // v9 第五批扩充（18 个，首位用数据集精确名保证命中）
+  '坐姿脊柱扭转': ['band seated twist'],
+  '青蛙式': ['rocking frog stretch'],
+  '站姿小腿拉伸': ['bodyweight standing calf raise'],
+  '肱三头肌拉伸': ['overhead triceps stretch'],
+  '杠铃耸肩': ['barbell shrug'],
+  'T杠划船': ['lever reverse t-bar row'],
+  '杠铃上拉': ['barbell pullover'],
+  '杠铃肩上推举': ['lever military press'],
+  '借力推举': ['kettlebell double push press'],
+  '地板卧推': ['barbell one arm floor press'],
+  '箱跳': ['box jump down with one leg stabilization'],
+  '悬垂屈膝举腿': ['assisted hanging knee raise'],
+  '绳索转体': ['cable twist'],
+  '壶铃风车': ['kettlebell windmill'],
+  '腿举': ['lever alternate leg press'],
+  '哈克深蹲': ['barbell hack squat'],
+  '腿伸展': ['lever leg extension'],
+  '手枪蹲': ['single leg squat (pistol) male']
 };
 
 const src = path.join(ROOT, 'scripts', 'dset', 'exercises.json');

@@ -128,5 +128,24 @@ module.exports = {
   "弹力带抗旋转推": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9pa4H5m.gif",
   "垂悬举腿": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/weoDEpH.gif",
   "杠铃硬拉": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ila4NZS.gif",
-  "杠铃前蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zG0zs85.gif"
+  "杠铃前蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zG0zs85.gif",
+  // v9 第五批扩充（18 个：拉伸/拉/推/有氧/核心/腿 均衡补强）
+  "坐姿脊柱扭转": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/S1JXDAG.gif",
+  "青蛙式": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2Dk4xQV.gif",
+  "站姿小腿拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bJYHBIN.gif",
+  "肱三头肌拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Z5YStHW.gif",
+  "杠铃耸肩": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dG7tG5y.gif",
+  "T杠划船": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BgljGjd.gif",
+  "杠铃上拉": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/i6LWjok.gif",
+  "杠铃肩上推举": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CggQhII.gif",
+  "借力推举": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/I4KkPdl.gif",
+  "地板卧推": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vtusOWT.gif",
+  "箱跳": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/iPm26QU.gif",
+  "悬垂屈膝举腿": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/03lzqwk.gif",
+  "绳索转体": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/aVs3BR3.gif",
+  "壶铃风车": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9Tkqa9O.gif",
+  "腿举": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/V07qpXy.gif",
+  "哈克深蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5VCj6iH.gif",
+  "腿伸展": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/my33uHU.gif",
+  "手枪蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nqs5HGV.gif"
 };

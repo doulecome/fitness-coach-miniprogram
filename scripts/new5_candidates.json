@@ -1,0 +1,5775 @@
+{
+ "pull": [
+  {
+   "zh": null,
+   "en": "alternate lateral pulldown",
+   "media_id": "4IKbhHV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4IKbhHV.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "assisted lying leg raise with lateral throw down",
+   "media_id": "UGhRD1A",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UGhRD1A.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "assisted lying leg raise with throw down",
+   "media_id": "VX5YKR5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VX5YKR5.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "assisted parallel close grip pull-up",
+   "media_id": "vrhHa6D",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vrhHa6D.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "assisted pull-up",
+   "media_id": "kiJ4Z2K",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/kiJ4Z2K.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "assisted standing pull-up",
+   "media_id": "f4xtKBj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/f4xtKBj.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "band fixed back close grip pulldown",
+   "media_id": "4LoWllp",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4LoWllp.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "band fixed back underhand pulldown",
+   "media_id": "ZH68exZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZH68exZ.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "band kneeling one arm pulldown",
+   "media_id": "pmnrOp0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/pmnrOp0.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "band pull through",
+   "media_id": "VtTbiP3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VtTbiP3.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "band underhand pulldown",
+   "media_id": "k6tUeqS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/k6tUeqS.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell bent arm pullover",
+   "media_id": "cA9FuWG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/cA9FuWG.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell decline bent arm pullover",
+   "media_id": "hMEptv0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hMEptv0.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell decline pullover",
+   "media_id": "9sgNE2O",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9sgNE2O.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell decline wide-grip pullover",
+   "media_id": "Hj4FOCd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Hj4FOCd.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell front raise and pullover",
+   "media_id": "33AzZeV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/33AzZeV.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell incline row",
+   "media_id": "dmgMp3n",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dmgMp3n.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell narrow stance squat",
+   "media_id": "elhhVgj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/elhhVgj.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell one arm bent over row",
+   "media_id": "Jsgsc27",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Jsgsc27.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell pendlay row",
+   "media_id": "r0z6xzQ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/r0z6xzQ.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell pullover",
+   "media_id": "i6LWjok",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/i6LWjok.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell pullover to press",
+   "media_id": "znLogoF",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/znLogoF.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell rack pull",
+   "media_id": "za9Ni4z",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/za9Ni4z.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell rear delt row",
+   "media_id": "S9zHIvU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/S9zHIvU.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell reverse grip bent over row",
+   "media_id": "SzX3uzM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SzX3uzM.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell reverse grip incline bench row",
+   "media_id": "8d8qJQI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/8d8qJQI.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "barbell shrug",
+   "media_id": "dG7tG5y",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dG7tG5y.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell upright row",
+   "media_id": "UDlhcO8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UDlhcO8.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell upright row v. 2",
+   "media_id": "83HoW9X",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/83HoW9X.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell upright row v. 3",
+   "media_id": "fI18Rbc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/fI18Rbc.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell wide-grip upright row",
+   "media_id": "RgJDRR1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RgJDRR1.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "bench pull-ups",
+   "media_id": "mExgrF9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/mExgrF9.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "bodyweight squatting row",
+   "media_id": "3xK09Sk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/3xK09Sk.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "bodyweight squatting row (with towel)",
+   "media_id": "BReCuOn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BReCuOn.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "bodyweight standing close-grip one arm row",
+   "media_id": "v2DfH14",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/v2DfH14.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "bodyweight standing close-grip row",
+   "media_id": "tig3PXb",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/tig3PXb.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "bodyweight standing one arm row",
+   "media_id": "xbkPfaw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xbkPfaw.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "bodyweight standing one arm row (with towel)",
+   "media_id": "O4oIqQD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/O4oIqQD.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "bodyweight standing row",
+   "media_id": "wd4ds3s",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wd4ds3s.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "bodyweight standing row (with towel)",
+   "media_id": "uTv34oq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/uTv34oq.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable bar lateral pulldown",
+   "media_id": "eYnzaCm",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/eYnzaCm.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable cross-over lateral pulldown",
+   "media_id": "OQ1otBN",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OQ1otBN.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable decline seated wide-grip row",
+   "media_id": "kesXOpB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/kesXOpB.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable floor seated wide-grip row",
+   "media_id": "veXwo0D",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/veXwo0D.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable high pulley overhead tricep extension",
+   "media_id": "1xHyxys",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1xHyxys.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable high row (kneeling)",
+   "media_id": "ZSJNetl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZSJNetl.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable incline bench row",
+   "media_id": "yaMIo4D",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yaMIo4D.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable kneeling rear delt row (with rope) (male)",
+   "media_id": "G61cXLk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/G61cXLk.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable lat pulldown full range of motion",
+   "media_id": "LEprlgG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LEprlgG.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable lateral pulldown (with rope attachment)",
+   "media_id": "CuaWCmC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CuaWCmC.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable lateral pulldown with v-bar",
+   "media_id": "4c9BhzB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4c9BhzB.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable lateral raise",
+   "media_id": "goJ6ezq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/goJ6ezq.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable low seated row",
+   "media_id": "hvV79Si",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hvV79Si.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable lying extension pullover (with rope attachment)",
+   "media_id": "Q2Eu1Ax",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Q2Eu1Ax.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable one arm bent over row",
+   "media_id": "EIsE3u8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/EIsE3u8.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable one arm lateral bent-over",
+   "media_id": "dB07vDu",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dB07vDu.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable one arm lateral raise",
+   "media_id": "wEulIzp",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wEulIzp.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable one arm pulldown",
+   "media_id": "U5INZY6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/U5INZY6.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "cable one arm straight back high row (kneeling)",
+   "media_id": "WrYPP2g",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/WrYPP2g.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable palm rotational row",
+   "media_id": "OmQ8w0p",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OmQ8w0p.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable pull through (with rope)",
+   "media_id": "OM46QHm",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OM46QHm.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable pulldown (pro lat bar)",
+   "media_id": "qdRxqCj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qdRxqCj.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable pulldown bicep curl",
+   "media_id": "QTXKWPh",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QTXKWPh.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable rear delt row (stirrups)",
+   "media_id": "yUdIGNs",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yUdIGNs.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable rear delt row (with rope)",
+   "media_id": "wqNPGCg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wqNPGCg.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable rear pulldown",
+   "media_id": "SpsOSXk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SpsOSXk.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable reverse-grip straight back seated high row",
+   "media_id": "PNtsX17",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PNtsX17.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable rope crossover seated row",
+   "media_id": "UFGF6gk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UFGF6gk.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable rope elevated seated row",
+   "media_id": "c8oybX6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/c8oybX6.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable rope extension incline bench row",
+   "media_id": "MgKwAAo",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/MgKwAAo.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable rope high pulley overhead tricep extension",
+   "media_id": "NN8nSNT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/NN8nSNT.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable rope seated row",
+   "media_id": "SJqRxOt",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SJqRxOt.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable seated high row (v-bar)",
+   "media_id": "pwt0pnM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/pwt0pnM.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable seated one arm alternate row",
+   "media_id": "vpp9Ku2",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vpp9Ku2.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable seated rear lateral raise",
+   "media_id": "x825CZm",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/x825CZm.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable seated wide-grip row",
+   "media_id": "qcY50ZD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qcY50ZD.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable shrug",
+   "media_id": "Eg98Ft9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Eg98Ft9.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable squat row (with rope attachment)",
+   "media_id": "f7fnAIB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/f7fnAIB.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable standing cross-over high reverse fly",
+   "media_id": "P5p0j8B",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/P5p0j8B.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable standing pulldown (with rope)",
+   "media_id": "CvPn9WV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CvPn9WV.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable standing rear delt row (with rope)",
+   "media_id": "ZfyAGhK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZfyAGhK.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable standing row (v-bar)",
+   "media_id": "4f8RXP8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4f8RXP8.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable standing twist row (v-bar)",
+   "media_id": "JOZhu2h",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/JOZhu2h.gif",
+   "steps": 10
+  },
+  {
+   "zh": null,
+   "en": "cable straight arm pulldown",
+   "media_id": "x69MAlq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/x69MAlq.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable straight arm pulldown (with rope)",
+   "media_id": "DT14T9T",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DT14T9T.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable straight back seated row",
+   "media_id": "Tq6gbK6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Tq6gbK6.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable supine reverse fly",
+   "media_id": "PQcUlDi",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PQcUlDi.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable thibaudeau kayak row",
+   "media_id": "ZgwWBoC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZgwWBoC.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable twisting pull",
+   "media_id": "zCgxPbV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zCgxPbV.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable underhand pulldown",
+   "media_id": "xBYcQHj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xBYcQHj.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable upper row",
+   "media_id": "PQStVXH",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PQStVXH.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable upright row",
+   "media_id": "cALKspW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/cALKspW.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable wide grip rear pulldown behind neck",
+   "media_id": "CmEr4pM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CmEr4pM.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cambered bar lying row",
+   "media_id": "R5swFnc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/R5swFnc.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "chest dip (on dip-pull-up cage)",
+   "media_id": "XgWyAiA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XgWyAiA.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "chin-ups (narrow parallel grip)",
+   "media_id": "G70mEAJ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/G70mEAJ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell around pullover",
+   "media_id": "vi8EhoE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vi8EhoE.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell bent over row",
+   "media_id": "BJ0Hz5L",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BJ0Hz5L.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell contralateral forward lunge",
+   "media_id": "ecl28tP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ecl28tP.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell decline shrug",
+   "media_id": "cwsAI4G",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/cwsAI4G.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell decline shrug v. 2",
+   "media_id": "bRlbdjK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bRlbdjK.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell full can lateral raise",
+   "media_id": "AQ0mC4Y",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/AQ0mC4Y.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline one arm lateral raise",
+   "media_id": "aTNKZiC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/aTNKZiC.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline rear lateral raise",
+   "media_id": "vYk8lqw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vYk8lqw.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline row",
+   "media_id": "7vG5o25",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7vG5o25.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline shrug",
+   "media_id": "JymLInS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/JymLInS.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lateral to front raise",
+   "media_id": "xMjBKwn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xMjBKwn.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying pullover on exercise ball",
+   "media_id": "iK59oEA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/iK59oEA.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying rear delt row",
+   "media_id": "XUUD0Fs",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XUUD0Fs.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying rear lateral raise",
+   "media_id": "53Ttlck",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/53Ttlck.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm bent-over row",
+   "media_id": "C0MA9bC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/C0MA9bC.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm lateral raise",
+   "media_id": "n5cWCsI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/n5cWCsI.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm lateral raise with support",
+   "media_id": "Yg7MJAT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Yg7MJAT.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm pullover on exercise ball",
+   "media_id": "bQHPBU3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bQHPBU3.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm reverse fly (with support)",
+   "media_id": "e25F58f",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/e25F58f.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm upright row",
+   "media_id": "6cKQC5E",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6cKQC5E.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell palm rotational bent over row",
+   "media_id": "wt6rwjk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wt6rwjk.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "dumbbell pullover",
+   "media_id": "9XjtHvS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9XjtHvS.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell pullover hip extension on exercise ball",
+   "media_id": "lI7easp",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/lI7easp.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "dumbbell rear delt row_shoulder",
+   "media_id": "EKXOMEh",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/EKXOMEh.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell rear lateral raise (support head)",
+   "media_id": "UzkLrem",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UzkLrem.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell reverse fly",
+   "media_id": "EAs3xL9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/EAs3xL9.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell reverse grip incline bench two arm row",
+   "media_id": "9pQSkH8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9pQSkH8.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell reverse grip row (female)",
+   "media_id": "Nh3mvOO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Nh3mvOO.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell rotation reverse fly",
+   "media_id": "prbWx1D",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/prbWx1D.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated bent arm lateral raise",
+   "media_id": "JzQbv7J",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/JzQbv7J.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated bent over alternate kickback",
+   "media_id": "x0lwvfq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/x0lwvfq.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated bent over triceps extension",
+   "media_id": "4ievMJ9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4ievMJ9.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated lateral raise",
+   "media_id": "hxyTtWj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hxyTtWj.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated lateral raise v. 2",
+   "media_id": "hrrS0Ed",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hrrS0Ed.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell shrug",
+   "media_id": "NJzBsGJ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/NJzBsGJ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell standing bent over one arm triceps extension",
+   "media_id": "CJwa0vD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CJwa0vD.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell standing bent over two arm triceps extension",
+   "media_id": "3T12T87",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/3T12T87.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell straight arm pullover",
+   "media_id": "i8BdLTK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/i8BdLTK.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell sumo pull through",
+   "media_id": "BmrwWzo",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BmrwWzo.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell upright row",
+   "media_id": "ainizkb",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ainizkb.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell upright row (back pov)",
+   "media_id": "Iptlv6x",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Iptlv6x.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "exercise ball lat stretch",
+   "media_id": "sM84pE4",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/sM84pE4.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "exercise ball lying side lat stretch",
+   "media_id": "rTbyBYV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rTbyBYV.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "ez bar lying bent arms pullover",
+   "media_id": "nDK1HJ0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nDK1HJ0.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "ez bar reverse grip bent over row",
+   "media_id": "G8dXpNG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/G8dXpNG.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "inverse leg curl (on pull-up cable machine)",
+   "media_id": "0rHfvy9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0rHfvy9.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "inverted row bent knees",
+   "media_id": "VPPtusI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VPPtusI.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "inverted row on bench",
+   "media_id": "Mxa7Cr8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Mxa7Cr8.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "inverted row v. 2",
+   "media_id": "uX3sUBz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/uX3sUBz.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "inverted row with straps",
+   "media_id": "jdiExfW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jdiExfW.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "kettlebell alternating renegade row",
+   "media_id": "b9kqlBy",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/b9kqlBy.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell alternating row",
+   "media_id": "Ca76jUE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Ca76jUE.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell one arm row",
+   "media_id": "g9AsZ8P",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/g9AsZ8P.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell sumo high pull",
+   "media_id": "8ARQ9Hw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/8ARQ9Hw.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "kettlebell two arm row",
+   "media_id": "wf24o8S",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wf24o8S.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kneeling lat stretch",
+   "media_id": "f38OEuO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/f38OEuO.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "l-pull-up",
+   "media_id": "d1GgzTU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/d1GgzTU.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "landmine lateral raise",
+   "media_id": "eXMFHww",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/eXMFHww.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "leg pull in flat bench",
+   "media_id": "OyoZ3Pu",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OyoZ3Pu.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever alternating narrow grip seated row",
+   "media_id": "w2oRpuH",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/w2oRpuH.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "lever bent over row",
+   "media_id": "X3cqyXz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/X3cqyXz.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever bent-over row with v-bar",
+   "media_id": "LuBEORI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LuBEORI.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever front pulldown",
+   "media_id": "7F1DVzn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7F1DVzn.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever gripless shrug",
+   "media_id": "f91FwXG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/f91FwXG.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever gripless shrug v. 2",
+   "media_id": "cbuFJrn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/cbuFJrn.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever high row",
+   "media_id": "nZZZy9m",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nZZZy9m.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever lateral raise",
+   "media_id": "dRTfGZT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dRTfGZT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever narrow grip seated row",
+   "media_id": "IGjKj1v",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/IGjKj1v.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "lever one arm bent over row",
+   "media_id": "Fhdtwf3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Fhdtwf3.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever one arm lateral high row",
+   "media_id": "OIFMAp1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OIFMAp1.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever one arm lateral wide pulldown",
+   "media_id": "tTuZSDT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/tTuZSDT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever pullover",
+   "media_id": "4U7iLb5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4U7iLb5.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever reverse grip lateral pulldown",
+   "media_id": "ky8FLU8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ky8FLU8.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever reverse grip vertical row",
+   "media_id": "ZqNOWQ6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZqNOWQ6.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever reverse t-bar row",
+   "media_id": "BgljGjd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BgljGjd.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever seated reverse fly",
+   "media_id": "myfUsKf",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/myfUsKf.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever seated reverse fly (parallel grip)",
+   "media_id": "xiHiJcA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xiHiJcA.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever seated row",
+   "media_id": "7I6LNUG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7I6LNUG.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "lever shrug",
+   "media_id": "ZZKbeMw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZZKbeMw.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever t bar row",
+   "media_id": "aaXr7ld",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/aaXr7ld.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever t-bar reverse grip row",
+   "media_id": "FVM1AUZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/FVM1AUZ.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever unilateral row",
+   "media_id": "oROuvrX",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/oROuvrX.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lying leg raise flat bench",
+   "media_id": "WhuFnR7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/WhuFnR7.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "medicine ball catch and overhead throw",
+   "media_id": "PsVS1QP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PsVS1QP.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "medicine ball supine chest throw",
+   "media_id": "Al3tP0D",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Al3tP0D.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "narrow push-up on exercise ball",
+   "media_id": "4cWjYEN",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4cWjYEN.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "one arm towel row",
+   "media_id": "bKWbrTA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bKWbrTA.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "pull up (neutral grip)",
+   "media_id": "0V2YQjW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0V2YQjW.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "pull-in (on stability ball)",
+   "media_id": "UQr48Oi",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UQr48Oi.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "pull-up",
+   "media_id": "lBDjFxJ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/lBDjFxJ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "push and pull bodyweight",
+   "media_id": "wXvUZC8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wXvUZC8.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "rear pull-up",
+   "media_id": "CbFSYC1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CbFSYC1.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "resistance band seated straight back row",
+   "media_id": "Nu7jqFE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Nu7jqFE.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "reverse grip machine lat pulldown",
+   "media_id": "ecpY0rH",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ecpY0rH.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "reverse grip pull-up",
+   "media_id": "YAk5dIw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/YAk5dIw.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "reverse hyper on flat bench",
+   "media_id": "OrETs32",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OrETs32.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "rocky pull-up pulldown",
+   "media_id": "cQ19bBP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/cQ19bBP.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "roller hip lat stretch",
+   "media_id": "0L2KwtI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0L2KwtI.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "roller side lat stretch",
+   "media_id": "c3Pfhti",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/c3Pfhti.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "scapular pull-up",
+   "media_id": "uTBt1HV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/uTBt1HV.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "shoulder grip pull-up",
+   "media_id": "YtgD7Xq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/YtgD7Xq.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "side wrist pull stretch",
+   "media_id": "UtmIqcI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UtmIqcI.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "single leg platform slide",
+   "media_id": "LNE3wfo",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LNE3wfo.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "smith back shrug",
+   "media_id": "MzNnwx9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/MzNnwx9.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith bent over row",
+   "media_id": "ZX9UZmj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZX9UZmj.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith narrow row",
+   "media_id": "JGKowMS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/JGKowMS.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "smith one arm row",
+   "media_id": "Q4DSJPC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Q4DSJPC.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith rear delt row",
+   "media_id": "nFUwqG6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nFUwqG6.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "smith reverse grip bent over row",
+   "media_id": "aaxA3cm",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/aaxA3cm.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith shrug",
+   "media_id": "OUQ0ZyW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OUQ0ZyW.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith upright row",
+   "media_id": "1DN3iz4",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1DN3iz4.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "snatch pull",
+   "media_id": "dG5Smob",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dG5Smob.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "standing lateral stretch",
+   "media_id": "1jXLYEw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1jXLYEw.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "suspended row",
+   "media_id": "4OaumBr",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4OaumBr.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "twin handle parallel grip lat pulldown",
+   "media_id": "rkg41Fb",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rkg41Fb.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "weighted one hand pull up",
+   "media_id": "fXfqg1E",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/fXfqg1E.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "weighted pull-up",
+   "media_id": "HMzLjXx",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HMzLjXx.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "wide grip pull-up",
+   "media_id": "Qqi7bko",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Qqi7bko.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "wide grip rear pull-up",
+   "media_id": "OYFhXVD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OYFhXVD.gif",
+   "steps": 6
+  }
+ ],
+ "cardio": [
+  {
+   "zh": null,
+   "en": "barbell incline bench press",
+   "media_id": "3TZduzM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/3TZduzM.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell incline close grip bench press",
+   "media_id": "gx7s7uF",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gx7s7uF.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell incline reverse-grip press",
+   "media_id": "641mIfk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/641mIfk.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell incline shoulder raise",
+   "media_id": "xi0yckC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xi0yckC.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell jump squat",
+   "media_id": "1gFNTZV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1gFNTZV.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell prone incline curl",
+   "media_id": "WLvTAv5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/WLvTAv5.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "barbell reverse grip incline bench press",
+   "media_id": "DU7I633",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DU7I633.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell squat jump step rear lunge",
+   "media_id": "RYcV1kH",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RYcV1kH.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "bodyweight drop jump squat",
+   "media_id": "wfotm7S",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wfotm7S.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "box jump down with one leg stabilization",
+   "media_id": "iPm26QU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/iPm26QU.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable incline bench press",
+   "media_id": "Vh0GsK4",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Vh0GsK4.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable incline fly",
+   "media_id": "tBWXbIT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/tBWXbIT.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable incline fly (on stability ball)",
+   "media_id": "27NNGFr",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/27NNGFr.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "cable incline pushdown",
+   "media_id": "1PK5Uo3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1PK5Uo3.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable incline triceps extension",
+   "media_id": "Hx1WC8I",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Hx1WC8I.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable one arm incline fly on exercise ball",
+   "media_id": "P14Dz9D",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/P14Dz9D.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable one arm incline press",
+   "media_id": "GKEH6jj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GKEH6jj.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable one arm incline press on exercise ball",
+   "media_id": "6t00BsF",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6t00BsF.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable rope incline tricep extension",
+   "media_id": "ZujAdR9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZujAdR9.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable two arm curl on incline bench",
+   "media_id": "H9y3Dkr",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/H9y3Dkr.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline alternate press",
+   "media_id": "TVdivgY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/TVdivgY.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline bench press",
+   "media_id": "ns0SIbU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ns0SIbU.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline biceps curl",
+   "media_id": "F3xgbjF",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/F3xgbjF.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline breeding",
+   "media_id": "B3Rxp6L",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/B3Rxp6L.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline curl",
+   "media_id": "ae9UoXQ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ae9UoXQ.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline curl v. 2",
+   "media_id": "RaflbWD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RaflbWD.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline fly",
+   "media_id": "ESOd5Pl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ESOd5Pl.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline fly on exercise ball",
+   "media_id": "HYe1ZqR",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HYe1ZqR.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline hammer curl",
+   "media_id": "ByX0WxV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ByX0WxV.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline hammer press",
+   "media_id": "PG1kcIb",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PG1kcIb.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline hammer press on exercise ball",
+   "media_id": "wkgnGfb",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wkgnGfb.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline inner biceps curl",
+   "media_id": "LCtQPn8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LCtQPn8.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline one arm fly",
+   "media_id": "Gw2HFvW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gw2HFvW.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline one arm fly on exercise ball",
+   "media_id": "LLNh6q5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LLNh6q5.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline one arm hammer press",
+   "media_id": "LL1UiTX",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LL1UiTX.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline one arm hammer press on exercise ball",
+   "media_id": "jDnrkar",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jDnrkar.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline one arm press",
+   "media_id": "rDAiRf9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rDAiRf9.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline one arm press on exercise ball",
+   "media_id": "Bg5JKSH",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Bg5JKSH.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline palm-in press",
+   "media_id": "OVLmUuL",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OVLmUuL.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline press on exercise ball",
+   "media_id": "bfiHMpI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bfiHMpI.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline raise",
+   "media_id": "nxW6BkN",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nxW6BkN.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline shoulder raise",
+   "media_id": "6e2DcYX",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6e2DcYX.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline t-raise",
+   "media_id": "jgbvVJ0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jgbvVJ0.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline triceps extension",
+   "media_id": "OVIKwsd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OVIKwsd.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline twisted flyes",
+   "media_id": "1PLE8e9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1PLE8e9.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline two arm extension",
+   "media_id": "U7D9Fx3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/U7D9Fx3.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell incline y-raise",
+   "media_id": "PbzNu7c",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PbzNu7c.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm incline chest press",
+   "media_id": "PDaMuyV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PDaMuyV.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell palms in incline bench press",
+   "media_id": "8eqjhOl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/8eqjhOl.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell prone incline curl",
+   "media_id": "mwpPcr1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/mwpPcr1.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "dumbbell prone incline hammer curl",
+   "media_id": "cWemPG8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/cWemPG8.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "dumbbell standing one arm curl (over incline bench)",
+   "media_id": "BIb1tGo",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BIb1tGo.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell standing one arm curl over incline bench",
+   "media_id": "EmlJR2y",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/EmlJR2y.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "ez barbell incline triceps extension",
+   "media_id": "KyLtiLT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KyLtiLT.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "forward jump",
+   "media_id": "uZKq7lo",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/uZKq7lo.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "incline close-grip push-up",
+   "media_id": "1YB40kg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1YB40kg.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "incline leg hip raise (leg straight)",
+   "media_id": "eVxAzgz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/eVxAzgz.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "incline push up depth jump",
+   "media_id": "CB8WET1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CB8WET1.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "incline push-up (on box)",
+   "media_id": "F7vjXqT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/F7vjXqT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "incline reverse grip push-up",
+   "media_id": "XaaRnRn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XaaRnRn.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "incline scapula push up",
+   "media_id": "GdMa1ET",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GdMa1ET.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "incline twisting sit-up",
+   "media_id": "9ZGZuOD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9ZGZuOD.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "jack burpee",
+   "media_id": "mr7pkqP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/mr7pkqP.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "jump squat v. 2",
+   "media_id": "TDYiji6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/TDYiji6.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kneeling jump squat",
+   "media_id": "UgDm3oy",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UgDm3oy.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever incline chest press v. 2",
+   "media_id": "o17Jfkt",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/o17Jfkt.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith incline bench press",
+   "media_id": "5v7KYld",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5v7KYld.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith incline reverse-grip press",
+   "media_id": "78VqWQK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/78VqWQK.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith incline shoulder raises",
+   "media_id": "ayAHcEm",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ayAHcEm.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith machine incline tricep extension",
+   "media_id": "o8aOcrz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/o8aOcrz.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith sprint lunge",
+   "media_id": "HsjbB1z",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HsjbB1z.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "star jump (male)",
+   "media_id": "HtfCpfi",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HtfCpfi.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "walking on incline treadmill",
+   "media_id": "rjiM4L3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rjiM4L3.gif",
+   "steps": 6
+  }
+ ],
+ "stretch": [
+  {
+   "zh": null,
+   "en": "assisted chest dip (kneeling)",
+   "media_id": "PAgTVaK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PAgTVaK.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "assisted lying calves stretch",
+   "media_id": "GxDwDX0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GxDwDX0.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "assisted prone rectus femoris stretch",
+   "media_id": "2Ryn564",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2Ryn564.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "assisted seated pectoralis major stretch with stability ball",
+   "media_id": "RoV1Rfa",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RoV1Rfa.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "assisted triceps dip (kneeling)",
+   "media_id": "J60bN17",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/J60bN17.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "assisted wide-grip chest dip (kneeling)",
+   "media_id": "PnZJIrk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PnZJIrk.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "back pec stretch",
+   "media_id": "chfnQnM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/chfnQnM.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "band kneeling twisting crunch",
+   "media_id": "225x2Vd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/225x2Vd.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "band lying hip internal rotation",
+   "media_id": "vIICElP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vIICElP.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "band lying straight leg raise",
+   "media_id": "bbLR7fB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bbLR7fB.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "band reverse wrist curl",
+   "media_id": "Ezpnw9d",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Ezpnw9d.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "band seated hip internal rotation",
+   "media_id": "9gbyYKk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9gbyYKk.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "band seated twist",
+   "media_id": "S1JXDAG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/S1JXDAG.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "band wrist curl",
+   "media_id": "vUTfFHw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vUTfFHw.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell lying back of the head tricep extension",
+   "media_id": "yg8Totb",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yg8Totb.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell lying close-grip press",
+   "media_id": "EcaV7aL",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/EcaV7aL.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell lying close-grip triceps extension",
+   "media_id": "HJ63mSO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HJ63mSO.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell lying extension",
+   "media_id": "EMpUwRI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/EMpUwRI.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell lying lifting (on hip)",
+   "media_id": "SNFfUff",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SNFfUff.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell lying preacher curl",
+   "media_id": "SYJ4Bkt",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SYJ4Bkt.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell lying triceps extension skull crusher",
+   "media_id": "h8LFzo9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/h8LFzo9.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell palms down wrist curl over a bench",
+   "media_id": "yzYH9pI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yzYH9pI.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell palms up wrist curl over a bench",
+   "media_id": "SJAA2IQ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SJAA2IQ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell revers wrist curl v. 2",
+   "media_id": "qDnGfDb",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qDnGfDb.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell reverse wrist curl",
+   "media_id": "LsZkfU6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LsZkfU6.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell seated behind head military press",
+   "media_id": "ngPpyRS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ngPpyRS.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell seated bradford rocky press",
+   "media_id": "0dCyly0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0dCyly0.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell seated calf raise",
+   "media_id": "ktsFQAZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ktsFQAZ.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell seated close grip behind neck triceps extension",
+   "media_id": "4CBIBOM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4CBIBOM.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell seated close-grip concentration curl",
+   "media_id": "1V1gj1u",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1V1gj1u.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell seated good morning",
+   "media_id": "d960PgE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/d960PgE.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell seated overhead press",
+   "media_id": "kTbSH9h",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/kTbSH9h.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell seated twist",
+   "media_id": "dFSNDOA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dFSNDOA.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell standing back wrist curl",
+   "media_id": "2qTvJAZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2qTvJAZ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell wrist curl",
+   "media_id": "82LxxkW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/82LxxkW.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell wrist curl v. 2",
+   "media_id": "6kSxYnw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6kSxYnw.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "bent knee lying twist (male)",
+   "media_id": "6sYyrRX",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6sYyrRX.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "bodyweight kneeling triceps extension",
+   "media_id": "s0HKO2I",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/s0HKO2I.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable kneeling crunch",
+   "media_id": "WW95auq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/WW95auq.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable kneeling triceps extension",
+   "media_id": "KWdF2JI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KWdF2JI.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable lying bicep curl",
+   "media_id": "otqIxU4",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/otqIxU4.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable lying close-grip curl",
+   "media_id": "61GrD55",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/61GrD55.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable lying fly",
+   "media_id": "lJJ7Yq8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/lJJ7Yq8.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable lying triceps extension v. 2",
+   "media_id": "uxJcFUU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/uxJcFUU.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable reverse wrist curl",
+   "media_id": "eYmsEPR",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/eYmsEPR.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable rope lying on floor tricep extension",
+   "media_id": "U3ffHlY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/U3ffHlY.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable seated chest press",
+   "media_id": "nIR4Rwl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nIR4Rwl.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable seated crunch",
+   "media_id": "8xUv4J7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/8xUv4J7.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable seated curl",
+   "media_id": "8oYqOt9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/8oYqOt9.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable seated one arm concentration curl",
+   "media_id": "rZ80Gbp",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rZ80Gbp.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable seated overhead curl",
+   "media_id": "DpWMFP5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DpWMFP5.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable seated shoulder internal rotation",
+   "media_id": "YPoVrBi",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/YPoVrBi.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable seated twist",
+   "media_id": "UEjSrKI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UEjSrKI.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable standing back wrist curl",
+   "media_id": "VhX2JdE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VhX2JdE.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable wrist curl",
+   "media_id": "LrV4s90",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LrV4s90.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "calf push stretch with hands against wall",
+   "media_id": "PzNxakt",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PzNxakt.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "calf stretch with hands against wall",
+   "media_id": "m0tCHqc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/m0tCHqc.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "calf stretch with rope",
+   "media_id": "1LVFcEn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1LVFcEn.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "chair leg extended stretch",
+   "media_id": "xGgAGPm",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xGgAGPm.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "chest stretch with exercise ball",
+   "media_id": "ykA5tU7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ykA5tU7.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell alternate seated hammer curl",
+   "media_id": "6em2Dxj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6em2Dxj.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell alternating seated bicep curl on exercise ball",
+   "media_id": "J74XlNf",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/J74XlNf.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell bench seated press",
+   "media_id": "3d7wHyd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/3d7wHyd.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell kneeling bicep curl exercise ball",
+   "media_id": "2JCuFTU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2JCuFTU.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying extension (across face)",
+   "media_id": "L2V5Nan",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/L2V5Nan.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying alternate extension",
+   "media_id": "NfP83rA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/NfP83rA.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying external shoulder rotation",
+   "media_id": "bmBf7LN",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bmBf7LN.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying on floor rear delt raise",
+   "media_id": "Ion0XWz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Ion0XWz.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying one arm deltoid rear",
+   "media_id": "gSw59a4",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gSw59a4.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying one arm press",
+   "media_id": "zGSIWQi",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zGSIWQi.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying one arm press v. 2",
+   "media_id": "K3dIO25",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/K3dIO25.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying one arm pronated triceps extension",
+   "media_id": "wyaqzOS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wyaqzOS.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying one arm supinated triceps extension",
+   "media_id": "zZlORz6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zZlORz6.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying pronation",
+   "media_id": "mym4hJo",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/mym4hJo.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying pronation on floor",
+   "media_id": "7RWNjiB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7RWNjiB.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying supination",
+   "media_id": "M2Pm3zj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/M2Pm3zj.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying supination on floor",
+   "media_id": "rEhi2o5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rEhi2o5.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying supine biceps curl",
+   "media_id": "XVzF3iZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XVzF3iZ.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying supine curl",
+   "media_id": "KUaZst7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KUaZst7.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying triceps extension",
+   "media_id": "mpKZGWz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/mpKZGWz.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lying wide curl",
+   "media_id": "qm9veZw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qm9veZw.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm reverse wrist curl",
+   "media_id": "BwSNDGt",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BwSNDGt.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm seated bicep curl on exercise ball",
+   "media_id": "s999Hdo",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/s999Hdo.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm seated hammer curl",
+   "media_id": "jK2hZ6n",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jK2hZ6n.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm seated neutral wrist curl",
+   "media_id": "YtaCTYl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/YtaCTYl.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm wrist curl",
+   "media_id": "q8aHNoF",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/q8aHNoF.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell over bench neutral wrist curl",
+   "media_id": "BKa8dmT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BKa8dmT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell over bench one arm reverse wrist curl",
+   "media_id": "4Jc36XM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4Jc36XM.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell over bench one arm wrist curl",
+   "media_id": "KI1DjNN",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KI1DjNN.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell over bench revers wrist curl",
+   "media_id": "3tAXPQ6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/3tAXPQ6.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell over bench wrist curl",
+   "media_id": "D1xYJAU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/D1xYJAU.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell reverse wrist curl",
+   "media_id": "BLCvwr2",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BLCvwr2.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated alternate front raise",
+   "media_id": "gH5fRsC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gH5fRsC.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated alternate hammer curl on exercise ball",
+   "media_id": "QLRmNeT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QLRmNeT.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated alternate press",
+   "media_id": "QT5Q0nK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QT5Q0nK.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated alternate shoulder",
+   "media_id": "q7qkONO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/q7qkONO.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated bench extension",
+   "media_id": "JhYSVwT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/JhYSVwT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated bicep curl",
+   "media_id": "xiA6lRr",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xiA6lRr.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated biceps curl (on stability ball)",
+   "media_id": "WgJnBH5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/WgJnBH5.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated biceps curl to shoulder press",
+   "media_id": "OeL23VY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OeL23VY.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated calf raise",
+   "media_id": "r29jP7S",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/r29jP7S.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated curl",
+   "media_id": "TiaZTxx",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/TiaZTxx.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated front raise",
+   "media_id": "Ys97II0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Ys97II0.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated hammer curl",
+   "media_id": "IGtBdNT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/IGtBdNT.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated inner biceps curl",
+   "media_id": "KXyoEtA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KXyoEtA.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated kickback",
+   "media_id": "en550rk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/en550rk.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated neutral wrist curl",
+   "media_id": "uJmK7Z1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/uJmK7Z1.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated one arm bicep curl on exercise ball with leg raised",
+   "media_id": "84sESNy",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/84sESNy.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated one arm kickback",
+   "media_id": "VQ3sNCn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VQ3sNCn.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated one arm rotate",
+   "media_id": "7f2jsqP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7f2jsqP.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated one leg calf raise",
+   "media_id": "Ia7tumC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Ia7tumC.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated one leg calf raise - hammer grip",
+   "media_id": "FxhcxUW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/FxhcxUW.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated one leg calf raise - palm up",
+   "media_id": "VW88JNd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VW88JNd.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated palms up wrist curl",
+   "media_id": "2dImyQ8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2dImyQ8.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated preacher curl",
+   "media_id": "7D5bgLT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7D5bgLT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated revers grip concentration curl",
+   "media_id": "lyKCLmK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/lyKCLmK.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated reverse grip one arm overhead tricep extension",
+   "media_id": "5fKX7wi",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5fKX7wi.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated shoulder press",
+   "media_id": "znQUdHY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/znQUdHY.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated shoulder press (parallel grip)",
+   "media_id": "f1jf47L",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/f1jf47L.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell seated triceps extension",
+   "media_id": "kont8Ut",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/kont8Ut.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell side lying one hand raise",
+   "media_id": "fTlkJop",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/fTlkJop.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbells seated triceps extension",
+   "media_id": "FQXdXzY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/FQXdXzY.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dynamic chest stretch (male)",
+   "media_id": "3uj0Ozg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/3uj0Ozg.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "exercise ball lower back stretch (pyramid)",
+   "media_id": "yU7w7CA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yU7w7CA.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "exercise ball on the wall calf raise (tennis ball between ankles)",
+   "media_id": "FY3UdNT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/FY3UdNT.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "exercise ball seated triceps stretch",
+   "media_id": "7ePTw4B",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7ePTw4B.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "ez bar lying close grip triceps extension behind head",
+   "media_id": "6CKUx7o",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6CKUx7o.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "ez bar seated close grip concentration curl",
+   "media_id": "Dsfz0Id",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Dsfz0Id.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "ez barbell seated curls",
+   "media_id": "jtFKbt5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jtFKbt5.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "ez barbell seated triceps extension",
+   "media_id": "iaapw0g",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/iaapw0g.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "frog crunch",
+   "media_id": "FFRP97T",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/FFRP97T.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "frog planche",
+   "media_id": "rQhGcin",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rQhGcin.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "iron cross stretch",
+   "media_id": "pZwUsKB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/pZwUsKB.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "kettlebell seated press",
+   "media_id": "BkxB8LW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BkxB8LW.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell seated two arm military press",
+   "media_id": "ZEkjZDi",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZEkjZDi.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kneeling plank tap shoulder (male)",
+   "media_id": "h1ezqSu",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/h1ezqSu.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kneeling push-up (male)",
+   "media_id": "ZOuKWir",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZOuKWir.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "leg up hamstring stretch",
+   "media_id": "sU5BrfP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/sU5BrfP.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever kneeling leg curl",
+   "media_id": "nnmCTLN",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nnmCTLN.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever kneeling twist",
+   "media_id": "sZOR9EV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/sZOR9EV.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever lying two-one leg curl",
+   "media_id": "UXpKJoq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UXpKJoq.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever seated calf raise",
+   "media_id": "bOOdeyc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bOOdeyc.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever seated crunch",
+   "media_id": "Wgaz7pm",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Wgaz7pm.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever seated crunch (chest pad)",
+   "media_id": "ZnJHhMk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZnJHhMk.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever seated crunch v. 2",
+   "media_id": "eXFXCY0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/eXFXCY0.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever seated dip",
+   "media_id": "BRImeP8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BRImeP8.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever seated fly",
+   "media_id": "v3xmPAR",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/v3xmPAR.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever seated good morning",
+   "media_id": "XsCcxCC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XsCcxCC.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever seated hip abduction",
+   "media_id": "CHpahtl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CHpahtl.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever seated hip adduction",
+   "media_id": "oHsrypV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/oHsrypV.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever seated leg curl",
+   "media_id": "Zg3XY7P",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Zg3XY7P.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever seated squat calf raise on leg press machine",
+   "media_id": "IeDEXTe",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/IeDEXTe.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lying (side) quads stretch",
+   "media_id": "BWnJR72",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BWnJR72.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lying elbow to knee",
+   "media_id": "AQIhRjM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/AQIhRjM.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "neck side stretch",
+   "media_id": "x2chWLO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/x2chWLO.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "overhead triceps stretch",
+   "media_id": "Z5YStHW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Z5YStHW.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "peroneals stretch",
+   "media_id": "XhfS1DZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XhfS1DZ.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "pike-to-cobra push-up",
+   "media_id": "XPUDTt7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XPUDTt7.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "posterior tibialis stretch",
+   "media_id": "DEEqoI2",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DEEqoI2.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "rear deltoid stretch",
+   "media_id": "xifhB5W",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xifhB5W.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "resistance band seated biceps curl",
+   "media_id": "XFc3vpY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XFc3vpY.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "resistance band seated chest press",
+   "media_id": "4x5Okof",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4x5Okof.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "resistance band seated hip abduction",
+   "media_id": "0xDpB4L",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0xDpB4L.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "resistance band seated shoulder press",
+   "media_id": "S93zLTG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/S93zLTG.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "rocking frog stretch",
+   "media_id": "2Dk4xQV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2Dk4xQV.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "roller back stretch",
+   "media_id": "isofgzg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/isofgzg.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "roller hip stretch",
+   "media_id": "oMypNrz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/oMypNrz.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "roller seated shoulder flexor depresor retractor",
+   "media_id": "8coXSYU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/8coXSYU.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "roller seated single leg shoulder flexor depresor retractor",
+   "media_id": "CjETvlw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CjETvlw.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "runners stretch",
+   "media_id": "0mB6wHO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0mB6wHO.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "seated calf stretch (male)",
+   "media_id": "17bqEXD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/17bqEXD.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "seated glute stretch",
+   "media_id": "DeDThfG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DeDThfG.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "seated leg raise",
+   "media_id": "Hgs6Nl1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Hgs6Nl1.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "seated lower back stretch",
+   "media_id": "QFmz6ch",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QFmz6ch.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "seated side crunch (wall)",
+   "media_id": "Y9hNPcN",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Y9hNPcN.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "seated wide angle pose sequence",
+   "media_id": "HIgYKAB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HIgYKAB.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "side lying floor stretch",
+   "media_id": "jDOKRM5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jDOKRM5.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "side lying hip adduction (male)",
+   "media_id": "c8f5cSY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/c8f5cSY.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "single leg bridge with outstretched leg",
+   "media_id": "rmEukuS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rmEukuS.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "sled lying calf press",
+   "media_id": "g376LuL",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/g376LuL.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "sled lying squat",
+   "media_id": "9n2149Z",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9n2149Z.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "smith behind neck press",
+   "media_id": "Gpn4ADc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gpn4ADc.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "smith seated one leg calf raise",
+   "media_id": "0S75mYG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0S75mYG.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "smith seated shoulder press",
+   "media_id": "xUwnBMT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xUwnBMT.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith seated wrist curl",
+   "media_id": "B6dAO1t",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/B6dAO1t.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith standing back wrist curl",
+   "media_id": "hfmQ0Tz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hfmQ0Tz.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "spine stretch",
+   "media_id": "JbC2iaV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/JbC2iaV.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "standing behind neck press",
+   "media_id": "xDh0lJr",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xDh0lJr.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "standing calves calf stretch",
+   "media_id": "qOKcgVP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qOKcgVP.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "standing hamstring and calf stretch with strap",
+   "media_id": "xTjr103",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xTjr103.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "triceps stretch",
+   "media_id": "uOV3Itw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/uOV3Itw.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "upper back stretch",
+   "media_id": "GSDioYu",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GSDioYu.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "weighted seated bicep curl (on stability ball)",
+   "media_id": "b4b6afT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/b4b6afT.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "weighted seated twist (on stability ball)",
+   "media_id": "s34Y4LR",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/s34Y4LR.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "weighted stretch lunge",
+   "media_id": "13VW2VO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/13VW2VO.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "world greatest stretch",
+   "media_id": "DFGXwZr",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DFGXwZr.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "wrist rollerer",
+   "media_id": "bd5b860",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bd5b860.gif",
+   "steps": 6
+  }
+ ],
+ "core": [
+  {
+   "zh": null,
+   "en": "45° side bend",
+   "media_id": "Hy9D21L",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Hy9D21L.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "arms apart circular toe touch (male)",
+   "media_id": "RtyAsy1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RtyAsy1.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "band standing crunch",
+   "media_id": "Kzg30R7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Kzg30R7.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "band standing twisting crunch",
+   "media_id": "euq4pwp",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/euq4pwp.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "band vertical pallof press",
+   "media_id": "G7PXMlT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/G7PXMlT.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell sitted alternate leg raise (female)",
+   "media_id": "BCs0G2F",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BCs0G2F.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "basic toe touch (male)",
+   "media_id": "BbfB8Gb",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BbfB8Gb.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable reverse crunch",
+   "media_id": "RqOtqD7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RqOtqD7.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable side bend",
+   "media_id": "wPypxFY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wPypxFY.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable side bend crunch (bosu ball)",
+   "media_id": "qatbkEd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qatbkEd.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable standing crunch",
+   "media_id": "jpgqxiS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jpgqxiS.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable standing crunch (with rope attachment)",
+   "media_id": "XU3ePuv",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XU3ePuv.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable tuck reverse crunch",
+   "media_id": "TXtXc84",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/TXtXc84.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "crab twist toe touch",
+   "media_id": "xgsGFVM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xgsGFVM.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "crunch (hands overhead)",
+   "media_id": "kjJ3VoQ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/kjJ3VoQ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "crunch (on stability ball)",
+   "media_id": "MCUhf1F",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/MCUhf1F.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "crunch (on stability ball, arms straight)",
+   "media_id": "Sn8wxAI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Sn8wxAI.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "decline crunch",
+   "media_id": "9Ap7miY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9Ap7miY.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell alternating bicep curl with leg raised on exercise ball",
+   "media_id": "Zwiw7XR",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Zwiw7XR.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell bicep curl on exercise ball with leg raised",
+   "media_id": "2NImIAG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2NImIAG.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell side plank with rear fly",
+   "media_id": "X6ytgYZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/X6ytgYZ.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "exercise ball prone leg raise",
+   "media_id": "lCKm4Rs",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/lCKm4Rs.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "flexion leg sit up (straight arm)",
+   "media_id": "KZn52RC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KZn52RC.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "front plank with twist",
+   "media_id": "CosupLu",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CosupLu.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "groin crunch",
+   "media_id": "mWppALS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/mWppALS.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "hands clasped circular toe touch (male)",
+   "media_id": "B5xca8s",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/B5xca8s.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "hands reversed clasped circular toe touch (male)",
+   "media_id": "yq3GAJX",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yq3GAJX.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "hanging leg raise",
+   "media_id": "I3tsCnC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/I3tsCnC.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "hanging oblique knee raise",
+   "media_id": "BaE7O6U",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BaE7O6U.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "hanging straight leg raise",
+   "media_id": "4Ml7QFO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/4Ml7QFO.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "knee touch crunch",
+   "media_id": "dTg95eZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dTg95eZ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "negative crunch",
+   "media_id": "szIn2UK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/szIn2UK.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "oblique crunch v. 2",
+   "media_id": "cJgSTmh",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/cJgSTmh.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "oblique crunches floor",
+   "media_id": "QUDd8WS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QUDd8WS.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "reverse plank with leg lift",
+   "media_id": "tFToB7l",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/tFToB7l.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "roller reverse crunch",
+   "media_id": "SKXQAx3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SKXQAx3.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "side plank hip adduction",
+   "media_id": "VO2qeJg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VO2qeJg.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "stability ball crunch (full range hands behind head)",
+   "media_id": "Gn5FwYT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gn5FwYT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "suspended abdominal fallout",
+   "media_id": "X3TCNEU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/X3TCNEU.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "tuck crunch",
+   "media_id": "BMMolZ3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BMMolZ3.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "twisted leg raise",
+   "media_id": "C0eCeEt",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/C0eCeEt.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "twisted leg raise (female)",
+   "media_id": "yT9tk17",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yT9tk17.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "two toe touch (male)",
+   "media_id": "p195zsJ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/p195zsJ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "vertical leg raise (on parallel bars)",
+   "media_id": "ZNgOYQU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZNgOYQU.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "weighted front plank",
+   "media_id": "VBAWRPG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VBAWRPG.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "weighted overhead crunch (on stability ball)",
+   "media_id": "xmM75XG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xmM75XG.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "weighted side bend (on stability ball)",
+   "media_id": "6bOA1Oi",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6bOA1Oi.gif",
+   "steps": 5
+  }
+ ],
+ "legs": [
+  {
+   "zh": null,
+   "en": "band one arm single leg split squat",
+   "media_id": "arsYEd3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/arsYEd3.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "band single leg reverse calf raise",
+   "media_id": "QsSQWbf",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QsSQWbf.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "band single leg split squat",
+   "media_id": "y8bYM8w",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/y8bYM8w.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "band squat",
+   "media_id": "TUZLh71",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/TUZLh71.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "band stiff leg deadlift",
+   "media_id": "kuMiR2T",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/kuMiR2T.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "band straight back stiff leg deadlift",
+   "media_id": "lHeUULr",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/lHeUULr.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "band straight leg deadlift",
+   "media_id": "KUaoUV8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KUaoUV8.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "band two legs calf raise - (band under both legs) v. 2",
+   "media_id": "jl6uxZV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jl6uxZV.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell bench front squat",
+   "media_id": "Y7YcmIJ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Y7YcmIJ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell bench squat",
+   "media_id": "W9pFVv1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/W9pFVv1.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "barbell clean-grip front squat",
+   "media_id": "qi996YS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qi996YS.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell floor calf raise",
+   "media_id": "2IHEa2T",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2IHEa2T.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell front chest squat",
+   "media_id": "IeTIEqg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/IeTIEqg.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell full squat",
+   "media_id": "qXTaZnJ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qXTaZnJ.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "barbell full squat (back pov)",
+   "media_id": "DhMl549",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DhMl549.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "barbell full squat (side pov)",
+   "media_id": "iYzB0Cz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/iYzB0Cz.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "barbell full zercher squat",
+   "media_id": "vR1vold",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vR1vold.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell glute bridge",
+   "media_id": "qKBpF7I",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qKBpF7I.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell glute bridge two legs on bench (male)",
+   "media_id": "qg2PGl6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qg2PGl6.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell hack squat",
+   "media_id": "5VCj6iH",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5VCj6iH.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell high bar squat",
+   "media_id": "Gnfo4FM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gnfo4FM.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell jefferson squat",
+   "media_id": "pkSoCW9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/pkSoCW9.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell low bar squat",
+   "media_id": "bTpEUcm",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bTpEUcm.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell one arm side deadlift",
+   "media_id": "2DxtqHL",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2DxtqHL.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell one leg squat",
+   "media_id": "uKyN64F",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/uKyN64F.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell rear lunge v. 2",
+   "media_id": "62Nw60O",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/62Nw60O.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell side split squat",
+   "media_id": "W31mMjd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/W31mMjd.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell side split squat v. 2",
+   "media_id": "HUEqZ1y",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HUEqZ1y.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell speed squat",
+   "media_id": "euI1BwR",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/euI1BwR.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell split squat v. 2",
+   "media_id": "HBYyX94",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HBYyX94.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell squat (on knees)",
+   "media_id": "oR7O9LW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/oR7O9LW.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell straight leg deadlift",
+   "media_id": "hrVQWvE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hrVQWvE.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell sumo deadlift",
+   "media_id": "KgI0tqW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KgI0tqW.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell wide squat",
+   "media_id": "s7HX1BY",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/s7HX1BY.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell zercher squat",
+   "media_id": "LSTChY9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LSTChY9.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable assisted inverse leg curl",
+   "media_id": "zHEpuuc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zHEpuuc.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable deadlift",
+   "media_id": "eGDudUV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/eGDudUV.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable squatting curl",
+   "media_id": "3XFdb1Z",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/3XFdb1Z.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable standing calf raise",
+   "media_id": "yl2IYyy",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yl2IYyy.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable standing one leg calf raise",
+   "media_id": "fgc9Xdl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/fgc9Xdl.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "donkey calf raise",
+   "media_id": "u5ESqzH",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/u5ESqzH.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell bench squat",
+   "media_id": "mnzcrIB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/mnzcrIB.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell bicep curl lunge with bowling motion",
+   "media_id": "1VpF8db",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1VpF8db.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell biceps curl squat",
+   "media_id": "niXESDw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/niXESDw.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell forward lunge triceps extension",
+   "media_id": "XalXcvM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XalXcvM.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lunge",
+   "media_id": "RRWFUcw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RRWFUcw.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell lunge with bicep curl",
+   "media_id": "Mz6lLcW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Mz6lLcW.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell plyo squat",
+   "media_id": "S4pwGlc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/S4pwGlc.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell rear lunge",
+   "media_id": "SSsBDwB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SSsBDwB.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell single leg calf raise",
+   "media_id": "1kB3Wmk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1kB3Wmk.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell single leg deadlift",
+   "media_id": "gKozT8X",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gKozT8X.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell single leg deadlift with stepbox support",
+   "media_id": "daBmy1Y",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/daBmy1Y.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell single leg split squat",
+   "media_id": "qx4fgX7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qx4fgX7.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell single leg squat",
+   "media_id": "H6ybluc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/H6ybluc.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell squat",
+   "media_id": "HsvHqgf",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HsvHqgf.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell step up single leg balance with bicep curl",
+   "media_id": "76vfTdU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/76vfTdU.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell step-up lunge",
+   "media_id": "gFyFj9z",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gFyFj9z.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell step-up split squat",
+   "media_id": "QjE2DcA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QjE2DcA.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell straight leg deadlift",
+   "media_id": "oom75KC",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/oom75KC.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell supported squat",
+   "media_id": "r5DgrW9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/r5DgrW9.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "exercise ball on the wall calf raise",
+   "media_id": "xo6sENf",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xo6sENf.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "exercise ball on the wall calf raise (tennis ball between knees)",
+   "media_id": "j74M6Zn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/j74M6Zn.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "exercise ball one legged diagonal kick hamstring curl",
+   "media_id": "GOJKFfO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GOJKFfO.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "frankenstein squat",
+   "media_id": "bdWcbaU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bdWcbaU.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "glute bridge two legs on bench (male)",
+   "media_id": "aWedzZX",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/aWedzZX.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "glute-ham raise",
+   "media_id": "Vvwjz6N",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Vvwjz6N.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "hack calf raise",
+   "media_id": "2ORFMoR",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2ORFMoR.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "hack one leg calf raise",
+   "media_id": "AxFoqAD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/AxFoqAD.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "inverse leg curl (bench support)",
+   "media_id": "ms7tjSG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ms7tjSG.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell front squat",
+   "media_id": "DB0n8AG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DB0n8AG.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "kettlebell goblet squat",
+   "media_id": "ZA8b5hc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZA8b5hc.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell lunge pass through",
+   "media_id": "WKMQzCD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/WKMQzCD.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "kettlebell pistol squat",
+   "media_id": "5bpPTHv",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5bpPTHv.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell turkish get up (squat style)",
+   "media_id": "Ha7SZ3y",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Ha7SZ3y.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "lever calf press",
+   "media_id": "7B4F5nZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7B4F5nZ.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever deadlift",
+   "media_id": "GUT8I22",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GUT8I22.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "lever donkey calf raise",
+   "media_id": "C9LuR4A",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/C9LuR4A.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever leg extension",
+   "media_id": "my33uHU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/my33uHU.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever rotary calf",
+   "media_id": "MrgP9L6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/MrgP9L6.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever standing calf raise",
+   "media_id": "ykUOVze",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ykUOVze.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lunge with twist",
+   "media_id": "K9VL0Jq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/K9VL0Jq.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "one leg donkey calf raise",
+   "media_id": "A2upspL",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/A2upspL.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "one leg floor calf raise",
+   "media_id": "0jp9Rlz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0jp9Rlz.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "one leg squat",
+   "media_id": "C31LMnP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/C31LMnP.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "potty squat with support",
+   "media_id": "b63ZzGe",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/b63ZzGe.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "resistance band leg extension",
+   "media_id": "Y1MsI1l",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Y1MsI1l.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "self assisted inverse leg curl",
+   "media_id": "GwYwElT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GwYwElT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "self assisted inverse leg curl (on floor)",
+   "media_id": "E4PwJqI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/E4PwJqI.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "single leg calf raise (on a dumbbell)",
+   "media_id": "fKZgDEO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/fKZgDEO.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "single leg squat (pistol) male",
+   "media_id": "nqs5HGV",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nqs5HGV.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "sissy squat",
+   "media_id": "xdYPUtE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xdYPUtE.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "sled 45в° calf press",
+   "media_id": "qCNVnaU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qCNVnaU.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "sled calf press on leg press",
+   "media_id": "ykHcWme",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ykHcWme.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "sled closer hack squat",
+   "media_id": "gf3ZjB9",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gf3ZjB9.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "sled forward angled calf raise",
+   "media_id": "XDOiFns",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XDOiFns.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "sled hack squat",
+   "media_id": "Qa55kX1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Qa55kX1.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "sled one leg calf press on leg press",
+   "media_id": "u0pLNgz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/u0pLNgz.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith chair squat",
+   "media_id": "Gu2rNJd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gu2rNJd.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith deadlift",
+   "media_id": "UfePqpx",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UfePqpx.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith front squat (clean grip)",
+   "media_id": "lFhb2Rw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/lFhb2Rw.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "smith full squat",
+   "media_id": "NNoHCEA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/NNoHCEA.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "smith hack squat",
+   "media_id": "ZuPXtCK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZuPXtCK.gif",
+   "steps": 10
+  },
+  {
+   "zh": null,
+   "en": "smith low bar squat",
+   "media_id": "RGLscZM",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RGLscZM.gif",
+   "steps": 11
+  },
+  {
+   "zh": null,
+   "en": "smith one leg floor calf raise",
+   "media_id": "9GXrTE6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9GXrTE6.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith reverse calf raises",
+   "media_id": "ywaNfuh",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ywaNfuh.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith single leg split squat",
+   "media_id": "wWFspEi",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wWFspEi.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith squat",
+   "media_id": "jFtipLl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jFtipLl.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "smith standing leg calf raise",
+   "media_id": "6MaEjVA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6MaEjVA.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "split squats",
+   "media_id": "9E25EOx",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9E25EOx.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "squat jerk",
+   "media_id": "IMRsOCn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/IMRsOCn.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "squat on bosu ball",
+   "media_id": "T2fA5Ir",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/T2fA5Ir.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "squat to overhead reach",
+   "media_id": "QChZi3x",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QChZi3x.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "squat to overhead reach with twist",
+   "media_id": "5BZHW9s",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5BZHW9s.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "standing calf raise (on a staircase)",
+   "media_id": "6HmFgmx",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6HmFgmx.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "standing single leg curl",
+   "media_id": "C5jncD2",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/C5jncD2.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "suspended split squat",
+   "media_id": "QpXqiq8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QpXqiq8.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "trap bar deadlift",
+   "media_id": "jQGwmxN",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jQGwmxN.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "weighted cossack squats (male)",
+   "media_id": "GWoKnIm",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GWoKnIm.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "weighted donkey calf raise",
+   "media_id": "LmaFNZS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LmaFNZS.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "weighted lunge with swing",
+   "media_id": "5WiFcYk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5WiFcYk.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "weighted sissy squat",
+   "media_id": "0lQnxMZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/0lQnxMZ.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "weighted squat",
+   "media_id": "JZuApnB",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/JZuApnB.gif",
+   "steps": 6
+  }
+ ],
+ "push": [
+  {
+   "zh": null,
+   "en": "assisted standing triceps extension (with towel)",
+   "media_id": "7HcfMBP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7HcfMBP.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "band bench press",
+   "media_id": "khlHMqs",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/khlHMqs.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "band one arm twisting chest press",
+   "media_id": "c16nYGA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/c16nYGA.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "band side triceps extension",
+   "media_id": "obe5LMq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/obe5LMq.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "band twisting overhead press",
+   "media_id": "u4bAmKp",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/u4bAmKp.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell bench press",
+   "media_id": "EIeI8Vf",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/EIeI8Vf.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell clean and press",
+   "media_id": "SGY8Zui",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SGY8Zui.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell close-grip bench press",
+   "media_id": "J6Dx1Mu",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/J6Dx1Mu.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell decline bench press",
+   "media_id": "GrO65fd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GrO65fd.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell decline wide-grip press",
+   "media_id": "hl8DUh8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hl8DUh8.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell guillotine bench press",
+   "media_id": "GXoaSgn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/GXoaSgn.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell jm bench press",
+   "media_id": "ZsiqXYa",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZsiqXYa.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell one arm floor press",
+   "media_id": "vtusOWT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vtusOWT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell pin presses",
+   "media_id": "bndCa3Q",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bndCa3Q.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "barbell press sit-up",
+   "media_id": "wnEscH8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wnEscH8.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell reverse close-grip bench press",
+   "media_id": "YqJw82s",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/YqJw82s.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "barbell reverse grip decline bench press",
+   "media_id": "DotAgEF",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DotAgEF.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell rollerout from bench",
+   "media_id": "Gxg9lDc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gxg9lDc.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell standing close grip military press",
+   "media_id": "wdRZISl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wdRZISl.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell standing overhead triceps extension",
+   "media_id": "dZl9Q27",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dZl9Q27.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "barbell wide bench press",
+   "media_id": "JsKq9so",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/JsKq9so.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "barbell wide reverse grip bench press",
+   "media_id": "945zpRg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/945zpRg.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "bench dip (knees bent)",
+   "media_id": "RrLske5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RrLske5.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "bench dip on floor",
+   "media_id": "9RT8oQW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9RT8oQW.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "bench hip extension",
+   "media_id": "u27Kcdz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/u27Kcdz.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable alternate shoulder press",
+   "media_id": "KHPZL0b",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KHPZL0b.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable alternate triceps extension",
+   "media_id": "Gchi5Tr",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gchi5Tr.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable bench press",
+   "media_id": "7xI5MXA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7xI5MXA.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable cross-over revers fly",
+   "media_id": "aqvSOQE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/aqvSOQE.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable decline fly",
+   "media_id": "7saC5zz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7saC5zz.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable decline one arm press",
+   "media_id": "KHGNa16",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/KHGNa16.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable decline press",
+   "media_id": "2Pya1cP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2Pya1cP.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable low fly",
+   "media_id": "FVmZVhk",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/FVmZVhk.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable middle fly",
+   "media_id": "xLYSdtg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xLYSdtg.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable one arm decline chest fly",
+   "media_id": "w4dLzSx",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/w4dLzSx.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable one arm fly on exercise ball",
+   "media_id": "hHy8tQG",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hHy8tQG.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable one arm press on exercise ball",
+   "media_id": "MKIelrR",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/MKIelrR.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable one arm tricep pushdown",
+   "media_id": "qRZ5S1N",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qRZ5S1N.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable overhead triceps extension (rope attachment)",
+   "media_id": "2IxROQ1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2IxROQ1.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable press on exercise ball",
+   "media_id": "vAwm6rK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vAwm6rK.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable reverse grip triceps pushdown (sz-bar) (with arm blaster)",
+   "media_id": "ThKP69G",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ThKP69G.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "cable shoulder press",
+   "media_id": "PzQanLE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PzQanLE.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable standing fly",
+   "media_id": "Pr9Rhf4",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Pr9Rhf4.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "cable standing one arm triceps extension",
+   "media_id": "sYCcnon",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/sYCcnon.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "cable standing reverse grip one arm overhead tricep extension",
+   "media_id": "i11JWU7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/i11JWU7.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable triceps pushdown (v-bar) (with arm blaster)",
+   "media_id": "OxJk1fg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OxJk1fg.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "cable two arm tricep kickback",
+   "media_id": "vvNjDJS",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vvNjDJS.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "cable upper chest crossovers",
+   "media_id": "j7XMAyn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/j7XMAyn.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "chest dip on straight bar",
+   "media_id": "LQFOrMn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LQFOrMn.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "chest tap push-up (male)",
+   "media_id": "7E06s6d",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7E06s6d.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "drop push up",
+   "media_id": "Q497lAE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Q497lAE.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell arnold press v. 2",
+   "media_id": "eOrFCnx",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/eOrFCnx.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell close grip press",
+   "media_id": "7jGOBF3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7jGOBF3.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell close-grip press",
+   "media_id": "RxayqAZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/RxayqAZ.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell cuban press",
+   "media_id": "QfAKy1G",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QfAKy1G.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell cuban press v. 2",
+   "media_id": "BqgCRif",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/BqgCRif.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell decline bench press",
+   "media_id": "DwhEmmE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DwhEmmE.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell decline fly",
+   "media_id": "xXm4nYq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/xXm4nYq.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell decline hammer press",
+   "media_id": "1qrWgZ2",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1qrWgZ2.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell decline one arm fly",
+   "media_id": "NL6YBwN",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/NL6YBwN.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell decline one arm hammer press",
+   "media_id": "SHUMp5H",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SHUMp5H.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell decline triceps extension",
+   "media_id": "OTgkHwR",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/OTgkHwR.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell decline twist fly",
+   "media_id": "reFHapa",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/reFHapa.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell fly on exercise ball",
+   "media_id": "Lt3iWnf",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Lt3iWnf.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell neutral grip bench press",
+   "media_id": "pP8wP2P",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/pP8wP2P.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm bench fly",
+   "media_id": "o5Jsk92",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/o5Jsk92.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm chest fly on exercise ball",
+   "media_id": "Bpkf41o",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Bpkf41o.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm decline chest press",
+   "media_id": "REGM1dE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/REGM1dE.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm fly on exercise ball",
+   "media_id": "Am02iPd",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Am02iPd.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm french press on exercise ball",
+   "media_id": "ziFKQXP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ziFKQXP.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm hammer press on exercise ball",
+   "media_id": "VYmYxK5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VYmYxK5.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm press on exercise ball",
+   "media_id": "QZFv5ui",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QZFv5ui.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm reverse grip press",
+   "media_id": "Ze7MoIb",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Ze7MoIb.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one arm triceps extension (on bench)",
+   "media_id": "nAuHPcD",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nAuHPcD.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell one leg fly on exercise ball",
+   "media_id": "pH2x2jj",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/pH2x2jj.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell press on exercise ball",
+   "media_id": "O8o7q4d",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/O8o7q4d.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell pronate-grip triceps extension",
+   "media_id": "bpJL2Qs",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bpJL2Qs.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell rear fly",
+   "media_id": "8DiFDVA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/8DiFDVA.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell reverse bench press",
+   "media_id": "UIbGx6H",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UIbGx6H.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell scott press",
+   "media_id": "5vfAI0I",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5vfAI0I.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell standing alternate hammer curl and press",
+   "media_id": "LeaZOIz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LeaZOIz.gif",
+   "steps": 11
+  },
+  {
+   "zh": null,
+   "en": "dumbbell standing alternate overhead press",
+   "media_id": "bBi35y3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bBi35y3.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell standing alternating tricep kickback",
+   "media_id": "Gi2BXfK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gi2BXfK.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell standing one arm palm in press",
+   "media_id": "ocYc6Db",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ocYc6Db.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell standing triceps extension",
+   "media_id": "PdmaD0N",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PdmaD0N.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "dumbbell tricep kickback with stork stance",
+   "media_id": "wOLmCXc",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wOLmCXc.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "dumbbell twisting bench press",
+   "media_id": "z6TAHoT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/z6TAHoT.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "dumbbell w-press",
+   "media_id": "vmwLyCg",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vmwLyCg.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "elbow dips",
+   "media_id": "LkoAWAE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LkoAWAE.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "exercise ball dip",
+   "media_id": "kprile3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/kprile3.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "exercise ball supine triceps extension",
+   "media_id": "Gm2Uv1z",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gm2Uv1z.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "ez bar french press on exercise ball",
+   "media_id": "CFN9P8G",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CFN9P8G.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "ez bar standing french press",
+   "media_id": "1cTf2Ux",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/1cTf2Ux.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "ez barbell decline close grip face press",
+   "media_id": "DgZQ11d",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DgZQ11d.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "ez barbell decline triceps extension",
+   "media_id": "CQHoDm0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CQHoDm0.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "ez barbell jm bench press",
+   "media_id": "hnOYgH3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hnOYgH3.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "ez-bar close-grip bench press",
+   "media_id": "da4cXST",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/da4cXST.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "floor fly (with barbell)",
+   "media_id": "neonEDL",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/neonEDL.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "handstand",
+   "media_id": "XooAdhl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/XooAdhl.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "handstand push-up",
+   "media_id": "rQxwMxO",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rQxwMxO.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "hug keens to chest",
+   "media_id": "znP9SIh",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/znP9SIh.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "hyght dumbbell fly",
+   "media_id": "P9ZRyLT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/P9ZRyLT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "hyperextension (on bench)",
+   "media_id": "zkgRrbK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zkgRrbK.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "impossible dips",
+   "media_id": "05Cf2v8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/05Cf2v8.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell alternating press",
+   "media_id": "5KLbZWx",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5KLbZWx.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell alternating press on floor",
+   "media_id": "7w6i0vE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7w6i0vE.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell bent press",
+   "media_id": "kjE55n5",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/kjE55n5.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "kettlebell double push press",
+   "media_id": "I4KkPdl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/I4KkPdl.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "kettlebell extended range one arm press on floor",
+   "media_id": "rseLfH3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rseLfH3.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell one arm floor press",
+   "media_id": "rg59QCH",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rg59QCH.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell one arm military press to the side",
+   "media_id": "yCvYdi7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yCvYdi7.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell one arm push press",
+   "media_id": "osdXT3K",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/osdXT3K.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "kettlebell seesaw press",
+   "media_id": "UDm6cGl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UDm6cGl.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever alternate leg press",
+   "media_id": "V07qpXy",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/V07qpXy.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever chest press",
+   "media_id": "T0yTjgW",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/T0yTjgW.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever decline chest press",
+   "media_id": "vsVoPHt",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vsVoPHt.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "lever horizontal one leg press",
+   "media_id": "9KU9TYF",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9KU9TYF.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever military press",
+   "media_id": "CggQhII",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/CggQhII.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever one arm shoulder press",
+   "media_id": "2KGnL6M",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2KGnL6M.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever overhand triceps dip",
+   "media_id": "D5yqP2p",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/D5yqP2p.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever shoulder press",
+   "media_id": "67n3r98",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/67n3r98.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever shoulder press v. 2",
+   "media_id": "vqsbmL0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/vqsbmL0.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever shoulder press v. 3",
+   "media_id": "dNFYIU1",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dNFYIU1.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "lever standing chest press",
+   "media_id": "WbNq5Xu",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/WbNq5Xu.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "lever triceps extension",
+   "media_id": "Ser9eQp",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Ser9eQp.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "machine inner chest press",
+   "media_id": "wDN97Ca",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wDN97Ca.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "medicine ball chest pass",
+   "media_id": "aDoFKrE",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/aDoFKrE.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "medicine ball chest push from 3 point stance",
+   "media_id": "dCJnuVq",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/dCJnuVq.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "medicine ball chest push with run release",
+   "media_id": "pX9Elbe",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/pX9Elbe.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "modified push up to lower arms",
+   "media_id": "arvaszz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/arvaszz.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "olympic barbell triceps extension",
+   "media_id": "wu5LXwz",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wu5LXwz.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "one arm dip",
+   "media_id": "FAoIFMw",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/FAoIFMw.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "plyo push up",
+   "media_id": "Snj1wSv",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Snj1wSv.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "push up on bosu ball",
+   "media_id": "wVompEp",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wVompEp.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "scapula dips",
+   "media_id": "7xeukSt",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7xeukSt.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "sit-up with arms on chest",
+   "media_id": "6ZCiYWQ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/6ZCiYWQ.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "sled 45 degrees one leg press",
+   "media_id": "WWD6FzI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/WWD6FzI.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "sled 45в° leg press",
+   "media_id": "10Z2DXU",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/10Z2DXU.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "sled 45в° leg press (back pov)",
+   "media_id": "yn2lLSI",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yn2lLSI.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "sled 45° leg press (side pov)",
+   "media_id": "2Qh2J1e",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2Qh2J1e.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "sled 45в° leg wide press",
+   "media_id": "tj41Nu6",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/tj41Nu6.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith bench press",
+   "media_id": "trqKQv2",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/trqKQv2.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith close-grip bench press",
+   "media_id": "WcHl7ru",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/WcHl7ru.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "smith decline bench press",
+   "media_id": "ETZfAbZ",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ETZfAbZ.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith decline reverse-grip press",
+   "media_id": "MY9P1WA",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/MY9P1WA.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith leg press",
+   "media_id": "7zdxRTl",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7zdxRTl.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith machine decline close grip bench press",
+   "media_id": "yB9SvIF",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yB9SvIF.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith machine reverse decline close grip bench press",
+   "media_id": "QyO6Uma",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QyO6Uma.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith reverse-grip press",
+   "media_id": "zK8Fu1W",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zK8Fu1W.gif",
+   "steps": 8
+  },
+  {
+   "zh": null,
+   "en": "smith shoulder press",
+   "media_id": "903mzG8",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/903mzG8.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith standing behind head military press",
+   "media_id": "ht8xDrP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ht8xDrP.gif",
+   "steps": 9
+  },
+  {
+   "zh": null,
+   "en": "smith standing military press",
+   "media_id": "jjUPrze",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/jjUPrze.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "smith wide grip bench press",
+   "media_id": "zoOvPcx",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zoOvPcx.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "smith wide grip decline bench press",
+   "media_id": "wi2H9QX",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/wi2H9QX.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "spider crawl push up",
+   "media_id": "P9GFBME",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/P9GFBME.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "stalder press",
+   "media_id": "zd4P4B2",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zd4P4B2.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "three bench dip",
+   "media_id": "DQ0cqkT",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DQ0cqkT.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "triceps dip",
+   "media_id": "X6C6i5Y",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/X6C6i5Y.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "triceps dip (bench leg)",
+   "media_id": "VuoerH0",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VuoerH0.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "triceps dip (between benches)",
+   "media_id": "Wgbn9qo",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Wgbn9qo.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "triceps dips floor",
+   "media_id": "7aVz15j",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/7aVz15j.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "triceps press",
+   "media_id": "fSrPP6B",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/fSrPP6B.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "weighted bench dip",
+   "media_id": "MU9HnE7",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/MU9HnE7.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "weighted close grip chin-up on dip cage",
+   "media_id": "Gk1r408",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Gk1r408.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "weighted drop push up",
+   "media_id": "PSlvNMs",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PSlvNMs.gif",
+   "steps": 7
+  },
+  {
+   "zh": null,
+   "en": "weighted svend press",
+   "media_id": "I1OBLnn",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/I1OBLnn.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "weighted three bench dips",
+   "media_id": "gtO1ErP",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gtO1ErP.gif",
+   "steps": 5
+  },
+  {
+   "zh": null,
+   "en": "weighted tricep dips",
+   "media_id": "bZq4bwK",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/bZq4bwK.gif",
+   "steps": 6
+  },
+  {
+   "zh": null,
+   "en": "wide hand push up",
+   "media_id": "JmMVpR3",
+   "gif": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/JmMVpR3.gif",
+   "steps": 5
+  }
+ ]
+}

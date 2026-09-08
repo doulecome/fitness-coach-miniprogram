@@ -36,7 +36,10 @@ const courses = [
       { name: '俯卧撑转侧平板', icon: '🔄', type: 'reps', value: 10 },
       { name: '交叉卷腹', icon: '🔄', type: 'reps', value: 20 },
       { name: '弹力带抗旋转推', icon: '🎯', type: 'reps', value: 14 },
-      { name: '垂悬举腿', icon: '🪝', type: 'reps', value: 12 }
+      { name: '垂悬举腿', icon: '🪝', type: 'reps', value: 12 },
+      { name: '悬垂屈膝举腿', icon: '🪝', type: 'reps', value: 12 },
+      { name: '绳索转体', icon: '🎯', type: 'reps', value: 16 },
+      { name: '壶铃风车', icon: '🔔', type: 'reps', value: 10 }
     ]
   },
   {
@@ -92,7 +95,11 @@ const courses = [
       { name: '股四头肌拉伸', icon: '🧘', type: 'time', value: 40 },
       { name: '髋屈肌拉伸', icon: '🧘', type: 'time', value: 40 },
       { name: '过顶胸肌拉伸', icon: '🙆', type: 'time', value: 30 },
-      { name: '四足深蹲拉伸', icon: '🐾', type: 'time', value: 30 }
+      { name: '四足深蹲拉伸', icon: '🐾', type: 'time', value: 30 },
+      { name: '坐姿脊柱扭转', icon: '🧘', type: 'time', value: 40 },
+      { name: '青蛙式', icon: '🐸', type: 'time', value: 40 },
+      { name: '站姿小腿拉伸', icon: '🦵', type: 'time', value: 40 },
+      { name: '肱三头肌拉伸', icon: '💪', type: 'time', value: 30 }
     ]
   },
   {
@@ -117,7 +124,8 @@ const courses = [
       { name: '派克俯卧撑', icon: '🏔️', type: 'reps', value: 10 },
       { name: '单臂俯卧撑', icon: '🦾', type: 'reps', value: 6 },
       { name: '弓箭手俯卧撑', icon: '🏹', type: 'reps', value: 8 },
-      { name: '击掌俯卧撑', icon: '👏', type: 'reps', value: 10 }
+      { name: '击掌俯卧撑', icon: '👏', type: 'reps', value: 10 },
+      { name: '地板卧推', icon: '🏋️', type: 'reps', value: 12 }
     ]
   },
   {
@@ -153,7 +161,11 @@ const courses = [
       { name: '哑铃台阶训练', icon: '🪜', type: 'reps', value: 14 },
       { name: '单腿提踵', icon: '🦶', type: 'reps', value: 20 },
       { name: '杠铃硬拉', icon: '🏋️', type: 'reps', value: 12 },
-      { name: '杠铃前蹲', icon: '🏋️', type: 'reps', value: 12 }
+      { name: '杠铃前蹲', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '腿举', icon: '🦵', type: 'reps', value: 15 },
+      { name: '哈克深蹲', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '腿伸展', icon: '🦵', type: 'reps', value: 16 },
+      { name: '手枪蹲', icon: '🦵', type: 'reps', value: 8 }
     ]
   },
   {
@@ -175,7 +187,8 @@ const courses = [
       { name: '速滑跳', icon: '⛸️', type: 'time', value: 30 },
       { name: '肩胸拉伸', icon: '🙆', type: 'time', value: 30 },
       { name: '跳绳', icon: '🪢', type: 'reps', value: 50 },
-      { name: '跳蹲', icon: '🦘', type: 'reps', value: 14 }
+      { name: '跳蹲', icon: '🦘', type: 'reps', value: 14 },
+      { name: '箱跳', icon: '📦', type: 'reps', value: 16 }
     ]
   },
   {
@@ -202,7 +215,16 @@ const courses = [
       { name: '壶铃摇摆', icon: '🔔', type: 'reps', value: 15 },
       { name: '保加利亚分腿蹲', icon: '🦵', type: 'reps', value: 12 },
       { name: '锤式弯举', icon: '💪', type: 'reps', value: 14 },
-      { name: '弹力带面拉', icon: '🎯', type: 'reps', value: 15 }
+      { name: '弹力带面拉', icon: '🎯', type: 'reps', value: 15 },
+      { name: '杠铃耸肩', icon: '🤷', type: 'reps', value: 16 },
+      { name: 'T杠划船', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '杠铃上拉', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '杠铃肩上推举', icon: '🏋️', type: 'reps', value: 10 },
+      { name: '借力推举', icon: '🏋️', type: 'reps', value: 10 },
+      { name: '地板卧推', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '腿举', icon: '🦵', type: 'reps', value: 15 },
+      { name: '哈克深蹲', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '腿伸展', icon: '🦵', type: 'reps', value: 16 }
     ]
   },
   {
@@ -253,7 +275,12 @@ const courses = [
       { name: '弹力带坐姿转体划船', icon: '🚣', type: 'reps', value: 14 },
       { name: '杠铃俯身划船', icon: '🏋️', type: 'reps', value: 12 },
       { name: '弹力带耸肩', icon: '🤷', type: 'reps', value: 16 },
-      { name: '弓箭手引体', icon: '🏹', type: 'reps', value: 6 }
+      { name: '弓箭手引体', icon: '🏹', type: 'reps', value: 6 },
+      { name: '杠铃耸肩', icon: '🤷', type: 'reps', value: 16 },
+      { name: 'T杠划船', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '杠铃上拉', icon: '🏋️', type: 'reps', value: 12 },
+      { name: '杠铃肩上推举', icon: '🏋️', type: 'reps', value: 10 },
+      { name: '借力推举', icon: '🏋️', type: 'reps', value: 10 }
     ]
   }
 ];
@@ -436,7 +463,26 @@ const ACTION_CUE = {
   '弹力带抗旋转推': '侧对锚点，双手推带于胸前抗旋转，核心稳如磐石',
   '垂悬举腿': '悬垂或椅边，双腿伸直上抬慢控下，下腹主导',
   '杠铃硬拉': '屈髋握杠，臀推发力站直，全程背挺、杠贴腿',
-  '杠铃前蹲': '杠铃置锁骨前，高脚杯前蹲，躯干直立、膝朝脚尖'
+  '杠铃前蹲': '杠铃置锁骨前，高脚杯前蹲，躯干直立、膝朝脚尖',
+  // v9 第五批扩充（18 个新动作的教练要点）
+  '坐姿脊柱扭转': '坐姿双腿伸直，一手撑后，另手抱膝转体，脊柱逐节扭转，感受背部舒展',
+  '青蛙式': '四足跪姿，双膝外展脚掌相对，臀部后坐下沉，髋部有拉伸即可',
+  '站姿小腿拉伸': '前脚掌踩台阶边缘，后跟缓慢下压，小腿后侧有牵拉感，不弹震',
+  '肱三头肌拉伸': '单臂过头屈肘，另手轻压肘向后，大臂贴近耳侧，三头有拉伸',
+  '杠铃耸肩': '双手握杠垂于体前，肩发力向上耸至耳侧，顶端停顿夹斜方，慢放',
+  'T杠划船': '俯身握T杠，背阔发力把杠拉向胸口，肩胛后收，腰椎中立',
+  '杠铃上拉': '仰卧（或上斜）握杠置头顶，沿弧线拉向胸口再回放，胸背协同',
+  '杠铃肩上推举': '杠铃置锁骨，垂直推过头顶，核心收紧不耸肩，顶端锁肩',
+  '借力推举': '半蹲蓄力借下肢弹起，顺势将壶铃/杠推过头顶，全身协调爆发',
+  '地板卧推': '仰卧地面握铃，推起至胸上方，下放至胸侧，三头与胸协同',
+  '箱跳': '微蹲蓄力跳上箱/台阶，脚掌踩实缓冲，落下轻退，保护膝盖',
+  '悬垂屈膝举腿': '悬垂或椅边，屈膝抬向胸口，下腹主导，慢放不甩',
+  '绳索转体': '站姿侧对滑轮机，双手握绳于胸前，转体拉向对侧，腹斜肌发力',
+  '壶铃风车': '单手持壶铃过头，对侧腿微屈，躯干侧倾摸脚，肩髋稳定转髋回正',
+  '腿举': '坐姿蹬腿，膝对准脚尖，腿近伸直不锁死，股四头与臀协同发力',
+  '哈克深蹲': '肩扛杠铃，双脚与肩同宽下蹲至大腿平行，膝朝脚尖，臀腿主导',
+  '腿伸展': '坐姿勾脚，股四头发力把小腿伸直上抬，顶端停顿夹腿',
+  '手枪蹲': '单腿下蹲至臀触踝，另腿前伸，站起时臀腿发力，核心稳住'
 };
 courses.forEach(c => c.actions.forEach(a => {
   if (!a.cue && ACTION_CUE[a.name]) a.cue = ACTION_CUE[a.name];
@@ -588,7 +634,26 @@ const ACT_LIB = {
   '弹力带抗旋转推': { g: 'core', d: 2, reg: '平板支撑' },
   '垂悬举腿': { g: 'core', d: 3, reg: '举腿卷腹' },
   '杠铃硬拉': { g: 'legs', d: 3, reg: '罗马尼亚硬拉' },
-  '杠铃前蹲': { g: 'legs', d: 3, reg: '高脚杯深蹲' }
+  '杠铃前蹲': { g: 'legs', d: 3, reg: '高脚杯深蹲' },
+  // v9 第五批扩充（18 个新动作，分组限 6 类）
+  '坐姿脊柱扭转': { g: 'stretch', d: 1, reg: '颈部拉伸' },
+  '青蛙式': { g: 'stretch', d: 1, reg: '颈部拉伸' },
+  '站姿小腿拉伸': { g: 'stretch', d: 1, reg: '颈部拉伸' },
+  '肱三头肌拉伸': { g: 'stretch', d: 1, reg: '颈部拉伸' },
+  '杠铃耸肩': { g: 'pull', d: 2, reg: '弹力带耸肩', adv: 'T杠划船' },
+  'T杠划船': { g: 'pull', d: 3, reg: '杠铃俯身划船' },
+  '杠铃上拉': { g: 'pull', d: 2, reg: '哑铃划船' },
+  '杠铃肩上推举': { g: 'push', d: 3, reg: '哑铃肩推', adv: '阿诺德推举' },
+  '借力推举': { g: 'push', d: 3, reg: '杠铃肩上推举' },
+  '地板卧推': { g: 'push', d: 2, reg: '哑铃卧推', adv: '上斜哑铃卧推' },
+  '箱跳': { g: 'cardio', d: 2, reg: '深蹲', adv: '深蹲跳' },
+  '悬垂屈膝举腿': { g: 'core', d: 3, reg: '举腿卷腹', adv: '垂悬举腿' },
+  '绳索转体': { g: 'core', d: 2, reg: '俄罗斯转体', adv: '交叉卷腹' },
+  '壶铃风车': { g: 'core', d: 3, reg: '俄罗斯转体' },
+  '腿举': { g: 'legs', d: 2, reg: '深蹲', adv: '哈克深蹲' },
+  '哈克深蹲': { g: 'legs', d: 3, reg: '腿举' },
+  '腿伸展': { g: 'legs', d: 2, reg: '深蹲', adv: '保加利亚分腿蹲' },
+  '手枪蹲': { g: 'legs', d: 4, reg: '箭步蹲', adv: '保加利亚分腿蹲' }
 };
 
 // 全部动作必须在 ACT_LIB 中有标注（脚本校验），未标注动作会被编排器视为不可用
