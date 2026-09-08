@@ -92,10 +92,22 @@ targets.forEach(function (t) {
 });
 
 // 同步静态媒体目录 docs/media → preview/media（含开练覆盖通道的 docs/media/kailian/），保证本地预览与 Pages 一致
+// 注：fs.cpSync 在本机（含子目录的媒体树）会卡死，改用稳健的逐文件镜像复制
+function mirrorCopy(srcDir, dstDir) {
+  fs.mkdirSync(dstDir, { recursive: true });
+  var srcFiles = fs.readdirSync(srcDir);
+  fs.readdirSync(dstDir).forEach(function (f) {
+    if (srcFiles.indexOf(f) < 0) { try { fs.rmSync(path.join(dstDir, f), { recursive: true, force: true }); } catch (e) {} }
+  });
+  srcFiles.forEach(function (f) {
+    var sp = path.join(srcDir, f), dp = path.join(dstDir, f);
+    if (fs.statSync(sp).isDirectory()) mirrorCopy(sp, dp);
+    else fs.copyFileSync(sp, dp);
+  });
+}
 var mediaSrc = path.join(ROOT, 'docs', 'media');
 var mediaDst = path.join(ROOT, 'preview', 'media');
 if (fs.existsSync(mediaSrc)) {
-  fs.mkdirSync(mediaDst, { recursive: true });
-  fs.cpSync(mediaSrc, mediaDst, { recursive: true });
+  mirrorCopy(mediaSrc, mediaDst);
   console.log('synced media', mediaSrc);
 }
