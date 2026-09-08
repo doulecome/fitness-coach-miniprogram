@@ -29,7 +29,7 @@ const PICK = {
   '上斜俯卧撑': 1551,    // Push-Up（WGER 无细分，共用）
   '窄距俯卧撑': 1551,    // Push-Up（WGER 无细分，共用）
   '等长收缩': 1733,      // Isometric Squat to Failure
-  '水瓶飞鸟': 238,       // Fly with Dumbbells
+  '哑铃飞鸟': 238,       // Fly with Dumbbells
   '深蹲': 203,           // Dumbbell Goblet Squat
   '深蹲跳': 203,         // 借深蹲图（同属蹲类）
   '臀桥': 265,           // Glute Bridge

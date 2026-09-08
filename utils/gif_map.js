@@ -1,5 +1,5 @@
 // ExerciseDB 真人动作 GIF（连贯动画，Keep 式演示）
-// 来源：jsDelivr 镜像 sovanndevid/my-exercisedb（原 static.exercisedb.dev 官方 CDN 已宕机；media © 原版权方，仅限个人学习/非商用）
+// 来源：static.exercisedb.dev 官方 CDN（ExerciseDB v1；media © 原版权方，仅限个人学习/非商用）
 // 生成：node scripts/build_gif_map.js（先 --fetch 全量数据，再按 PICK 精校表输出）
 module.exports = {
   "卷腹": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/TFqbd8t.gif",
@@ -20,11 +20,21 @@ module.exports = {
   "窄距俯卧撑": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/x6KpKpq.gif",
   "上斜俯卧撑": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/B1EVP9F.gif",
   "等长收缩": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/HbSG1Pw.gif",
-  "水瓶飞鸟": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yz9nUhF.gif",
+  "哑铃飞鸟": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yz9nUhF.gif",
+  "哑铃卧推": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/SpYC0Kp.gif",
+  "哑铃肩推": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/A6wtbuL.gif",
+  "哑铃侧平举": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DsgkuIt.gif",
+  "哑铃划船": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ZIViNh1.gif",
+  "弹力带下拉": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DptumMx.gif",
+  "引体向上": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/r1XNRYB.gif",
+  "弹力带面拉": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/tc5dYrf.gif",
+  "锤式弯举": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/slDvUAU.gif",
+  "高脚杯深蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/yn8yg1r.gif",
+  "哑铃硬拉": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nUwVh7b.gif",
+  "壶铃摇摆": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/UHJlbu3.gif",
+  "保加利亚分腿蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/gGNQmVt.gif",
   "深蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/75Bgtjy.gif",
   "臀桥": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/u0cNiij.gif",
-
-  // ── v2：课程去火柴人化补位（ExerciseDB 真人连贯动作） ──
   "仰卧举腿": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9IxJdtC.gif",
   "死虫式": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/iny3m5y.gif",
   "弓步跳": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/PM1PZjg.gif",

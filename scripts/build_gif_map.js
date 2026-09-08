@@ -45,8 +45,20 @@ const KEYS = {
   '上斜俯卧撑': ['incline'],
   '窄距俯卧撑': ['close'],
   '等长收缩': ['isometric', 'iso'],
-  '水瓶飞鸟': ['fly', 'flyes'],
+  '哑铃飞鸟': ['fly', 'flyes'],
   '深蹲': ['squat'],
+  '哑铃卧推': ['dumbbell bench press'],
+  '哑铃肩推': ['shoulder press', 'overhead press'],
+  '哑铃侧平举': ['lateral raise'],
+  '哑铃划船': ['dumbbell row', 'row'],
+  '弹力带下拉': ['pulldown'],
+  '引体向上': ['pull-up', 'pull up'],
+  '弹力带面拉': ['rear delt', 'face pull'],
+  '锤式弯举': ['hammer curl'],
+  '高脚杯深蹲': ['goblet squat'],
+  '哑铃硬拉': ['deadlift'],
+  '壶铃摇摆': ['kettlebell swing'],
+  '保加利亚分腿蹲': ['split squat'],
   '臀桥': ['glute bridge', 'hip bridge'],
   '侧卧抬腿': ['side leg raise', 'lying leg raise'],
   '蚌式开合': ['clam'],
@@ -80,7 +92,20 @@ const PICK = {
   '窄距俯卧撑': 'x6KpKpq',     // close-grip push-up
   '上斜俯卧撑': 'B1EVP9F',     // incline push-up
   '等长收缩': 'HbSG1Pw',       // isometric chest squeeze
-  '水瓶飞鸟': 'yz9nUhF',       // dumbbell fly
+  '哑铃飞鸟': 'yz9nUhF',       // dumbbell fly
+  // —— v3 器械 / 拉力动作（ExerciseDB 真GIF）——
+  '哑铃卧推': 'SpYC0Kp',       // dumbbell bench press
+  '哑铃肩推': 'A6wtbuL',       // dumbbell standing overhead press
+  '哑铃侧平举': 'DsgkuIt',     // dumbbell lateral raise
+  '哑铃划船': 'ZIViNh1',       // dumbbell reverse grip incline bench one arm row
+  '弹力带下拉': 'DptumMx',     // band close-grip pulldown
+  '引体向上': 'r1XNRYB',       // band assisted pull-up
+  '弹力带面拉': 'tc5dYrf',     // band standing rear delt row
+  '锤式弯举': 'slDvUAU',       // dumbbell hammer curl
+  '高脚杯深蹲': 'yn8yg1r',     // dumbbell goblet squat
+  '哑铃硬拉': 'nUwVh7b',       // dumbbell deadlift
+  '壶铃摇摆': 'UHJlbu3',       // kettlebell swing
+  '保加利亚分腿蹲': 'gGNQmVt',  // barbell single leg split squat
   '深蹲': '75Bgtjy',           // potty squat（徒手蹲，最贴近基础深蹲）
   '臀桥': 'u0cNiij',           // low glute bridge on floor
   // —— v2 新增（去瑜伽/蚌式等无图动作后补位，2026-09 课程重构）——

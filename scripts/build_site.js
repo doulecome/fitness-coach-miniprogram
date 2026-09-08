@@ -66,3 +66,15 @@ const out = path.join(ROOT, 'preview', 'site_app.html');
 fs.mkdirSync(path.dirname(out), { recursive: true });
 fs.writeFileSync(out, html);
 console.log('written', out, (html.length / 1024).toFixed(0) + 'KB');
+
+// 同步三份产物（preview/site_app.html + preview/index.html + docs/index.html），
+// 保证本地预览与 GitHub Pages 三端字节一致（md5 相同）。
+const targets = [
+  path.join(ROOT, 'preview', 'index.html'),
+  path.join(ROOT, 'docs', 'index.html')
+];
+targets.forEach(function (t) {
+  fs.mkdirSync(path.dirname(t), { recursive: true });
+  fs.copyFileSync(out, t);
+  console.log('synced', t);
+});

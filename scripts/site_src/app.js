@@ -169,7 +169,7 @@
   /* ============ 训练库 ============ */
   function musclesOf(a) {
     var lib = NS.ACT_LIB[a.name];
-    if (lib) return lib.g === 'push' ? '胸·肩' : lib.g === 'legs' ? '臀·腿' : lib.g === 'core' ? '核心' : lib.g === 'stretch' ? '拉伸' : '全身';
+    if (lib) return lib.g === 'push' ? '胸·肩' : lib.g === 'legs' ? '臀·腿' : lib.g === 'pull' ? '背·臂' : lib.g === 'core' ? '核心' : lib.g === 'stretch' ? '拉伸' : '全身';
     var t = '';
     courses.forEach(function (c) { c.actions.forEach(function (x) { if (x.name === a.name && c.muscle) t = c.muscle; }); });
     return t || '全身';
@@ -186,7 +186,7 @@
     if (S.seg === 'custom') return seg + vBuilder();
     var seen = {}, list = [];
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (!seen[a.name]) { seen[a.name] = 1; list.push(a); } }); });
-    var mus = ['全部', '胸·肩', '臀·腿', '核心', '拉伸', '全身'];
+    var mus = ['全部', '胸·肩', '臀·腿', '背·臂', '核心', '拉伸', '全身'];
     var chips = mus.map(function (m) { return '<span class="chip ' + (S.actMus === m ? 'on' : '') + '" data-a="mus" data-v="' + m + '">' + m + '</span>'; }).join('');
     var rows = list.filter(function (a) { return S.actMus === '全部' || (musclesOf(a) || '').indexOf(S.actMus) >= 0; }).map(function (a) {
       return '<div class="act-row" data-a="actInfo" data-name="' + esc(a.name) + '"><div class="a-ic">' + a.icon + '</div>' +
@@ -197,7 +197,7 @@
   }
 
   /* ============ 自定义训练 builder ============ */
-  var BLD_GROUPS = [['胸·肩', 'push'], ['臀·腿', 'legs'], ['核心', 'core'], ['燃脂', 'cardio'], ['拉伸', 'stretch']];
+  var BLD_GROUPS = [['胸·肩', 'push'], ['背·臂', 'pull'], ['臀·腿', 'legs'], ['核心', 'core'], ['燃脂', 'cardio'], ['拉伸', 'stretch']];
   function vBuilder() {
     var seen = {}, all = [];
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (!seen[a.name]) { seen[a.name] = 1; all.push(a); } }); });
@@ -272,11 +272,114 @@
     return '<div class="phase-tabs">' + tabs + '</div>' +
       '<div class="phase-tip">📌 ' + esc(p.weeks[S.weekIdx].tip) + '</div>' +
       (p.customTotal ? '<div class="phase-tip" style="background:#e8f7f2">🧠 本计划 ' + p.customTotal + ' 个动作目标已按你的成绩历史自动定制</div>' : '') +
+      (p.edited ? '<div class="phase-tip" style="background:#fff4ec;color:#c4691f">✏️ 你已手动调整本计划（替换动作 / 组数），重新定制将还原改动</div>' : '') +
       '<div class="sum-chips"><div class="sc"><div class="n">' + w.days + '</div><div class="l">训练天</div></div>' +
       '<div class="sc"><div class="n">' + w.totalMin + '</div><div class="l">分钟/周</div></div>' +
       '<div class="sc"><div class="n">' + w.totalKcal + '</div><div class="l">千卡/周</div></div></div>' +
       '<div class="card" style="font-size:12px;color:#4a525c;line-height:1.7">💬 ' + esc(p.levelNote) + '<br>🔁 ' + esc(p.weeksNote) + '</div>' + days +
       '<div class="gen-btn btn ghost" data-a="replan">↻ 重新定制</div>';
+  }
+
+  /* ============ 肌群覆盖 / 训练量 / 计划可编辑 ============ */
+  var GRP_AXES = [['push', '胸肩'], ['pull', '背臂'], ['legs', '臀腿'], ['core', '核心'], ['cardio', '燃脂'], ['stretch', '拉伸']];
+  function groupCoverage() {
+    var res = {};
+    GRP_AXES.forEach(function (g) {
+      var done = 0, total = 0;
+      Object.keys(NS.ACT_LIB).forEach(function (n) {
+        if (NS.ACT_LIB[n].g === g[0]) { total++; if (S.best[n] && S.best[n].best > 0) done++; }
+      });
+      res[g[0]] = { label: g[1], done: done, total: total, pct: total ? Math.round(done / total * 100) : 0 };
+    });
+    return res;
+  }
+  function radarSvg(vals, labels) {
+    var cx = 120, cy = 112, R = 82, n = 6;
+    function pt(i, r) { var a = (-90 + i * 60) * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+    var rings = '', i, p;
+    [0.25, 0.5, 0.75, 1].forEach(function (f) {
+      var ps = []; for (i = 0; i < n; i++) { p = pt(i, R * f); ps.push(p[0].toFixed(1) + ',' + p[1].toFixed(1)); }
+      rings += '<polygon points="' + ps.join(' ') + '" fill="none" stroke="#e6e9ee" stroke-width="1"/>';
+    });
+    var axes = '';
+    for (i = 0; i < n; i++) { p = pt(i, R); axes += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="#e6e9ee" stroke-width="1"/>'; }
+    var vp = []; for (i = 0; i < n; i++) { p = pt(i, R * Math.max(0, Math.min(100, vals[i])) / 100); vp.push(p[0].toFixed(1) + ',' + p[1].toFixed(1)); }
+    var poly = '<polygon points="' + vp.join(' ') + '" fill="rgba(31,214,168,.28)" stroke="#0fb98c" stroke-width="2"/>';
+    var dots = '', labs = '';
+    for (i = 0; i < n; i++) {
+      p = pt(i, R * Math.max(0, Math.min(100, vals[i])) / 100);
+      dots += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3" fill="#0fb98c"/>';
+      var lp = pt(i, R + 20);
+      labs += '<text x="' + lp[0].toFixed(1) + '" y="' + lp[1].toFixed(1) + '" font-size="9.5" fill="#7a838e" text-anchor="middle" dominant-baseline="middle">' + labels[i] + '</text>';
+    }
+    return '<svg viewBox="0 0 240 224" width="100%" style="display:block">' + rings + axes + poly + dots + labs + '</svg>';
+  }
+  function weakHtml(cov) {
+    var total = 0, weak = [];
+    GRP_AXES.forEach(function (g) { total += cov[g[0]].done; if (cov[g[0]].done === 0) weak.push(g[1]); });
+    if (total === 0) return '<div class="weak-tip">开始第一次训练后，这里会显示你的六大肌群覆盖雷达图</div>';
+    if (!weak.length) return '<div class="weak-ok">✅ 六大肌群都已练过，保持推拉蹲均衡</div>';
+    return '<div class="weak-tip">⚠ 还没练过：' + weak.join('、') + '，下次计划可优先加入</div>';
+  }
+  function volumeStats() {
+    var total = 0, week = 0, bestSession = 0;
+    var cutoff = Date.now() - 7 * 86400000;
+    S.records.forEach(function (r) {
+      var reps = 0;
+      (r.detail || []).forEach(function (x) { if (x.type === 'reps' && x.actual > 0) reps += x.actual; });
+      total += reps;
+      if (new Date(r.date + 'T00:00:00').getTime() >= cutoff) week += reps;
+      if (reps > bestSession) bestSession = reps;
+    });
+    return { totalReps: total, weekReps: week, bestSession: bestSession };
+  }
+  function altActs(name) {
+    var lib = NS.ACT_LIB[name]; if (!lib) return [];
+    var g = lib.g;
+    if (['push', 'pull', 'legs', 'core', 'cardio'].indexOf(g) < 0) return [];
+    return Object.keys(NS.ACT_LIB).filter(function (n) { return n !== name && NS.ACT_LIB[n].g === g; })
+      .sort(function (a, b) { return NS.ACT_LIB[a].d - NS.ACT_LIB[b].d; });
+  }
+  function seqItemLocal(a) {
+    var t = NS.actionByName[a.name] || {};
+    return { name: a.name, icon: a.icon || t.icon || '🏋️', type: a.type || t.type || 'reps', value: a.target,
+      phase: a.fin ? 'fin' : a.cool ? 'cool' : 'main', cue: a.cue || t.cue || '', anim: t.anim || 'dynamic', gif: t.gif || '', media: t.media || null };
+  }
+  function rebuildSeq(day) {
+    var seq = [];
+    day.acts.forEach(function (a) {
+      if (a.fin || a.cool) seq.push(seqItemLocal(a));
+      else for (var r = 0; r < (a.round || 1); r++) seq.push(seqItemLocal(a));
+    });
+    day.seq = seq; day.nActs = seq.length;
+  }
+  function sheetEditDay(wIdx, i) {
+    var d = S.plan.weeks[wIdx].week[i];
+    if (!d || d.rest) return;
+    var mains = d.acts.filter(function (a) { return !a.fin && !a.cool; });
+    var rows = mains.map(function (a) {
+      var alts = altActs(a.name);
+      return '<div class="ed-row"><div class="ed-n">' + esc(a.name) + ' <span class="ed-r">×' + a.round + ' 组</span></div>' +
+        (alts.length ? '<div class="ed-swap" data-a="swapAct" data-w="' + wIdx + '" data-i="' + i + '" data-name="' + esc(a.name) + '">替换 ↺</div>' : '') + '</div>';
+    }).join('');
+    openSheet('<div class="sh-h"><div class="sh-t">✏️ 编辑 · ' + d.wd + ' ' + esc(d.typeName) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
+      '<div class="sh-sub">替换主项或调整组数，改动仅保存在本计划（重新定制会还原）</div>' + rows +
+      '<div class="ed-sets"><span>本日组数</span><div class="ed-step">' +
+      '<span class="o" data-a="daySets" data-w="' + wIdx + '" data-i="' + i + '" data-v="-1">−</span>' +
+      '<b id="edSets">' + (mains[0] ? mains[0].round : 1) + '</b>' +
+      '<span class="o" data-a="daySets" data-w="' + wIdx + '" data-i="' + i + '" data-v="1">＋</span></div></div>' +
+      '<div class="sh-go btn" data-a="xSheet">完成</div>');
+  }
+  function sheetSwap(wIdx, i, name) {
+    var alts = altActs(name);
+    var cards = alts.map(function (n) {
+      var a = NS.actionByName[n], lib = NS.ACT_LIB[n];
+      return '<div class="swap-it" data-a="doSwap" data-w="' + wIdx + '" data-i="' + i + '" data-from="' + esc(name) + '" data-to="' + esc(n) + '">' +
+        '<div class="s-ic">' + (a ? a.icon : '🏋️') + '</div><div><div class="s-n">' + esc(n) + '</div><div class="s-d">' + '★'.repeat(lib.d) + '☆'.repeat(3 - lib.d) + '</div></div></div>';
+    }).join('');
+    openSheet('<div class="sh-h"><div class="sh-t">替换 · ' + esc(name) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
+      '<div class="sh-sub">选择同肌群动作替换（难度 ' + '★'.repeat(NS.ACT_LIB[name].d) + '☆'.repeat(3 - NS.ACT_LIB[name].d) + '）</div>' +
+      '<div class="swap-grid">' + cards + '</div>');
   }
 
   /* ============ 记录 ============ */
@@ -300,7 +403,17 @@
         '<div><div class="rn">' + esc(r.name) + '</div><div class="rd">' + r.date + (r.done != null ? ' · 完成 ' + r.done + '/' + r.total : '') + '</div></div>' +
         '<div class="rm"><div class="n">' + r.min + '′</div><div class="l">' + (r.kcal || '-') + ' 千卡</div></div></div></div>';
     }).join('');
-    return trendHtml() +
+    var cov = groupCoverage();
+    var radarHtml = '<div class="card radar-card"><div class="form-t" style="margin:0 0 4px">🎯 肌群覆盖度</div>' +
+      radarSvg([cov.push.pct, cov.pull.pct, cov.legs.pct, cov.core.pct, cov.cardio.pct, cov.stretch.pct], ['胸肩', '背臂', '臀腿', '核心', '燃脂', '拉伸']) +
+      weakHtml(cov) + '</div>';
+    var vol = volumeStats();
+    var volHtml = '<div class="card"><div class="form-t" style="margin:0 0 8px">📦 训练量总览</div>' +
+      '<div class="vol-row"><div class="vol-b"><div class="n">' + vol.totalReps + '</div><div class="l">累计次数</div></div>' +
+      '<div class="vol-b"><div class="n">' + vol.weekReps + '</div><div class="l">近7天次数</div></div>' +
+      '<div class="vol-b"><div class="n">' + vol.bestSession + '</div><div class="l">单日最高动作</div></div></div>' +
+      '<div style="font-size:10.5px;color:#a0a6ad;margin-top:8px">个人最佳(PR)见下方"动作最佳纪录"</div></div>';
+    return trendHtml() + radarHtml + volHtml +
       '<div class="stats-row"><div class="stat"><div class="n">' + S.records.length + '</div><div class="l">累计训练</div></div>' +
       '<div class="stat"><div class="n">' + totalMin + '</div><div class="l">总分钟</div></div>' +
       '<div class="stat"><div class="n">' + names.length + '</div><div class="l">动作有纪录</div></div></div>' +
@@ -338,6 +451,13 @@
       diffSeg() +
       '<div class="sh-go btn" data-a="runCourse" data-id="' + c.id + '">开始训练 ▸</div>');
   }
+  function variantChips(name) {
+    var lib = NS.ACT_LIB[name]; if (!lib) return '';
+    var chips = '';
+    if (lib.reg && NS.actionByName[lib.reg]) chips += '<span class="vk reg" data-a="actVariant" data-name="' + esc(lib.reg) + '">↩ 退阶：' + esc(lib.reg) + '</span>';
+    if (lib.adv && NS.actionByName[lib.adv]) chips += '<span class="vk adv" data-a="actVariant" data-name="' + esc(lib.adv) + '">进阶：' + esc(lib.adv) + ' ↪</span>';
+    return chips ? '<div class="var-chips">变式链：' + chips + '</div>' : '';
+  }
   function sheetAct(name) {
     var act = null;
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (a.name === name && !act) act = a; }); });
@@ -346,7 +466,8 @@
     openSheet('<div class="sh-h"><div class="sh-t">' + (act ? act.icon : '🏋️') + ' ' + esc(name) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
       '<div class="sh-sub">' + sub + ' · ' + esc(musclesOf({ name: name })) + '</div>' +
       (act && act.gif ? '<div class="demo"><img data-fb="' + act.icon + '" src="' + act.gif + '" alt=""></div>' : '') +
-      '<div class="cue-box">💡 ' + esc((act && act.cue) || '保持核心收紧，动作标准优先于数量') + '</div>');
+      '<div class="cue-box">💡 ' + esc((act && act.cue) || '保持核心收紧，动作标准优先于数量') + '</div>' +
+      variantChips(name));
   }
   function sheetDay(wIdx, i) {
     var d = S.plan.weeks[wIdx].week[i];
@@ -365,6 +486,7 @@
       '<div class="warm-box">🔥 ' + esc(d.warm || '') + '</div>' + rows +
       diffSeg() +
       (d.coach ? '<div class="coach-box">💬 ' + esc(d.coach) + '</div>' : '') +
+      '<div class="sh-go btn ghost" data-a="editDay" data-w="' + wIdx + '" data-i="' + i + '">✏️ 编辑本日安排</div>' +
       '<div class="sh-go btn" data-a="runDay" data-w="' + wIdx + '" data-i="' + i + '">按此训练开始 ▸</div>');
   }
   function sheetRec(i) {
@@ -947,6 +1069,7 @@
     if (a === 'openCourse') { var c = courses.filter(function (x) { return x.id === el.dataset.id; })[0]; if (c) sheetCourse(c); return; }
     if (a === 'runCourse') { closeSheet(); runCourse(el.dataset.id); return; }
     if (a === 'actInfo') { sheetAct(el.dataset.name); return; }
+    if (a === 'actVariant') { sheetAct(el.dataset.name); return; }
     /* 自定义训练 builder */
     if (a === 'bldToggle') {
       var nm = el.dataset.name;
@@ -960,6 +1083,28 @@
     if (a === 'bldStart') { closeSheet(); bldStart(); return; }
     if (a === 'openDay') { sheetDay(Number(el.dataset.w), Number(el.dataset.i)); return; }
     if (a === 'runDay') { closeSheet(); runPlanDay(Number(el.dataset.w), Number(el.dataset.i)); return; }
+    if (a === 'editDay') { sheetEditDay(Number(el.dataset.w), Number(el.dataset.i)); return; }
+    if (a === 'swapAct') { sheetSwap(Number(el.dataset.w), Number(el.dataset.i), el.dataset.name); return; }
+    if (a === 'doSwap') {
+      var dw = Number(el.dataset.w), di = Number(el.dataset.i), from = el.dataset.from, to = el.dataset.to;
+      var dd = S.plan.weeks[dw] && S.plan.weeks[dw].week[di]; if (!dd) return;
+      var t = NS.actionByName[to]; if (!t) return;
+      dd.acts.forEach(function (act) { if (act.name === from && !act.fin && !act.cool) { act.name = to; act.icon = t.icon || '🏋️'; act.type = t.type; act.cue = t.cue || ''; act.fromHist = false; } });
+      dd.seq.forEach(function (s) { if (s.name === from && s.phase === 'main') { s.name = to; s.icon = t.icon || '🏋️'; s.type = t.type; s.cue = t.cue || ''; } });
+      S.plan.edited = true; saveK(KP, S.plan);
+      sheetEditDay(dw, di); return;
+    }
+    if (a === 'daySets') {
+      var dws = Number(el.dataset.w), dis = Number(el.dataset.i), dv = el.dataset.v === '1' ? 1 : -1;
+      var dds = S.plan.weeks[dws] && S.plan.weeks[dws].week[dis]; if (!dds) return;
+      var ms = dds.acts.filter(function (x) { return !x.fin && !x.cool; });
+      if (!ms.length) return;
+      var nr = Math.max(1, Math.min(6, ms[0].round + dv));
+      ms.forEach(function (x) { x.round = nr; });
+      rebuildSeq(dds);
+      S.plan.edited = true; saveK(KP, S.plan);
+      sheetEditDay(dws, dis); return;
+    }
     if (a === 'replay') {
       var r = S.records[0]; if (!r) return;
       if (r.tag && r.tag.indexOf('fit_course_') === 0) { runCourse(r.tag.slice(10)); return; }

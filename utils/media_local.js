@@ -19,7 +19,7 @@ module.exports = {
   "上斜俯卧撑": "/assets/actions/1551.jpg",
   "窄距俯卧撑": "/assets/actions/1551.jpg",
   "等长收缩": "/assets/actions/1733.jpg",
-  "水瓶飞鸟": "/assets/actions/238.jpg",
+  "哑铃飞鸟": "/assets/actions/238.jpg",
   "深蹲": "/assets/actions/203.jpg",
   "深蹲跳": "/assets/actions/203.jpg",
   "臀桥": "/assets/actions/265.png",
