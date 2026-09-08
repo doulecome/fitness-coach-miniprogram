@@ -146,7 +146,18 @@ const KW = {
   '腿举': ['lever alternate leg press'],
   '哈克深蹲': ['barbell hack squat'],
   '腿伸展': ['lever leg extension'],
-  '手枪蹲': ['single leg squat (pistol) male']
+  '手枪蹲': ['single leg squat (pistol) male'],
+  // v10 第六批(新动作 10 个)：首位用数据集精确名保证命中
+  '坐姿绳索划船': ['cable low seated row'],
+  '绳索三头下压': ['cable one arm tricep pushdown'],
+  '腿弯举': ['lever kneeling leg curl'],
+  '杠铃臀桥': ['barbell glute bridge'],
+  '侧平板': ['side plank hip adduction'],
+  '滑雪步': ['ski step'],
+  '杰克波比': ['jack burpee'],
+  '靠墙小腿拉伸': ['calf stretch with hands against wall'],
+  '胸肌拉伸': ['chest stretch with exercise ball'],
+  '下背拉伸': ['seated lower back stretch']
 };
 
 const src = path.join(ROOT, 'scripts', 'dset', 'exercises.json');

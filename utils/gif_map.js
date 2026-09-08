@@ -147,5 +147,15 @@ module.exports = {
   "腿举": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/V07qpXy.gif",
   "哈克深蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5VCj6iH.gif",
   "腿伸展": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/my33uHU.gif",
-  "手枪蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nqs5HGV.gif"
+  "手枪蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nqs5HGV.gif",
+  "坐姿绳索划船": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/hvV79Si.gif",
+  "绳索三头下压": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qRZ5S1N.gif",
+  "腿弯举": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/nnmCTLN.gif",
+  "杠铃臀桥": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qKBpF7I.gif",
+  "侧平板": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/VO2qeJg.gif",
+  "滑雪步": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/5MRH8H2.gif",
+  "杰克波比": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/mr7pkqP.gif",
+  "靠墙小腿拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/m0tCHqc.gif",
+  "胸肌拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ykA5tU7.gif",
+  "下背拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QFmz6ch.gif"
 };
