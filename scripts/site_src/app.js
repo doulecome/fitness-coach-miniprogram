@@ -60,7 +60,8 @@
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
     form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
     diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' },
-    builder: { sel: {}, rounds: 3 }
+    builder: { sel: {}, rounds: 3 },
+    dietPair: { staple: '', protein: '', veg: '', other: '' }, dietPairRes: null
   };
   var app = $('#app');
 
@@ -700,6 +701,91 @@
     { n: '蛋黄瓜', kcal: 155, parts: [{ n: '水煮蛋', a: '2个' }, { n: '黄瓜' }] },
     { n: '豆浆燕麦', kcal: 175, parts: [{ n: '无糖豆浆', a: '300ml' }, { n: '燕麦', a: '25g' }] }
   ];
+  /* ============ 饮食搭配库（相宜相克） ============ */
+  var PAIR = [
+    { a: '鸡胸肉', b: '西兰花', t: 'good', why: '高蛋白低脂 + 膳食纤维，饱腹强且促吸收' },
+    { a: '糙米', b: '豆腐', t: 'good', why: '谷物缺赖氨酸、豆类补之，蛋白互补利用率更高' },
+    { a: '杂粮', b: '豆腐', t: 'good', why: '谷物与豆制品氨基酸互补，提升蛋白质量' },
+    { a: '番茄', b: '橄榄油', t: 'good', why: '番茄红素为脂溶性，橄榄油助其吸收' },
+    { a: '鸡蛋', b: '番茄', t: 'good', why: '番茄红素遇热+脂肪吸收更好，鸡蛋补充蛋白' },
+    { a: '酸奶', b: '莓', t: 'good', why: '益生菌与抗氧化物协同，肠道友好' },
+    { a: '牛肉', b: '彩椒', t: 'good', why: '彩椒维C促进牛肉中铁的吸收' },
+    { a: '牛肉', b: '青椒', t: 'good', why: '青椒维C促进牛肉中铁的吸收' },
+    { a: '菠菜', b: '柠檬', t: 'good', why: '维C促进菠菜中非血红素铁的吸收' },
+    { a: '红薯', b: '鸡蛋', t: 'good', why: '慢碳 + 优质蛋白，血糖平稳又顶饱' },
+    { a: '藜麦', b: '蔬菜', t: 'good', why: '藜麦为完全蛋白，配蔬菜营养更全' },
+    { a: '牛奶', b: '菠菜', t: 'warn', why: '牛奶高钙遇菠菜草酸易成草酸钙，影响钙吸收', fix: '错开餐次，或菠菜先焯水去草酸' },
+    { a: '豆腐', b: '菠菜', t: 'warn', why: '豆腐高钙与菠菜草酸结合，降低钙吸收', fix: '菠菜先焯水，或与豆制品错餐' },
+    { a: '香蕉', b: '花生酱', t: 'warn', why: '高糖 + 高脂同餐，热量密度偏高', fix: '减脂期注意分量，或拆到不同餐' },
+    { a: '香蕉', b: '牛油果', t: 'warn', why: '高糖 + 高脂同餐，热量密度偏高', fix: '减脂期减半其一' },
+    { a: '茶', b: '牛肉', t: 'warn', why: '茶中鞣酸抑制铁的吸收', fix: '餐后间隔 1 小时再饮茶' },
+    { a: '茶', b: '菠菜', t: 'warn', why: '茶中鞣酸抑制铁的吸收', fix: '餐后间隔 1 小时再饮茶' }
+  ];
+  function pairLookup(x, y) {
+    for (var i = 0; i < PAIR.length; i++) {
+      var r = PAIR[i];
+      if ((x.indexOf(r.a) >= 0 && y.indexOf(r.b) >= 0) || (x.indexOf(r.b) >= 0 && y.indexOf(r.a) >= 0)) return r;
+    }
+    return null;
+  }
+  function mealFindings(meal) {
+    var names = meal.parts.map(function (p) { return p.n; });
+    var out = [];
+    for (var i = 0; i < names.length; i++) for (var j = i + 1; j < names.length; j++) {
+      var r = pairLookup(names[i], names[j]);
+      if (r) out.push(r);
+    }
+    return out;
+  }
+  var FOOD_CATS = [
+    { k: 'staple', l: '主食', opts: ['米饭', '糙米', '燕麦', '红薯', '全麦面包', '意面', '荞麦面'] },
+    { k: 'protein', l: '蛋白', opts: ['鸡胸肉', '鸡蛋', '牛肉', '鱼', '虾', '豆腐', '希腊酸奶'] },
+    { k: 'veg', l: '蔬菜', opts: ['西兰花', '菠菜', '番茄', '彩椒', '生菜', '冬瓜'] },
+    { k: 'other', l: '其他', opts: ['牛油果', '香蕉', '牛奶', '橄榄油', '柠檬', '坚果'] }
+  ];
+  function goldenCombos(goal) {
+    if (goal === '增肌') return [
+      { c: '牛肉 + 糙米 + 彩椒', t: '优质蛋白 + 慢碳 + 维C促铁，增肌黄金三角' },
+      { c: '鸡蛋 + 全麦面包 + 牛油果', t: '完整氨基酸 + 好脂肪，训练后恢复友好' },
+      { c: '三文鱼 + 红薯 + 西兰花', t: 'Omega-3 抗炎 + 慢碳 + 纤维，助合成' }
+    ];
+    if (goal === '维持') return [
+      { c: '豆腐 + 杂粮 + 时蔬', t: '植物蛋白与谷物互补，清淡均衡' },
+      { c: '鸡胸 + 藜麦 + 牛油果', t: '完全蛋白 + 好脂肪，饱腹不长胖' },
+      { c: '鱼 + 糙米 + 番茄', t: '低脂优质蛋白 + 抗氧化物，日常稳态' }
+    ];
+    return [
+      { c: '鸡胸肉 + 西兰花 + 糙米', t: '高蛋白低脂 + 慢碳，减脂饱腹标配' },
+      { c: '番茄 + 鸡蛋 + 橄榄油', t: '番茄红素脂溶吸收，低脂又抗氧' },
+      { c: '希腊酸奶 + 莓果', t: '高蛋白益生菌 + 抗氧，加餐不胖' }
+    ];
+  }
+  function vDietPair() {
+    var d = S.diet;
+    var golds = goldenCombos(d.goal);
+    var goldHtml = golds.map(function (g) {
+      return '<div class="gc"><div class="gc-c">' + esc(g.c) + '</div><div class="gc-t">' + esc(g.t) + '</div></div>';
+    }).join('');
+    var sel = S.dietPair, res = S.dietPairRes;
+    var pickHtml = FOOD_CATS.map(function (c) {
+      var chips = c.opts.map(function (o) {
+        return '<span class="chip sm ' + (sel[c.k] === o ? 'on' : '') + '" data-a="pairPick" data-k="' + c.k + '" data-v="' + o + '">' + o + '</span>';
+      }).join('');
+      return '<div class="pc"><div class="pc-l">' + c.l + '</div><div class="chips">' + chips + '</div></div>';
+    }).join('');
+    var resHtml = '';
+    if (res) {
+      var head = res.warn ? '⚠ 搭配需注意' : '✓ 搭配优秀';
+      var items = res.items.map(function (it) {
+        return '<div class="pr ' + (it.t === 'good' ? 'g' : 'w') + '"><b>' + esc(it.a) + ' + ' + esc(it.b) + '</b> · ' + esc(it.why) + (it.fix ? ' <span class="pr-fix">→ ' + esc(it.fix) + '</span>' : '') + '</div>';
+      }).join('');
+      var empty = res.items.length ? '' : '<div class="pr g">所选食材无明显冲突，整体搭配均衡 👍</div>';
+      resHtml = '<div class="pair-res ' + (res.warn ? 'w' : 'g') + '"><div class="pr-h">' + head + '</div>' + items + empty + '</div>';
+    }
+    return '<div class="card diet-pair"><div class="form-t" style="margin:0 0 8px">🥇 目标黄金搭配 · ' + esc(d.goal) + '</div>' + goldHtml +
+      '<div class="h-sec" style="margin:14px 0 8px">🔍 搭配自检</div>' + pickHtml +
+      '<div class="gen-btn btn" data-a="pairCheck" style="margin-top:12px">检测搭配</div>' + resHtml + '</div>';
+  }
   function bmr(p) { var b = 10 * p.weight + 6.25 * p.height - 5 * p.age; return Math.round(p.gender === '女' ? b - 161 : b + 5); }
   function tdee(b, act) { var f = ({ '久坐': 1.2, '轻度': 1.375, '中度': 1.55, '高强度': 1.725 })[act] || 1.2; return Math.round(b * f); }
   function targetKcal(t, goal) { return goal === '减脂' ? Math.round(t - 400) : goal === '增肌' ? Math.round(t + 300) : t; }
@@ -724,9 +810,15 @@
       return '<span class="chip ' + (sel === v ? 'on' : '') + '" data-a="' + aName + '" data-k="' + key + '" data-v="' + v + '">' + v + '</span>';
     }).join('') + '</div>';
   }
-  function mealCard(title, pct, meal) {
+  function mealCard(title, pct, meal, badges) {
     var parts = meal.parts.map(function (x) { return '<div class="mc-p">' + esc(x.n) + (x.a ? ' <span class="mc-a">' + esc(x.a) + '</span>' : '') + '</div>'; }).join('');
-    return '<div class="meal-card"><div class="mc-h"><span class="mc-t">' + title + '</span><span class="mc-pct">' + pct + '%</span><span class="mc-k">' + meal.kcal + ' 千卡</span></div>' + parts + '</div>';
+    var bd = '';
+    if (badges && badges.length) {
+      bd = '<div class="mc-bd">' + badges.map(function (r) {
+        return '<span class="bd ' + (r.t === 'good' ? 'g' : 'w') + '">' + (r.t === 'good' ? '✓ 宜搭 ' : '⚠ 注意 ') + esc(r.a) + '+' + esc(r.b) + '</span>';
+      }).join('') + '</div>';
+    }
+    return '<div class="meal-card"><div class="mc-h"><span class="mc-t">' + title + '</span><span class="mc-pct">' + pct + '%</span><span class="mc-k">' + meal.kcal + ' 千卡</span></div>' + parts + bd + '</div>';
   }
   function vDietForm() {
     var d = S.dietDraft;
@@ -766,7 +858,8 @@
       '<div class="o' + (d.training ? '' : ' on') + '" data-a="dietTrain" data-v="0">休息日</div>' +
       '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
       '<div class="h-sec">今日餐单 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span></div>' +
-      mealCard('早餐', 25, bf) + mealCard('午餐', 35, lunch) + mealCard('晚餐', 30, dinner) + mealCard('加餐', 10, snack) +
+      mealCard('早餐', 25, bf, mealFindings(bf)) + mealCard('午餐', 35, lunch, mealFindings(lunch)) + mealCard('晚餐', 30, dinner, mealFindings(dinner)) + mealCard('加餐', 10, snack, mealFindings(snack)) +
+      vDietPair() +
       '<div class="card" style="font-size:11.5px;color:#7a838e;line-height:1.6;background:#f5f7f8">📌 ' + goalTxt + '。餐单为参考样例，按热量目标搭配中式食材；如有代谢疾病或特殊饮食需求，请遵营养师/医嘱。</div>' +
       '<div class="gen-btn btn ghost" data-a="dietEdit">↻ 重新填写资料</div>';
   }
@@ -853,6 +946,18 @@
     if (a === 'dietEdit') { S.dietDraft = Object.assign({}, S.diet); S.diet = null; saveK('fit_diet', null); renderView(); return; }
     if (a === 'dietTrain') { if (S.diet) { S.diet.training = (v === '1'); saveK('fit_diet', S.diet); renderView(); } return; }
     if (a === 'dietRegen') { renderView(); return; }
+    /* 饮食搭配自检 */
+    if (a === 'pairPick') { S.dietPair[k] = (S.dietPair[k] === v ? '' : v); S.dietPairRes = null; renderView(); return; }
+    if (a === 'pairCheck') {
+      var sel = S.dietPair; var foods = [sel.staple, sel.protein, sel.veg, sel.other].filter(function (x) { return x; });
+      var pItems = [], pWarn = false;
+      for (var pi = 0; pi < foods.length; pi++) for (var pj = pi + 1; pj < foods.length; pj++) {
+        var pr = pairLookup(foods[pi], foods[pj]);
+        if (pr) { pItems.push(pr); if (pr.t === 'warn') pWarn = true; }
+      }
+      S.dietPairRes = { warn: pWarn, items: pItems };
+      renderView(); return;
+    }
     /* 跟练 */
     if (a === 'skipReady') { enterAct(); return; }
     if (a === 'beginMain') { if (W && W.phase === 'warmDone') { W.warmAck = true; enterAct(); } return; }
