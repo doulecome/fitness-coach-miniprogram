@@ -107,7 +107,27 @@ const KW = {
   '股四头肌拉伸': ['quad stretch', 'quadriceps stretch', 'hip flexor and quad stretch'],
   '髋屈肌拉伸': ['hip flexor stretch', 'hip flexor'],
   '弹力带单臂划船': ['one arm standing low row', 'band low row', 'band row'],
-  '单腿提踵': ['single leg calf raise', 'single leg calf raises']
+  '单腿提踵': ['single leg calf raise', 'single leg calf raises'],
+  // v8 第四批扩充（19 个，首位用数据集精确名，注意部分名带 (male) 后缀）
+  '弹力带深蹲划船': ['band squat row'],
+  '弹力带坐姿转体划船': ['band one arm twisting seated row'],
+  '杠铃俯身划船': ['barbell bent over row'],
+  '弹力带耸肩': ['band shrug'],
+  '弓箭手引体': ['archer pull up'],
+  '跳绳': ['jump rope'],
+  '开合跳': ['star jump (male)', 'star jump'],
+  '跳蹲': ['jump squat'],
+  '剪刀跳': ['scissor jumps (male)', 'scissor jumps'],
+  '分腿跳': ['astride jumps (male)', 'astride jumps'],
+  '高抬腿弓步': ['walking high knees lunge'],
+  '冲刺跑': ['wind sprints'],
+  '过顶胸肌拉伸': ['behind head chest stretch'],
+  '四足深蹲拉伸': ['all fours squad stretch'],
+  '交叉卷腹': ['cross body crunch'],
+  '弹力带抗旋转推': ['band horizontal pallof press'],
+  '垂悬举腿': ['captains chair straight leg raise'],
+  '杠铃硬拉': ['barbell deadlift'],
+  '杠铃前蹲': ['barbell front squat']
 };
 
 const src = path.join(ROOT, 'scripts', 'dset', 'exercises.json');

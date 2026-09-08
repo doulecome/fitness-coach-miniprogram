@@ -109,5 +109,24 @@ module.exports = {
   "股四头肌拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/tFGKm99.gif",
   "髋屈肌拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/2LQkNPW.gif",
   "弹力带单臂划船": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/km0sQC0.gif",
-  "单腿提踵": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9JprnPh.gif"
+  "单腿提踵": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9JprnPh.gif",
+  // v8 第四批扩充（18 个新增，重点补拉/有氧；开合跳原有有效 GIF，未重复加）
+  "弹力带深蹲划船": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/w1NOByi.gif",
+  "弹力带坐姿转体划船": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/DKBwJrL.gif",
+  "杠铃俯身划船": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/eZyBC3j.gif",
+  "弹力带耸肩": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/trmte8s.gif",
+  "弓箭手引体": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/72BC5Za.gif",
+  "跳绳": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/e1e76I2.gif",
+  "跳蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/LIlE5Tn.gif",
+  "剪刀跳": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Eh2v5Iu.gif",
+  "分腿跳": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/f9lVSSI.gif",
+  "高抬腿弓步": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/J9zIWig.gif",
+  "冲刺跑": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/Qoujh3Q.gif",
+  "过顶胸肌拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/QoHIhPl.gif",
+  "四足深蹲拉伸": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/qBcKorM.gif",
+  "交叉卷腹": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/rbu5UUb.gif",
+  "弹力带抗旋转推": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/9pa4H5m.gif",
+  "垂悬举腿": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/weoDEpH.gif",
+  "杠铃硬拉": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/ila4NZS.gif",
+  "杠铃前蹲": "https://cdn.jsdelivr.net/gh/sovanndevid/my-exercisedb@main/media/zG0zs85.gif"
 };
