@@ -160,6 +160,11 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
 .day-card.warn { box-shadow:0 0 0 1.5px rgba(192,57,43,.35); }
 .backup-card .bk-btns { display:flex; gap:10px; }
 .backup-card .bk-btns .btn { flex:1; text-align:center; }
+.btn.danger { background:#fff0ee; color:#d9534f; border:1px solid #f2c4c0; }
+.btn.danger.armed { background:#d9534f; color:#fff; border-color:#d9534f; animation:pulse 1s infinite; }
+@keyframes pulse { 50% { opacity:.75; } }
+.srch-in { width:100%; box-sizing:border-box; padding:9px 14px; border-radius:999px; border:1px solid #e3e8ee; background:#f5f7f8; font-size:13px; color:#333; outline:none; margin-bottom:8px; }
+.srch-in:focus { border-color:#3ecf8e; background:#fff; }
 .train-loop .vol-row { display:flex; gap:8px; margin-top:4px; }
 .train-loop .vol-b { flex:1; background:#f5f7f8; border-radius:10px; padding:8px 6px; text-align:center; }
 .train-loop .vol-b .n { font-size:17px; font-weight:800; color:var(--gd); }
@@ -520,7 +525,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
 
   /* ============ 状态 ============ */
   var S = {
-    tab: 'home', seg: 'course', actMus: '全部', equipFilter: '全部',
+    tab: 'home', seg: 'course', actMus: '全部', actQ: '', equipFilter: '全部',
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
     form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
     recoveryOn: loadK('fit_recovery', false),
@@ -671,13 +676,13 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     courses.forEach(function (c) { c.actions.forEach(function (a) { if (!seen[a.name]) { seen[a.name] = 1; list.push(a); } }); });
     var mus = ['全部', '胸·肩', '臀·腿', '背·臂', '核心', '拉伸', '全身'];
     var chips = mus.map(function (m) { return '<span class="chip ' + (S.actMus === m ? 'on' : '') + '" data-a="mus" data-v="' + m + '">' + m + '</span>'; }).join('');
-    var filtered = list.filter(function (a) { return equipOk(a) && (S.actMus === '全部' || (musclesOf(a) || '').indexOf(S.actMus) >= 0); });
+    var filtered = list.filter(function (a) { return equipOk(a) && (S.actMus === '全部' || (musclesOf(a) || '').indexOf(S.actMus) >= 0) && (!S.actQ || a.name.indexOf(S.actQ) >= 0); });
     var rows = filtered.map(function (a) {
       return '<div class="act-row" data-a="actInfo" data-name="' + esc(a.name) + '"><div class="a-ic">' + a.icon + '</div>' +
         '<div><div class="a-n">' + esc(a.name) + '</div><div class="a-s">' + (a.type === 'reps' ? a.value + ' 次' : a.value + ' 秒') + ' · ' + esc(musclesOf(a)) + ' · ' + esc(a.equip || '徒手') + '</div></div>' +
         (a.gif ? '<div class="a-g">' + mediaTag(a.gif, a.icon) + '</div>' : '') + '<div class="a-go">›</div></div>';
     }).join('');
-    return seg + equipChips() + '<div style="height:6px"></div>' + '<div class="chips">' + chips + '</div><div style="height:10px"></div>' + (rows || '<div class="empty"><div class="e-ic">🤸</div>该筛选条件下暂无动作</div>');
+    return seg + equipChips() + '<div style="height:6px"></div>' + '<input id="actSearch" class="srch-in" placeholder="🔍 搜索动作名…" value="' + esc(S.actQ || '') + '">' + '<div class="chips">' + chips + '</div><div style="height:10px"></div>' + (rows || '<div class="empty" id="actEmpty"><div class="e-ic">🤸</div>该筛选条件下暂无动作</div>');
   }
 
   /* ============ 自定义训练 builder ============ */
@@ -1075,6 +1080,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var backup = '<div class="card backup-card"><div class="zh-st-h" style="margin-bottom:6px">💾 训练档案备份</div>' +
       '<div style="font-size:11.5px;color:#7a838e;line-height:1.6;margin-bottom:8px">一键导出全部动作纪录 / 训练历史 / 计划 / 饮食方案到 JSON，换设备或清缓存前先备份，避免数据丢失。</div>' +
       '<div class="bk-btns"><div class="btn" data-a="exportData">⬇ 导出备份</div><div class="btn ghost" data-a="importData">⬆ 导入备份</div></div>' +
+      '<div class="bk-btns" style="margin-top:8px"><div class="btn danger' + (resetArm ? ' armed' : '') + '" data-a="resetData">' + (resetArm ? '⚠️ 再点一次确认清空' : '🗑 清空全部数据') + '</div></div>' +
       '<input type="file" id="impFile" accept="application/json" style="display:none"></div>';
     return trendHtml() + prTrendHtml() + weightCard() + radarHtml + volHtml + backup +
       '<div class="stats-row"><div class="stat"><div class="n">' + S.records.length + '</div><div class="l">累计训练</div></div>' +
@@ -1867,6 +1873,24 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     reader.readAsText(file);
   }
 
+  var resetArm = 0;
+  function resetData() {
+    var now = Date.now();
+    if (!resetArm || now - resetArm > 5000) {
+      resetArm = now;
+      toast('⚠️ 将清空训练/饮食/体重/徽章数据，5 秒内再点一次确认');
+      renderShell();
+      setTimeout(function () { if (resetArm && Date.now() - resetArm >= 5000) { resetArm = 0; renderShell(); } }, 5100);
+      return;
+    }
+    ['fit_best', 'fit_records', 'fit_plan', 'fit_weight', 'fit_dietlog', 'fit_diet', 'fit_badges'].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+    S.best = {}; S.records = []; S.plan = null; S.weekIdx = 0;
+    S.weights = {}; S.dietLog = {}; S.diet = null; S.badges = {};
+    resetArm = 0;
+    toast('🗑 已清空全部数据，即将刷新');
+    setTimeout(function () { location.reload(); }, 900);
+  }
+
   /* ============ 事件委托 ============ */
   app.addEventListener('click', function (e) {
     var el = e.target.closest ? e.target.closest('[data-a]') : null;
@@ -1880,6 +1904,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (a === 'equipF') { S.equipFilter = v; renderView(); return; }
     if (a === 'setRecovery') { S.recoveryOn = (v === '1'); saveK('fit_recovery', S.recoveryOn); renderView(); return; }
     if (a === 'exportData') { exportData(); return; }
+    if (a === 'resetData') { resetData(); return; }
     if (a === 'sharePlan') { sharePlan(); return; }
     /* 体重 / 饮食打卡 */
     if (a === 'weightSave') {
@@ -2025,6 +2050,19 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (t && t.classList && t.classList.contains('fld')) {
       var k = t.dataset.k;
       S.dietDraft[k] = (k === 'age' || k === 'height' || k === 'weight') ? (Number(t.value) || 0) : t.value;
+    }
+    /* 动作库搜索：DOM 实时过滤，不重渲染避免丢焦点 */
+    if (t && t.id === 'actSearch') {
+      var q = (t.value || '').trim();
+      S.actQ = q;
+      var n = 0;
+      app.querySelectorAll('.act-row').forEach(function (r) {
+        var hit = !q || (r.getAttribute('data-name') || '').indexOf(q) >= 0;
+        r.style.display = hit ? '' : 'none';
+        if (hit) n++;
+      });
+      var em = app.querySelector('#actEmpty');
+      if (em) { em.style.display = n ? 'none' : ''; em.innerHTML = '<div class="e-ic">🔍</div>没找到「' + esc(q) + '」，换个关键词试试'; }
     }
   });
   app.addEventListener('change', function (e) {
