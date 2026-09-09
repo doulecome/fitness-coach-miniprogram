@@ -591,6 +591,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
+  var APP_VER = 'v19';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -690,11 +691,24 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
         '<div class="rc-m">已完成 ' + rs.done + '/' + rs.seq.length + ' 个动作 · 进度已保存</div>' +
         '<div class="rc-btns"><div class="btn" data-a="resumeRun">继续训练 ▸</div><div class="btn ghost" data-a="resumeDismiss">忽略</div></div></div>'
       : '';
+    // 今日餐单入口（首页直达，解决"找不到餐单"）
+    var mealTeaser = '';
+    if (S.diet) {
+      var th = todayMeals();
+      mealTeaser = '<div class="card" data-a="tab" data-v="diet" style="cursor:pointer">' +
+        '<div style="display:flex;align-items:center;margin-bottom:7px"><b style="font-size:13.5px">🍱 今日餐单</b>' +
+        '<span style="margin-left:auto;font-size:11px;color:var(--sub)">' + th.dayK + ' 千卡/天 · 查看 ▸</span></div>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:6px">' +
+        ['🌅 ' + th.bf.n, '☀️ ' + th.lunch.n, '🌙 ' + th.dinner.n, '🍪 ' + th.snack.n].map(function (mn) {
+          return '<span style="font-size:11px;padding:3px 9px;border-radius:999px;background:var(--bg);color:var(--ink)">' + esc(mn) + '</span>';
+        }).join('') + '</div></div>';
+    }
     return heroHtml + resumeCard +
       '<div class="stats-row"><div class="stat"><div class="n">' + minToday + '</div><div class="l">今日分钟</div></div>' +
       '<div class="stat"><div class="n">' + mdays + '</div><div class="l">本月练次</div></div>' +
       '<div class="stat"><div class="n">' + recCount + '</div><div class="l">动作有纪录</div></div>' +
       '<div class="stat"><div class="n">' + (streak() || 0) + '</div><div class="l">连续打卡</div></div></div>' +
+      mealTeaser +
       '<div class="h-sec">为你精选<span class="more">点卡片看动作清单</span></div>' + strip + lastCard + breathCard;
   }
 
@@ -1471,6 +1485,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div style="font-size:11.5px;color:#7a838e;line-height:1.6;margin-bottom:8px">一键导出全部动作纪录 / 训练历史 / 计划 / 饮食方案到 JSON，换设备或清缓存前先备份，避免数据丢失。</div>' +
       '<div class="bk-btns"><div class="btn" data-a="exportData">⬇ 导出备份</div><div class="btn ghost" data-a="importData">⬆ 导入备份</div></div>' +
       '<div class="bk-btns" style="margin-top:8px"><div class="btn danger' + (resetArm ? ' armed' : '') + '" data-a="resetData">' + (resetArm ? '⚠️ 再点一次确认清空' : '🗑 清空全部数据') + '</div></div>' +
+      '<div style="text-align:center;font-size:10px;color:#b0b6bd;margin-top:10px">健身教练 Web · ' + APP_VER + '（若与最新版本不符 = 手机在吃旧缓存，强制刷新即可）</div>' +
       '<input type="file" id="impFile" accept="application/json" style="display:none"></div>';
     return heatmap() + remindCard() + trendHtml() + fitTestCard() + prTrendHtml() + weightCard() + radarHtml + volHtml + backup +
       '<div class="btn" style="margin:0 0 10px;text-align:center" data-a="weeklyReport">📊 生成周报分享图</div>' +
@@ -2161,13 +2176,13 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="gen-btn btn" data-a="saveDiet">✨ 生成我的饮食方案</div>' +
       '<div style="text-align:center;font-size:11px;color:#a0a6ad;margin:14px 6px;line-height:1.7">按 Mifflin-St Jeor 公式估算基础代谢，结合活动系数与训练目标给出热量与营养素方案，并搭配一日餐单样例</div>';
   }
-  function vDietResult() {
+  /* 今日餐单解析：饮食页与首页 teaser 共用；当日持久化 fit_daymeal */
+  function todayMeals() {
     var d = S.diet;
+    if (!d) return null;
     var today = todayStr();
     var b = bmr(d), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
     var dayK = d.training ? tgt + 150 : tgt;
-    var m = macroSplit(dayK, d.weight, d.goal, d.training);
-    var tot = m.pk + m.ck + m.fk || 1;
     var shares = { bf: Math.round(dayK * 0.25), lunch: Math.round(dayK * 0.35), dinner: Math.round(dayK * 0.30) };
     var bf, lunch, dinner, snack;
     if (S.dayMeal && S.dayMeal.date === today && S.dayMeal.goal === d.goal) {
@@ -2183,6 +2198,17 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       S.dayMeal = { date: today, goal: d.goal, bf: bf.n, lunch: lunch.n, dinner: dinner.n, snack: snack.n };
       saveK('fit_daymeal', S.dayMeal);
     }
+    return { bf: bf, lunch: lunch, dinner: dinner, snack: snack, dayK: dayK };
+  }
+  function vDietResult() {
+    var d = S.diet;
+    var today = todayStr();
+    var b = bmr(d), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
+    var dayK = d.training ? tgt + 150 : tgt;
+    var m = macroSplit(dayK, d.weight, d.goal, d.training);
+    var tot = m.pk + m.ck + m.fk || 1;
+    var tm = todayMeals();
+    var bf = tm.bf, lunch = tm.lunch, dinner = tm.dinner, snack = tm.snack;
     var water = Math.round(d.weight * 35);
     // 饮食打卡（#23）：勾选已吃的餐 → 已摄入 vs 目标进度
     var dl = S.dietLog[today] || (S.dietLog[today] = {});
