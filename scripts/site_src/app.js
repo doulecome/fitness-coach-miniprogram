@@ -99,7 +99,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v20';
+  var APP_VER = 'v21';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -127,12 +127,20 @@
   function renderView() {
     var tb = $('#topbar'); if (tb) tb.firstChild.textContent = tabTitle();
     var v = $('#view');
+    /* 保持滚动位置与输入焦点：点勾选/打卡/换一批不再跳顶（tab 切换走 renderShell 重建 #view，自然回顶） */
+    var sy = v.scrollTop;
+    var ae = document.activeElement, fk = (ae && ae.getAttribute) ? ae.getAttribute('data-k') : null;
+    var caret = (ae && typeof ae.selectionStart === 'number') ? ae.selectionStart : null;
     if (S.tab === 'home') v.innerHTML = vHome();
     else if (S.tab === 'train') v.innerHTML = vTrain();
     else if (S.tab === 'plan') v.innerHTML = S.plan ? vPlanResult() : vPlanForm();
     else if (S.tab === 'diet') v.innerHTML = vDiet();
     else v.innerHTML = vRecord();
-    v.scrollTop = 0;
+    v.scrollTop = sy;
+    if (fk) {
+      var nf = v.querySelector('.fld[data-k="' + fk + '"]');
+      if (nf) { nf.focus(); if (caret != null && typeof nf.setSelectionRange === 'function') { try { nf.setSelectionRange(caret, caret); } catch (e2) {} } }
+    }
   }
 
   /* ============ 首页 ============ */
