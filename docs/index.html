@@ -591,7 +591,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v21';
+  var APP_VER = 'v22';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -699,18 +699,21 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
         '<div class="rc-m">已完成 ' + rs.done + '/' + rs.seq.length + ' 个动作 · 进度已保存</div>' +
         '<div class="rc-btns"><div class="btn" data-a="resumeRun">继续训练 ▸</div><div class="btn ghost" data-a="resumeDismiss">忽略</div></div></div>'
       : '';
-    // 今日餐单入口（首页直达，解决"找不到餐单"；无方案自动按默认生成）
+    // 今日饮食入口（首页直达，Keep 式预算视角）
     var mealTeaser = '';
     if (!S.dietFormOpen) {
       ensureDiet();
       var th = todayMeals();
+      var dlh = dayLog(), eatenH = logKcal(dlh), budgetH = th.dayK + todayBurn(), leftH = Math.round(budgetH - eatenH);
+      var recItems = dlh.items.slice(-4).map(function (x) { return x.n; });
+      var chipsH = (recItems.length ? recItems : [th.bf.n, th.lunch.n, th.dinner.n]).map(function (mn) {
+        return '<span style="font-size:11px;padding:3px 9px;border-radius:999px;background:var(--bg);color:var(--ink)">' + esc(mn) + '</span>';
+      }).join('');
       mealTeaser = '<div class="card" data-a="tab" data-v="diet" style="cursor:pointer">' +
-        '<div style="display:flex;align-items:center;margin-bottom:7px"><b style="font-size:13.5px">🍱 今日餐单</b>' +
-        '<span style="margin-left:auto;font-size:11px;color:var(--sub)">' + th.dayK + ' 千卡/天 · 查看 ▸</span></div>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:6px">' +
-        ['🌅 ' + th.bf.n, '☀️ ' + th.lunch.n, '🌙 ' + th.dinner.n, '🍪 ' + th.snack.n].map(function (mn) {
-          return '<span style="font-size:11px;padding:3px 9px;border-radius:999px;background:var(--bg);color:var(--ink)">' + esc(mn) + '</span>';
-        }).join('') + '</div></div>';
+        '<div style="display:flex;align-items:center;margin-bottom:4px"><b style="font-size:13.5px">🍱 今日饮食</b>' +
+        '<span style="margin-left:auto;font-size:12px;font-weight:800;color:' + (leftH < 0 ? '#e05a4e' : '#0fb98c') + '">' + (leftH < 0 ? '超 ' + (-leftH) : '还能吃 ' + leftH) + ' 千卡</span></div>' +
+        '<div style="font-size:10.5px;color:#8d959e;margin-bottom:7px">已吃 ' + eatenH + ' / 预算 ' + budgetH + ' 千卡 · 点开记录 ▸</div>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:6px">' + chipsH + '</div></div>';
     }
     return heroHtml + resumeCard +
       '<div class="stats-row"><div class="stat"><div class="n">' + minToday + '</div><div class="l">今日分钟</div></div>' +
@@ -1603,8 +1606,23 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="sh-go btn ghost" data-a="editDay" data-w="' + wIdx + '" data-i="' + i + '">✏️ 编辑本日安排</div>' +
       '<div class="sh-go btn" data-a="runDay" data-w="' + wIdx + '" data-i="' + i + '">按此训练开始 ▸</div>');
   }
-  function sheetRec(i) {
-    var r = S.records[i];
+  /* 记录饮食 sheet：24 道菜品一键 + 搜索 + 自定义热量 */
+  function sheetFood(meal) {
+    S._foodMeal = meal;
+    var dishes = allDishes();
+    var rows = dishes.map(function (t) {
+      return '<div class="food-row" data-name="' + esc(t.n) + '" data-a="foodPick" data-n="' + esc(t.n) + '" style="display:flex;align-items:center;padding:9px 4px;border-bottom:1px solid rgba(127,127,127,.12);cursor:pointer">' +
+        '<span style="font-size:9px;color:#fff;background:var(--gd);border-radius:999px;padding:1px 7px;margin-right:8px;flex:none">' + t.tag + '</span>' +
+        '<span style="font-size:12.5px;font-weight:600">' + esc(t.n) + '</span><span style="margin-left:auto;font-size:11px;color:var(--sub)">' + t.kcal + ' 千卡</span></div>';
+    }).join('');
+    openSheet('<div class="sh-h"><div class="sh-t">🍽 记录' + mealLabel(meal) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
+      '<input id="foodSearch" class="fld" placeholder="🔍 搜索菜品" style="width:100%;margin:0 0 6px">' +
+      '<div id="foodList" style="max-height:300px;overflow-y:auto">' + rows + '</div>' +
+      '<div class="form-t" style="margin:12px 0 6px">吃的没在库里？手动记一条</div>' +
+      '<div style="display:flex;gap:8px"><input id="foodCn" class="fld" placeholder="名称，如 外卖" style="flex:2"><input id="foodCk" class="fld" type="number" inputmode="numeric" placeholder="千卡" style="flex:1"></div>' +
+      '<div class="btn" data-a="foodCustom" style="margin-top:8px;text-align:center;padding:9px 0">＋ 加入' + mealLabel(meal) + '</div>');
+  }
+  function sheetRec(i) {    var r = S.records[i];
     var rows;
     if (!r.detail || !r.detail.length) rows = '<div class="empty" style="padding:16px">早期记录暂无动作明细</div>';
     else rows = r.detail.map(function (x) {
@@ -2138,6 +2156,50 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     return out;
   }
   var ALLFOODS = collectFoods();
+  /* ============ Keep 式热量预算 + 按餐记录（#40）：推荐菜一键记入，预算随训练消耗闭环 ============ */
+  var MEALS = [['bf', '早餐', '🌅'], ['lunch', '午餐', '☀️'], ['dinner', '晚餐', '🌙'], ['snack', '加餐', '🍪']];
+  function mealLabel(k) { for (var i = 0; i < MEALS.length; i++) if (MEALS[i][0] === k) return MEALS[i][1]; return k; }
+  function dayLog() {
+    var t = todayStr();
+    var dl = S.dietLog[t];
+    if (!dl || !dl.items) { dl = { items: [] }; S.dietLog[t] = dl; }
+    return dl;
+  }
+  function logKcal(dl) { return dl.items.reduce(function (a, x) { return a + (x.kcal || 0); }, 0); }
+  function todayBurn() {
+    var t = todayStr();
+    return S.records.filter(function (r) { return r.date === t; }).reduce(function (a, r) { return a + (r.kcal || 0); }, 0);
+  }
+  function saveDietLog() { saveK('fit_dietlog', S.dietLog); }
+  function allDishes() {
+    var out = [];
+    [BF, LUN, DIN, SNK].forEach(function (arr, i) { arr.forEach(function (t) { out.push({ n: t.n, kcal: t.kcal, tag: MEALS[i][1] }); }); });
+    return out;
+  }
+  function findDish(n) {
+    var pools = [BF, LUN, DIN, SNK];
+    for (var i = 0; i < pools.length; i++) {
+      var hit = pools[i].filter(function (t) { return t.n === n; })[0];
+      if (hit) return hit;
+    }
+    return null;
+  }
+  function addFoodItem(meal, n, kcal) {
+    dayLog().items.push({ id: '' + Date.now() + Math.floor(Math.random() * 999), meal: meal, n: n, kcal: Math.round(kcal) });
+    saveDietLog();
+  }
+  function budgetRing(eaten, budget) {
+    var pct = budget > 0 ? Math.min(1, eaten / budget) : 0;
+    var r = 52, C = 2 * Math.PI * r;
+    var left = Math.round(budget - eaten), over = left < 0;
+    var col = over ? '#e05a4e' : '#1FD6A8';
+    return '<svg width="118" height="118" viewBox="0 0 120 120" style="flex:none">' +
+      '<circle cx="60" cy="60" r="' + r + '" fill="none" stroke="rgba(127,127,127,.18)" stroke-width="10"/>' +
+      '<circle cx="60" cy="60" r="' + r + '" fill="none" stroke="' + col + '" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + (C * pct).toFixed(1) + ' ' + C.toFixed(1) + '" transform="rotate(-90 60 60)"/>' +
+      '<text x="60" y="57" text-anchor="middle" font-size="16" font-weight="800" fill="currentColor">' + eaten + '</text>' +
+      '<text x="60" y="74" text-anchor="middle" font-size="9" fill="currentColor" opacity=".55">已吃 / ' + budget + '</text>' +
+      '</svg>';
+  }
   function pantryMiss(meal, pantry) {
     if (!pantry || !pantry.length) return [];
     return meal.parts.filter(function (p) { return pantry.indexOf(p.n) < 0; }).map(function (p) { return p.n; });
@@ -2159,7 +2221,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       return '<span class="chip ' + (sel === v ? 'on' : '') + '" data-a="' + aName + '" data-k="' + key + '" data-v="' + v + '">' + v + '</span>';
     }).join('') + '</div>';
   }
-  function mealCard(title, pct, meal, badges, pantry) {
+  function mealCard(title, pct, meal, badges, pantry, mealKey) {
     var miss = pantryMiss(meal, pantry);
     var parts = meal.parts.map(function (x) {
       var isMiss = miss.indexOf(x.n) >= 0;
@@ -2172,7 +2234,8 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       }).join('') + '</div>';
     }
     if (miss.length) bd += '<div class="mc-bd"><span class="bd w">🧺 缺 ' + miss.length + ' 项食材：' + esc(miss.join('、')) + '</span></div>';
-    return '<div class="meal-card"><div class="mc-h"><span class="mc-t">' + title + '</span><span class="mc-pct">' + pct + '%</span><span class="mc-k">' + meal.kcal + ' 千卡</span></div>' + parts + bd + '</div>';
+    var addBtn = mealKey ? '<div class="btn ghost" data-a="foodQuick" data-meal="' + mealKey + '" data-k="' + esc(meal.n) + '" style="margin-top:8px;text-align:center;padding:8px 0;font-size:12px">＋ 吃了就记入' + title + '</div>' : '';
+    return '<div class="meal-card"><div class="mc-h"><span class="mc-t">' + title + '</span><span class="mc-pct">' + pct + '%</span><span class="mc-k">' + meal.kcal + ' 千卡</span></div>' + parts + bd + addBtn + '</div>';
   }
   function vDietForm() {
     var d = S.dietDraft;
@@ -2219,27 +2282,39 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var tm = todayMeals();
     var bf = tm.bf, lunch = tm.lunch, dinner = tm.dinner, snack = tm.snack;
     var water = Math.round(d.weight * 35);
-    // 饮食打卡（#23）：勾选已吃的餐 → 已摄入 vs 目标进度
-    var dl = S.dietLog[today] || (S.dietLog[today] = {});
-    var eaten = (dl.bf ? bf.kcal : 0) + (dl.lunch ? lunch.kcal : 0) + (dl.dinner ? dinner.kcal : 0) + (dl.snack ? snack.kcal : 0);
-    var mealChips = [['bf', '🌅 早餐'], ['lunch', '☀️ 午餐'], ['dinner', '🌙 晚餐'], ['snack', '🍪 加餐']].map(function (x) {
-      return '<span class="chip ' + (dl[x[0]] ? 'on' : '') + '" data-a="mealChk" data-k="' + x[0] + '">' + x[1] + (dl[x[0]] ? ' ✓' : '') + '</span>';
-    }).join('');
-    var mealChkHtml = '<div class="card" style="margin-top:8px"><div class="form-t" style="margin:0 0 8px">🍽 今日饮食打卡</div>' +
-      '<div class="chips">' + mealChips + '</div>' +
-      '<div class="macro-bar" style="margin-top:10px"><i class="mp p" style="width:' + Math.min(100, Math.round(eaten / dayK * 100)) + '%"></i></div>' +
-      '<div style="font-size:11px;color:#7a838e;margin-top:6px">已摄入 <b style="color:var(--ink)">' + eaten + '</b> / 目标 ' + dayK + ' 千卡' +
-      (eaten > dayK ? ' · <span style="color:#e08a00">超 ' + (eaten - dayK) + ' 千卡</span>' : ' · 还剩 ' + (dayK - eaten) + ' 千卡') + '</div></div>';
+    /* Keep 式热量预算：预算 = 目标热量 + 今日实际训练消耗；已吃 = 当日按餐记录之和 */
+    var dl = dayLog();
+    var eaten = logKcal(dl);
+    var burn = todayBurn();
+    var budget = dayK + burn;
+    var left = Math.round(budget - eaten);
+    var budgetCard = '<div class="card"><div class="form-t" style="margin:0 0 6px">🔥 今日热量预算</div>' +
+      '<div style="display:flex;align-items:center;gap:14px">' + budgetRing(eaten, budget) +
+      '<div style="flex:1;min-width:0"><div style="font-size:26px;font-weight:900;color:' + (left < 0 ? '#e05a4e' : 'var(--ink)') + '">' + (left < 0 ? '超 ' + (-left) : '还能吃 ' + left) + '</div>' +
+      '<div style="font-size:11px;color:#7a838e;margin-top:2px">千卡' + (left < 0 ? ' · 已超出今日预算' : ' · 距离预算还有余额') + '</div>' +
+      '<div style="font-size:10.5px;color:#8d959e;margin-top:6px;line-height:1.6">预算 ' + budget + ' = 目标 ' + dayK + (burn ? ' + 今日训练已消耗 ' + burn : '') + '<br>吃了就记（下方每餐 ＋），预算实时扣减</div></div></div></div>';
+    /* 按餐记录实际饮食（替代旧布尔打卡） */
+    var mealLogHtml = '<div class="card"><div class="form-t" style="margin:0 0 4px">🍽 今日吃了什么</div>' +
+      MEALS.map(function (m2) {
+        var its = dl.items.filter(function (x) { return x.meal === m2[0]; });
+        var sum = its.reduce(function (a, x) { return a + (x.kcal || 0); }, 0);
+        var rows = its.map(function (x) {
+          return '<div style="display:flex;align-items:center;padding:7px 2px;border-bottom:1px solid rgba(127,127,127,.1)"><span style="font-size:12.5px">' + esc(x.n) + '</span><span style="margin-left:auto;font-size:11px;color:var(--sub)">' + x.kcal + ' 千卡<span data-a="foodDel" data-id="' + x.id + '" style="color:#e05a4e;cursor:pointer;padding:0 2px 0 8px">✕</span></span></div>';
+        }).join('');
+        return '<div style="margin:8px 0 2px"><div style="display:flex;align-items:center"><b style="font-size:12.5px">' + m2[2] + ' ' + m2[1] + '</b>' +
+          '<span style="margin-left:auto;font-size:11px;color:var(--sub)">' + (its.length ? sum + ' 千卡' : '未记录') + '</span>' +
+          '<span class="chip sm" data-a="addFood" data-meal="' + m2[0] + '" style="margin-left:8px;cursor:pointer">＋ 记录</span></div>' + rows + '</div>';
+      }).join('') + '</div>';
     var goalTxt = d.goal === '减脂' ? '热量缺口，建议配合训练与充足蛋白以保留肌肉' : d.goal === '增肌' ? '热量盈余，保证蛋白摄入与力量训练刺激' : '维持当前体重，均衡搭配即可';
     // 热量闭环（#16）：把训练消耗汇入饮食预算视角——展示本周训练消耗，训练日已 +150 千卡
     var cutoff7 = Date.now() - 7 * 86400000;
     var wkR = S.records.filter(function (r) { return new Date(r.date + 'T00:00:00').getTime() >= cutoff7; });
     var wkK = wkR.reduce(function (a, r) { return a + (r.kcal || 0); }, 0);
-    var trainCard = '<div class="card train-loop"><div class="form-t" style="margin:0 0 6px">🏃 本周训练消耗（热量闭环）</div>' +
+    var trainCard = '<div class="card train-loop"><div class="form-t" style="margin:0 0 6px">🏃 训练消耗（热量闭环）</div>' +
       '<div class="vol-row"><div class="vol-b"><div class="n">' + wkK + '</div><div class="l">近 7 天消耗(千卡)</div></div>' +
       '<div class="vol-b"><div class="n">' + wkR.length + '</div><div class="l">训练次数</div></div>' +
-      '<div class="vol-b"><div class="n">+' + (d.training ? 150 : 0) + '</div><div class="l">训练日追加</div></div></div>' +
-      '<div style="font-size:10.5px;color:#a0a6ad;margin-top:6px">训练日当天已在本方案热量基础上 +150 千卡（见上方"当日类型"）。练得越多、热量预算越贴合实际消耗，吃练自然闭环。</div></div>';
+      '<div class="vol-b"><div class="n">+' + burn + '</div><div class="l">今日已计入预算</div></div></div>' +
+      '<div style="font-size:10.5px;color:#a0a6ad;margin-top:6px">今天练掉 ' + burn + ' 千卡已实时加进上方预算——练得多，当天能吃的也多，吃练闭环。</div></div>';
     /* 常备食材卡（#39）：勾选后餐单优先按已有食材配 */
     var pantryChips = ALLFOODS.map(function (f) {
       return '<span class="chip ' + (S.pantry.indexOf(f) >= 0 ? 'on' : '') + '" data-a="pantryTgl" data-n="' + esc(f) + '">' + esc(f) + '</span>';
@@ -2265,10 +2340,11 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="diff-seg" style="margin:10px 0 6px"><span class="dl">当日类型</span>' +
       '<div class="o' + (d.training ? '' : ' on') + '" data-a="dietTrain" data-v="0">休息日</div>' +
       '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
-      '<div class="h-sec">今日餐单 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span></div>' +
-      mealCard('早餐', 25, bf, mealFindings(bf), S.pantry) + mealCard('午餐', 35, lunch, mealFindings(lunch), S.pantry) + mealCard('晚餐', 30, dinner, mealFindings(dinner), S.pantry) + mealCard('加餐', 10, snack, mealFindings(snack), S.pantry) +
+      budgetCard +
+      mealLogHtml +
+      '<div class="h-sec">今日推荐 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span><span style="font-size:10px;color:#8d959e;margin-left:6px">吃了点「一键记入」就进预算</span></div>' +
+      mealCard('早餐', 25, bf, mealFindings(bf), S.pantry, 'bf') + mealCard('午餐', 35, lunch, mealFindings(lunch), S.pantry, 'lunch') + mealCard('晚餐', 30, dinner, mealFindings(dinner), S.pantry, 'dinner') + mealCard('加餐', 10, snack, mealFindings(snack), S.pantry, 'snack') +
       pantryHtml +
-      mealChkHtml +
       trainCard +
       vDietPair() +
       '<div class="card" style="font-size:11.5px;color:#7a838e;line-height:1.6;background:#f5f7f8">📌 ' + goalTxt + '。餐单为参考样例，按热量目标搭配中式食材；如有代谢疾病或特殊饮食需求，请遵营养师/医嘱。</div>' +
@@ -2410,7 +2486,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
 
   /* ============ 训练档案导出/备份（#15） ============ */
   function exportData() {
-    var payload = { v: 1, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair, pantry: S.pantry, wGoal: S.wGoal, fitness: S.fitness, rpeLog: S.rpeLog };
+    var payload = { v: 1, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair, pantry: S.pantry, wGoal: S.wGoal, fitness: S.fitness, rpeLog: S.rpeLog, dietLog: S.dietLog };
     try {
       var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       var url = URL.createObjectURL(blob);
@@ -2435,6 +2511,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
         if (p.wGoal !== undefined) { S.wGoal = p.wGoal; saveK('fit_wgoal', S.wGoal); }
         if (p.fitness) { S.fitness = p.fitness; saveK('fit_fitness', S.fitness); }
         if (p.rpeLog) { S.rpeLog = p.rpeLog; saveK('fit_rpe', S.rpeLog); }
+        if (p.dietLog) { S.dietLog = p.dietLog; saveK('fit_dietlog', S.dietLog); }
         S.dayMeal = null; saveK('fit_daymeal', null);
         alert('已导入备份：动作纪录 ' + Object.keys(S.best).length + ' 项，训练记录 ' + S.records.length + ' 条');
         renderShell();
@@ -2539,9 +2616,30 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (a === 'poseStart') { poseStart(); return; }
     if (a === 'poseSave') { poseSave(); return; }
     if (a === 'poseClose') { poseStopCam(); toast('已取消 AI 训练'); return; }
-    if (a === 'mealChk') {
-      var td = todayStr(), log = S.dietLog[td] || (S.dietLog[td] = {});
-      log[k] = !log[k]; saveK('fit_dietlog', S.dietLog); renderView(); return;
+    /* Keep 式按餐记录（#40） */
+    if (a === 'addFood') { sheetFood(el.dataset.meal); return; }
+    if (a === 'foodQuick') {
+      var dq = findDish(el.dataset.k);
+      if (dq) { addFoodItem(el.dataset.meal, dq.n, dq.kcal); toast('✅ 已记入' + mealLabel(el.dataset.meal) + '：' + dq.n + '（' + dq.kcal + ' 千卡）'); renderView(); }
+      return;
+    }
+    if (a === 'foodPick') {
+      var dp = findDish(el.dataset.n);
+      if (dp) { addFoodItem(S._foodMeal, dp.n, dp.kcal); closeSheet(); toast('✅ 已记录 ' + dp.n + '（' + dp.kcal + ' 千卡）'); renderView(); }
+      return;
+    }
+    if (a === 'foodDel') {
+      var dlx = dayLog();
+      dlx.items = dlx.items.filter(function (x) { return x.id !== el.dataset.id; });
+      saveDietLog(); renderView(); return;
+    }
+    if (a === 'foodCustom') {
+      var cn = $('#foodCn'), ck2 = $('#foodCk');
+      var nm = ((cn && cn.value) || '').trim(), kv = Number(ck2 && ck2.value) || 0;
+      if (!nm) { toast('请先填写吃了什么'); return; }
+      if (kv <= 0) { toast('请填写热量（千卡）'); return; }
+      addFoodItem(S._foodMeal, nm, kv); closeSheet(); toast('✅ 已记录 ' + nm + '（' + kv + ' 千卡）'); renderView();
+      return;
     }
     /* 呼吸放松 */
     if (a === 'breath') { startBreath(v); return; }
@@ -2700,6 +2798,22 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       });
       var em = app.querySelector('#actEmpty');
       if (em) { em.style.display = n ? 'none' : ''; em.innerHTML = '<div class="e-ic">🔍</div>没找到「' + esc(q) + '」，换个关键词试试'; }
+    }
+    /* 饮食记录 sheet 搜索：DOM 实时过滤，不重渲染避免丢焦点 */
+    if (t && t.id === 'foodSearch') {
+      var q3 = (t.value || '').trim();
+      var n3 = 0;
+      app.querySelectorAll('.food-row').forEach(function (r) {
+        var hit = !q3 || (r.getAttribute('data-name') || '').indexOf(q3) >= 0;
+        r.style.display = hit ? '' : 'none';
+        if (hit) n3++;
+      });
+      var fl = app.querySelector('#foodList');
+      if (fl && !n3 && q3) {
+        var empty = app.querySelector('#foodEmpty');
+        if (!empty) { empty = document.createElement('div'); empty.id = 'foodEmpty'; fl.parentNode.insertBefore(empty, fl.nextSibling); }
+        empty.innerHTML = '<div style="text-align:center;font-size:11px;color:#a0a6ad;padding:10px 0">没找到「' + esc(q3) + '」，用下方手动记一条</div>';
+      } else { var em3 = app.querySelector('#foodEmpty'); if (em3) em3.innerHTML = ''; }
     }
   });
   app.addEventListener('change', function (e) {
