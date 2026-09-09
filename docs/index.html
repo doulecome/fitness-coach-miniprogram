@@ -591,7 +591,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v22';
+  var APP_VER = 'v23';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -2208,7 +2208,11 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var pool = arr.filter(function (t) { return Math.abs(t.kcal - target) <= 80; });
     if (!pool.length) { var bd = 1e9, bn = arr[0]; arr.forEach(function (t) { var d = Math.abs(t.kcal - target); if (d < bd) { bd = d; bn = t; } }); pool = [bn]; }
     if (pantry && pantry.length) {
-      /* 按缺的食材数升序：优先全备的，其次缺得最少的 */
+      /* 严格按常备食材配：先在热量窗口内找全备的；找不到就放宽热量窗口找全备的；再不行取缺得最少的 */
+      var full = pool.filter(function (t) { return pantryMiss(t, pantry).length === 0; });
+      if (full.length) return full[Math.floor(Math.random() * full.length)];
+      var wide = arr.filter(function (t) { return Math.abs(t.kcal - target) <= 180 && pantryMiss(t, pantry).length === 0; });
+      if (wide.length) return wide[Math.floor(Math.random() * wide.length)];
       var ranked = pool.slice().sort(function (a, b) { return pantryMiss(a, pantry).length - pantryMiss(b, pantry).length; });
       var best = pantryMiss(ranked[0], pantry).length;
       var cand = ranked.filter(function (t) { return pantryMiss(t, pantry).length === best; });
@@ -2249,16 +2253,18 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div style="text-align:center;font-size:11px;color:#a0a6ad;margin:14px 6px;line-height:1.7">按 Mifflin-St Jeor 公式估算基础代谢，结合活动系数与训练目标给出热量与营养素方案，并搭配一日餐单样例</div>';
   }
   /* 今日餐单解析：饮食页与首页 teaser 共用；当日持久化 fit_daymeal */
+  function pantryKey() { return S.pantry.slice().sort().join(','); }
   function todayMeals() {
     var d = S.diet;
     if (!d) return null;
     var today = todayStr();
+    var pk = pantryKey();
     var b = bmr(d), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
     var dayK = d.training ? tgt + 150 : tgt;
     var shares = { bf: Math.round(dayK * 0.25), lunch: Math.round(dayK * 0.35), dinner: Math.round(dayK * 0.30) };
     var bf, lunch, dinner, snack;
-    if (S.dayMeal && S.dayMeal.date === today && S.dayMeal.goal === d.goal) {
-      /* 当日餐单持久化：勾选常备食材/重进页面餐单不乱跳 */
+    if (S.dayMeal && S.dayMeal.date === today && S.dayMeal.goal === d.goal && S.dayMeal.pantry === pk) {
+      /* 当日餐单持久化（date+goal+常备食材三重签名）：三者任一变化即按新条件重配 */
       bf = BF.filter(function (t) { return t.n === S.dayMeal.bf; })[0] || pickMeal(BF, shares.bf, S.pantry);
       lunch = LUN.filter(function (t) { return t.n === S.dayMeal.lunch; })[0] || pickMeal(LUN, shares.lunch, S.pantry);
       dinner = DIN.filter(function (t) { return t.n === S.dayMeal.dinner; })[0] || pickMeal(DIN, shares.dinner, S.pantry);
@@ -2267,7 +2273,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       bf = pickMeal(BF, shares.bf, S.pantry); lunch = pickMeal(LUN, shares.lunch, S.pantry); dinner = pickMeal(DIN, shares.dinner, S.pantry);
       var snackK0 = dayK - (bf.kcal + lunch.kcal + dinner.kcal);
       snack = pickMeal(SNK, snackK0 > 60 ? snackK0 : 150, S.pantry);
-      S.dayMeal = { date: today, goal: d.goal, bf: bf.n, lunch: lunch.n, dinner: dinner.n, snack: snack.n };
+      S.dayMeal = { date: today, goal: d.goal, pantry: pk, bf: bf.n, lunch: lunch.n, dinner: dinner.n, snack: snack.n };
       saveK('fit_daymeal', S.dayMeal);
     }
     return { bf: bf, lunch: lunch, dinner: dinner, snack: snack, dayK: dayK };
@@ -2322,8 +2328,8 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var pantryHtml = '<div class="card" style="margin-bottom:10px"><div class="form-t" style="margin:0 0 8px">🧺 我的常备食材 <span class="more" data-a="pantryAll" style="cursor:pointer">' + (S.pantry.length ? '全选 / 清空' : '一键全选') + '</span></div>' +
       '<div class="chips">' + pantryChips + '</div>' +
       '<div style="font-size:10.5px;color:#8d959e;margin-top:6px">' + (S.pantry.length
-        ? '已勾 ' + S.pantry.length + ' 项 · 餐单优先按已有食材配，缺的会在下方标 ⚠️'
-        : '勾选家里有的食材，餐单就按已有的来配；不勾则全库随机') + '</div>' +
+        ? '已勾 ' + S.pantry.length + ' 项 · 今日餐单已按你的食材重新生成（只挑家里有的，实在凑不齐才缺几样标 ⚠️）；点「重新配餐」可再换一批'
+        : '勾选家里有的食材，餐单立即按已有的来生成；不勾则全库随机') + '</div>' +
       (S.pantry.length ? '<div class="btn" style="margin-top:8px;text-align:center;padding:9px 0" data-a="pantryRegen">按常备食材重新配餐 ⟳</div>' : '') + '</div>';
     return '' +
       '<div class="card diet-sum">' +
