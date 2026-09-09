@@ -570,7 +570,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     recoveryOn: loadK('fit_recovery', false),
     weights: loadK('fit_weight', {}), dietLog: loadK('fit_dietlog', {}),
     hiit: { tpl: 'tabata', sel: {} }, badges: loadK('fit_badges', {}),
-    rpeLog: loadK('fit_rpe', []), fitness: loadK('fit_fitness', []), wGoal: loadK('fit_wgoal', null), remind: loadK('fit_remind', null),
+    rpeLog: loadK('fit_rpe', []), fitness: loadK('fit_fitness', []), wGoal: loadK('fit_wgoal', null), remind: loadK('fit_remind', null), pantry: loadK('fit_pantry', []), dayMeal: loadK('fit_daymeal', null),
     diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' },
     builder: { sel: {}, rounds: 3 },
     dietPair: { staple: '', protein: '', veg: '', other: '' }, dietPairRes: null
@@ -2079,9 +2079,29 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (training) { var shift = Math.round(kcal * 0.08); carb = Math.round((ck + shift) / 4); fat = Math.max(20, Math.round((fk - shift) / 9)); }
     return { protein: protein, fat: fat, carb: carb, pk: protein * 4, fk: fat * 9, ck: carb * 4 };
   }
-  function pickMeal(arr, target) {
+  /* 常备食材（#39）：全集取自四餐库的全部食材，勾选后餐单优先按已有配 */
+  function collectFoods() {
+    var seen = {}, out = [];
+    [BF, LUN, DIN, SNK].forEach(function (arr) { arr.forEach(function (t) { t.parts.forEach(function (p) {
+      if (!seen[p.n]) { seen[p.n] = 1; out.push(p.n); }
+    }); }); });
+    return out;
+  }
+  var ALLFOODS = collectFoods();
+  function pantryMiss(meal, pantry) {
+    if (!pantry || !pantry.length) return [];
+    return meal.parts.filter(function (p) { return pantry.indexOf(p.n) < 0; }).map(function (p) { return p.n; });
+  }
+  function pickMeal(arr, target, pantry) {
     var pool = arr.filter(function (t) { return Math.abs(t.kcal - target) <= 80; });
     if (!pool.length) { var bd = 1e9, bn = arr[0]; arr.forEach(function (t) { var d = Math.abs(t.kcal - target); if (d < bd) { bd = d; bn = t; } }); pool = [bn]; }
+    if (pantry && pantry.length) {
+      /* 按缺的食材数升序：优先全备的，其次缺得最少的 */
+      var ranked = pool.slice().sort(function (a, b) { return pantryMiss(a, pantry).length - pantryMiss(b, pantry).length; });
+      var best = pantryMiss(ranked[0], pantry).length;
+      var cand = ranked.filter(function (t) { return pantryMiss(t, pantry).length === best; });
+      return cand[Math.floor(Math.random() * cand.length)];
+    }
     return pool[Math.floor(Math.random() * pool.length)];
   }
   function chipRowSel(arr, key, sel, aName) {
@@ -2089,14 +2109,19 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       return '<span class="chip ' + (sel === v ? 'on' : '') + '" data-a="' + aName + '" data-k="' + key + '" data-v="' + v + '">' + v + '</span>';
     }).join('') + '</div>';
   }
-  function mealCard(title, pct, meal, badges) {
-    var parts = meal.parts.map(function (x) { return '<div class="mc-p">' + esc(x.n) + (x.a ? ' <span class="mc-a">' + esc(x.a) + '</span>' : '') + '</div>'; }).join('');
+  function mealCard(title, pct, meal, badges, pantry) {
+    var miss = pantryMiss(meal, pantry);
+    var parts = meal.parts.map(function (x) {
+      var isMiss = miss.indexOf(x.n) >= 0;
+      return '<div class="mc-p">' + (isMiss ? '<span style="color:#e08a00">⚠️</span> ' : '') + esc(x.n) + (x.a ? ' <span class="mc-a">' + esc(x.a) + '</span>' : '') + '</div>';
+    }).join('');
     var bd = '';
     if (badges && badges.length) {
       bd = '<div class="mc-bd">' + badges.map(function (r) {
         return '<span class="bd ' + (r.t === 'good' ? 'g' : 'w') + '">' + (r.t === 'good' ? '✓ 宜搭 ' : '⚠ 注意 ') + esc(r.a) + '+' + esc(r.b) + '</span>';
       }).join('') + '</div>';
     }
+    if (miss.length) bd += '<div class="mc-bd"><span class="bd w">🧺 缺 ' + miss.length + ' 项食材：' + esc(miss.join('、')) + '</span></div>';
     return '<div class="meal-card"><div class="mc-h"><span class="mc-t">' + title + '</span><span class="mc-pct">' + pct + '%</span><span class="mc-k">' + meal.kcal + ' 千卡</span></div>' + parts + bd + '</div>';
   }
   function vDietForm() {
@@ -2117,9 +2142,20 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var m = macroSplit(dayK, d.weight, d.goal, d.training);
     var tot = m.pk + m.ck + m.fk || 1;
     var shares = { bf: Math.round(dayK * 0.25), lunch: Math.round(dayK * 0.35), dinner: Math.round(dayK * 0.30) };
-    var bf = pickMeal(BF, shares.bf), lunch = pickMeal(LUN, shares.lunch), dinner = pickMeal(DIN, shares.dinner);
-    var snackK = dayK - (bf.kcal + lunch.kcal + dinner.kcal);
-    var snack = pickMeal(SNK, snackK > 60 ? snackK : 150);
+    var bf, lunch, dinner, snack;
+    if (S.dayMeal && S.dayMeal.date === today && S.dayMeal.goal === d.goal) {
+      /* 当日餐单持久化：勾选常备食材/重进页面餐单不乱跳 */
+      bf = BF.filter(function (t) { return t.n === S.dayMeal.bf; })[0] || pickMeal(BF, shares.bf, S.pantry);
+      lunch = LUN.filter(function (t) { return t.n === S.dayMeal.lunch; })[0] || pickMeal(LUN, shares.lunch, S.pantry);
+      dinner = DIN.filter(function (t) { return t.n === S.dayMeal.dinner; })[0] || pickMeal(DIN, shares.dinner, S.pantry);
+      snack = SNK.filter(function (t) { return t.n === S.dayMeal.snack; })[0] || pickMeal(SNK, 150, S.pantry);
+    } else {
+      bf = pickMeal(BF, shares.bf, S.pantry); lunch = pickMeal(LUN, shares.lunch, S.pantry); dinner = pickMeal(DIN, shares.dinner, S.pantry);
+      var snackK0 = dayK - (bf.kcal + lunch.kcal + dinner.kcal);
+      snack = pickMeal(SNK, snackK0 > 60 ? snackK0 : 150, S.pantry);
+      S.dayMeal = { date: today, goal: d.goal, bf: bf.n, lunch: lunch.n, dinner: dinner.n, snack: snack.n };
+      saveK('fit_daymeal', S.dayMeal);
+    }
     var water = Math.round(d.weight * 35);
     // 饮食打卡（#23）：勾选已吃的餐 → 已摄入 vs 目标进度
     var today = todayStr();
@@ -2143,6 +2179,16 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="vol-b"><div class="n">' + wkR.length + '</div><div class="l">训练次数</div></div>' +
       '<div class="vol-b"><div class="n">+' + (d.training ? 150 : 0) + '</div><div class="l">训练日追加</div></div></div>' +
       '<div style="font-size:10.5px;color:#a0a6ad;margin-top:6px">训练日当天已在本方案热量基础上 +150 千卡（见上方"当日类型"）。练得越多、热量预算越贴合实际消耗，吃练自然闭环。</div></div>';
+    /* 常备食材卡（#39）：勾选后餐单优先按已有食材配 */
+    var pantryChips = ALLFOODS.map(function (f) {
+      return '<span class="chip ' + (S.pantry.indexOf(f) >= 0 ? 'on' : '') + '" data-a="pantryTgl" data-n="' + esc(f) + '">' + esc(f) + '</span>';
+    }).join('');
+    var pantryHtml = '<div class="card" style="margin-bottom:10px"><div class="form-t" style="margin:0 0 8px">🧺 我的常备食材 <span class="more" data-a="pantryAll" style="cursor:pointer">' + (S.pantry.length ? '全选 / 清空' : '一键全选') + '</span></div>' +
+      '<div class="chips">' + pantryChips + '</div>' +
+      '<div style="font-size:10.5px;color:#8d959e;margin-top:6px">' + (S.pantry.length
+        ? '已勾 ' + S.pantry.length + ' 项 · 餐单优先按已有食材配，缺的会在下方标 ⚠️'
+        : '勾选家里有的食材，餐单就按已有的来配；不勾则全库随机') + '</div>' +
+      (S.pantry.length ? '<div class="btn" style="margin-top:8px;text-align:center;padding:9px 0" data-a="pantryRegen">按常备食材重新配餐 ⟳</div>' : '') + '</div>';
     return '' +
       '<div class="card diet-sum">' +
       '<div class="ds-row"><div class="ds-b"><div class="n">' + b + '</div><div class="l">基础代谢 BMR</div></div>' +
@@ -2158,7 +2204,8 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="o' + (d.training ? '' : ' on') + '" data-a="dietTrain" data-v="0">休息日</div>' +
       '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
       '<div class="h-sec">今日餐单 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span></div>' +
-      mealCard('早餐', 25, bf, mealFindings(bf)) + mealCard('午餐', 35, lunch, mealFindings(lunch)) + mealCard('晚餐', 30, dinner, mealFindings(dinner)) + mealCard('加餐', 10, snack, mealFindings(snack)) +
+      pantryHtml +
+      mealCard('早餐', 25, bf, mealFindings(bf), S.pantry) + mealCard('午餐', 35, lunch, mealFindings(lunch), S.pantry) + mealCard('晚餐', 30, dinner, mealFindings(dinner), S.pantry) + mealCard('加餐', 10, snack, mealFindings(snack), S.pantry) +
       mealChkHtml +
       trainCard +
       vDietPair() +
@@ -2288,7 +2335,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
 
   /* ============ 训练档案导出/备份（#15） ============ */
   function exportData() {
-    var payload = { v: 1, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair };
+    var payload = { v: 1, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair, pantry: S.pantry, wGoal: S.wGoal, fitness: S.fitness, rpeLog: S.rpeLog };
     try {
       var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       var url = URL.createObjectURL(blob);
@@ -2326,7 +2373,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       setTimeout(function () { if (resetArm && Date.now() - resetArm >= 5000) { resetArm = 0; renderShell(); } }, 5100);
       return;
     }
-    ['fit_best', 'fit_records', 'fit_plan', 'fit_weight', 'fit_dietlog', 'fit_diet', 'fit_badges'].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+    ['fit_best', 'fit_records', 'fit_plan', 'fit_weight', 'fit_dietlog', 'fit_diet', 'fit_badges', 'fit_pantry', 'fit_daymeal', 'fit_rpe', 'fit_fitness', 'fit_wgoal'].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
     S.best = {}; S.records = []; S.plan = null; S.weekIdx = 0;
     S.weights = {}; S.dietLog = {}; S.diet = null; S.badges = {};
     resetArm = 0;
@@ -2504,10 +2551,21 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (a === 'recDetail') { sheetRec(Number(el.dataset.i)); return; }
     /* 饮食规划 */
     if (a === 'dform') { S.dietDraft[k] = v; renderView(); return; }
-    if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false }); saveK('fit_diet', S.diet); renderView(); return; }
+    if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false }); S.dayMeal = null; saveK('fit_diet', S.diet); saveK('fit_daymeal', null); renderView(); return; }
     if (a === 'dietEdit') { S.dietDraft = Object.assign({}, S.diet); S.diet = null; saveK('fit_diet', null); renderView(); return; }
     if (a === 'dietTrain') { if (S.diet) { S.diet.training = (v === '1'); saveK('fit_diet', S.diet); renderView(); } return; }
-    if (a === 'dietRegen') { renderView(); return; }
+    if (a === 'dietRegen') { S.dayMeal = null; saveK('fit_daymeal', null); renderView(); return; }
+    /* 常备食材（#39） */
+    if (a === 'pantryTgl') {
+      var fn = el.dataset.n, ix2 = S.pantry.indexOf(fn);
+      if (ix2 >= 0) S.pantry.splice(ix2, 1); else S.pantry.push(fn);
+      saveK('fit_pantry', S.pantry); renderView(); return;
+    }
+    if (a === 'pantryAll') {
+      S.pantry = S.pantry.length >= ALLFOODS.length ? [] : ALLFOODS.slice();
+      saveK('fit_pantry', S.pantry); renderView(); return;
+    }
+    if (a === 'pantryRegen') { S.dayMeal = null; saveK('fit_daymeal', null); renderView(); toast('🧺 已按常备食材重新配餐'); return; }
     /* 饮食搭配自检 */
     if (a === 'pairPick') { S.dietPair[k] = (S.dietPair[k] === v ? '' : v); S.dietPairRes = null; renderView(); return; }
     if (a === 'pairCheck') {
