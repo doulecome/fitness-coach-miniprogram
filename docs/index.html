@@ -570,6 +570,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     recoveryOn: loadK('fit_recovery', false),
     weights: loadK('fit_weight', {}), dietLog: loadK('fit_dietlog', {}),
     hiit: { tpl: 'tabata', sel: {} }, badges: loadK('fit_badges', {}),
+    rpeLog: loadK('fit_rpe', []), fitness: loadK('fit_fitness', []), wGoal: loadK('fit_wgoal', null), remind: loadK('fit_remind', null),
     diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' },
     builder: { sel: {}, rounds: 3 },
     dietPair: { staple: '', protein: '', veg: '', other: '' }, dietPairRes: null
@@ -713,8 +714,9 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     }).join('') + '</div>';
   }
   function vTrain() {
-    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div><div class="sg ' + (S.seg === 'hiit' ? 'on' : '') + '" data-a="seg" data-v="hiit">HIIT</div></div>';
+    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div><div class="sg ' + (S.seg === 'hiit' ? 'on' : '') + '" data-a="seg" data-v="hiit">HIIT</div><div class="sg ' + (S.seg === 'pose' ? 'on' : '') + '" data-a="seg" data-v="pose">AI 姿态</div></div>';
     if (S.seg === 'hiit') return seg + equipChips() + '<div style="height:6px"></div>' + vHiit();
+    if (S.seg === 'pose') return seg + '<div style="height:6px"></div>' + vPose();
     if (S.seg === 'course') {
       return seg + '<div class="course-grid">' + courses.map(function (c) {
         return '<div class="course-card" data-a="openCourse" data-id="' + c.id + '"><div class="cc-ic" style="background:' + esc(c.color || '#1FD6A8') + '22">' + c.icon + '</div>' +
@@ -821,6 +823,124 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     startW(seq, t.n + ' · ' + names.length + ' 动作 × ' + t.rounds + ' 轮', '⚡', kcal, '#FF6B4A', 'fit_hiit_' + S.hiit.tpl + '_' + Date.now(), t.rest, []);
   }
 
+  /* ============ AI 姿态识别训练（#38）：MediaPipe Pose 纯前端计数 + 实时纠姿 ============ */
+  var POSE_EX = {
+    squat:  { n: '深蹲',   type: 'angle', a: 23, b: 25, c: 27, down: 105, up: 158, actName: 'AI 深蹲挑战', kcalPer: 0.45 },
+    pushup: { n: '俯卧撑', type: 'angle', a: 11, b: 13, c: 15, down: 95,  up: 155, actName: 'AI 俯卧撑挑战', kcalPer: 0.6 },
+    jj:     { n: '开合跳', type: 'jj', actName: 'AI 开合跳挑战', kcalPer: 0.35 }
+  };
+  var PZ = null;
+  function vPose() {
+    var chips = Object.keys(POSE_EX).map(function (k) {
+      return '<span class="chip ' + (S.poseEx === k ? 'on' : '') + '" data-a="poseEx" data-v="' + k + '">' + POSE_EX[k].n + '</span>';
+    }).join('');
+    return '<div class="bld-hint">🤖 AI 姿态识别：摄像头识别你的动作并自动计数、实时纠姿（纯本地运算，视频不上传）</div>' +
+      '<div class="chips">' + chips + '</div>' +
+      '<div class="card" style="margin:8px 0;font-size:12px;line-height:1.8;color:#4a525c">📱 使用说明<br>1️⃣ 将手机/电脑支好，让全身入镜（侧面 45° 最佳）<br>2️⃣ 首次使用需联网加载 AI 模型（约 5MB）<br>3️⃣ 开始后按提示做动作，AI 自动计数并提示纠偏<br>4️⃣ 结束后自动计入训练记录与里程碑</div>' +
+      '<div class="bld-foot"><div class="bld-ct">当前：' + POSE_EX[S.poseEx || 'squat'].n + '</div>' +
+      '<div class="btn" data-a="poseStart">开启摄像头 ▸</div></div>';
+  }
+  function poseAngle(a2, b2, c2) {
+    var ang = Math.abs(Math.atan2(c2.y - b2.y, c2.x - b2.x) - Math.atan2(a2.y - b2.y, a2.x - b2.x)) * 180 / Math.PI;
+    return ang > 180 ? 360 - ang : ang;
+  }
+  function poseStart() {
+    var ex = POSE_EX[S.poseEx || 'squat'];
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast('当前环境不支持摄像头（需 https 或 localhost）'); return; }
+    toast('正在加载 AI 模型…首次约需 5-10 秒');
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js';
+    script.onload = function () { poseInit(ex); };
+    script.onerror = function () { toast('AI 模型加载失败，请检查网络后重试'); };
+    if (window.Pose) poseInit(ex); else document.head.appendChild(script);
+  }
+  function poseInit(ex) {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 }, audio: false }).then(function (stream) {
+      var layer = document.createElement('div');
+      layer.id = 'poseLayer';
+      layer.innerHTML = '<video id="pzVideo" playsinline style="width:100%;max-height:62vh;object-fit:contain;transform:scaleX(-1);background:#000"></video>' +
+        '<canvas id="pzCanvas" style="position:absolute;left:0;top:0;width:100%;height:62vh;pointer-events:none"></canvas>' +
+        '<div id="pzHud" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:14px;pointer-events:none">' +
+        '<div style="font-size:52px;font-weight:900;color:#1FD6A8;text-shadow:0 2px 12px rgba(0,0,0,.8)" id="pzCount">0</div>' +
+        '<div style="font-size:15px;color:#fff;background:rgba(0,0,0,.55);padding:5px 14px;border-radius:999px;margin-top:4px" id="pzTip">调整位置，让全身入镜…</div></div>' +
+        '<div style="position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:12px">' +
+        '<div class="wk-big" data-a="poseSave" style="width:170px;height:56px;border-radius:999px;font-size:16px">✅ 结束并记录</div>' +
+        '<div class="wk-mini" data-a="poseClose" style="color:#ff7b6b">取消</div></div>';
+      layer.style.cssText = 'position:fixed;inset:0;z-index:60;background:#0b0f13;display:flex;flex-direction:column;justify-content:center';
+      document.body.appendChild(layer);
+      PZ = { ex: ex, count: 0, phase: 'up', stream: stream, t0: Date.now(), five: 0 };
+      var video = layer.querySelector('#pzVideo');
+      video.srcObject = stream;
+      video.play();
+      var pose = new window.Pose({ locateFile: function (f) { return 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/' + f; } });
+      pose.setOptions({ modelComplexity: 0, smoothLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+      pose.onResults(poseOnResults);
+      PZ.pose = pose; PZ.video = video; PZ.raf = 0; PZ.stopped = false;
+      (function loop() {
+        if (PZ.stopped) return;
+        if (video.readyState >= 2) pose.send({ image: video });
+        PZ.raf = requestAnimationFrame(loop);
+      })();
+    }).catch(function () { toast('摄像头打开失败：请允许权限并确认是 https 页面'); });
+  }
+  function poseOnResults(res) {
+    if (!PZ || PZ.stopped) return;
+    var lm = res.poseLandmarks;
+    var cv = document.getElementById('pzCanvas'), video = PZ.video;
+    if (cv && video) {
+      cv.width = video.videoWidth || 640; cv.height = video.videoHeight || 480;
+      var x2 = cv.getContext('2d');
+      x2.clearRect(0, 0, cv.width, cv.height);
+      if (lm) {
+        x2.fillStyle = '#1FD6A8';
+        [0, 11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28].forEach(function (i3) {
+          var p = lm[i3]; if (!p) return;
+          x2.beginPath(); x2.arc(p.x * cv.width, p.y * cv.height, 6, 0, 7); x2.fill();
+        });
+      }
+    }
+    var tip = document.getElementById('pzTip'), cnt = document.getElementById('pzCount');
+    if (!lm) { if (tip) tip.textContent = '未检测到人体——请让全身入镜'; return; }
+    var ex = PZ.ex, msg = '';
+    if (ex.type === 'angle') {
+      var ang = poseAngle(lm[ex.a], lm[ex.b], lm[ex.c]);
+      if (PZ.phase === 'up' && ang < ex.down) { PZ.phase = 'down'; msg = '✓ 很标准，起身'; }
+      else if (PZ.phase === 'down' && ang > ex.up) {
+        PZ.phase = 'up'; PZ.count++;
+        if (PZ.count % 5 === 0) say(PZ.count + ' 个，继续保持');
+      }
+      msg = msg || (PZ.phase === 'up' ? (ang < ex.up - 25 ? '降下去，动作幅度再大一点' : '好，现在下降') : '推起 / 起身 ↺');
+      if (tip) tip.textContent = ex.n + ' · 关节角度 ' + Math.round(ang) + '° · ' + msg;
+    } else { /* 开合跳：双手腕过头顶=开 */
+      var open = lm[15].y < lm[0].y && lm[16].y < lm[0].y;
+      if (PZ.phase === 'up' && open) { PZ.phase = 'down'; msg = '✓ 跳开到位'; }
+      else if (PZ.phase === 'down' && !open) { PZ.phase = 'up'; PZ.count++; if (PZ.count % 5 === 0) say(PZ.count + ' 个，继续保持'); }
+      msg = msg || (PZ.phase === 'up' ? '双手举过头顶跳开！' : '收回，并腿跳');
+      if (tip) tip.textContent = ex.n + ' · ' + msg;
+    }
+    if (cnt) cnt.textContent = PZ.count;
+  }
+  function poseStopCam() {
+    if (!PZ) return;
+    PZ.stopped = true;
+    if (PZ.raf) cancelAnimationFrame(PZ.raf);
+    if (PZ.stream) PZ.stream.getTracks().forEach(function (t2) { t2.stop(); });
+    var layer = document.getElementById('poseLayer');
+    if (layer) layer.remove();
+    PZ = null;
+  }
+  function poseSave() {
+    if (!PZ) return;
+    var ex = PZ.ex, count = PZ.count, min = Math.max(1, Math.round((Date.now() - PZ.t0) / 60000));
+    var kcal = Math.round(count * ex.kcalPer);
+    poseStopCam();
+    saveRecord({ date: todayStr(), ts: Date.now(), name: ex.actName, icon: '🤖', min: min, kcal: kcal,
+      done: count, total: count, bg: '#e8f7f2', tag: 'AI',
+      detail: [{ name: ex.n, actual: count, target: count, type: 'reps', phase: 'main' }] });
+    S.tab = 'record'; renderShell();
+    toast('🤖 已记录 ' + count + ' 个 ' + ex.n + '，教练为你骄傲！');
+  }
+
   /* ============ 呼吸放松（#24）：4-7-8 / 盒式 / 6-1-6，纯计时序列复用跟练引擎 ============ */
   var BREATH = {
     '478': { n: '4-7-8 助眠', seq: [[4, '用鼻吸气'], [7, '屏住呼吸'], [8, '用嘴缓呼']], round: 5 },
@@ -856,12 +976,29 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       spark = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:' + H + 'px;margin-top:6px">' +
         '<polyline points="' + poly + '" fill="none" stroke="#1FD6A8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
     }
+    var goalHtml = '';
+    if (latest != null) {
+      if (S.wGoal) {
+        var rem = Math.round((S.wGoal - latest) * 10) / 10;
+        var diff = Math.round((latest - S.wGoal) * 10) / 10;
+        var etaTxt = '';
+        if (days.length >= 8) {
+          var span = Math.max(2, days.length - 8);
+          var slope = (latest - w[days[Math.max(0, days.length - 8)]]) / span; /* kg/天 */
+          if (Math.abs(rem) < 0.05) etaTxt = ' · 🎉 已达成目标';
+          else if (Math.abs(slope) > 0.01 && rem * slope < 0) etaTxt = ' · 按当前趋势约 ' + Math.ceil(Math.abs(rem / slope)) + ' 天达成';
+          else etaTxt = ' · 按当前趋势暂难达成，调整下饮食/训练吧';
+        } else etaTxt = ' · 再记 ' + (8 - days.length) + ' 天可预估达成时间';
+        goalHtml = '<div style="font-size:11.5px;margin-top:6px;color:' + (Math.abs(rem) < 0.05 ? '#0fb98c' : '#4a525c') + '">🎯 目标 ' + S.wGoal + ' kg · ' + (Math.abs(diff) < 0.05 ? '已达成 🎉' : (diff > 0 ? '还需减 ' + diff : '还需增 ' + (-diff)) + ' kg') + etaTxt + '</div>';
+      } else goalHtml = '<div style="font-size:11.5px;margin-top:6px;color:#7a838e">设一个目标体重，追踪达成进度 →</div>';
+    }
     return '<div class="card"><div class="form-t" style="margin:0 0 8px">⚖️ 体重记录</div>' +
       '<div style="display:flex;align-items:center;gap:10px">' +
       (latest != null ? '<div><span style="font-size:26px;font-weight:800;color:var(--ink)">' + latest + '</span><span style="font-size:11px;color:#7a838e"> kg · 最新</span></div>' + d7 : '<div style="font-size:12px;color:#7a838e">记录第一笔体重，开始追踪趋势</div>') +
-      '</div>' + spark +
+      '</div>' + spark + goalHtml +
       '<div style="display:flex;gap:8px;margin-top:10px">' +
       '<input type="number" step="0.1" id="wgtIn" class="fld" style="flex:1" placeholder="今日体重 kg">' +
+      '<input type="number" step="0.1" id="wgoalIn" class="fld" style="flex:1" placeholder="目标体重' + (S.wGoal ? ' ' + S.wGoal : '') + ' kg">' +
       '<div class="btn" style="padding:9px 18px" data-a="weightSave">记录</div></div></div>';
   }
 
@@ -899,6 +1036,31 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
         (b.ok ? '<div class="bdg-done">✓ 已达成</div>' : '<div class="bdg-bar"><i style="width:' + Math.min(100, Math.round(b.p * 100)) + '%"></i></div>') + '</div>';
     }).join('');
     return '<div class="h-sec">🏅 成就墙</div><div class="bdg-grid">' + items + '</div>';
+  }
+
+  /* ============ RPE 疲劳反馈闭环（#31）：练完感受 → 引擎自适应强度 ============ */
+  function rpeBiasLevel(base) {
+    var levels = ['新手', '进阶', '老手'];
+    var idx = levels.indexOf(base); if (idx < 0) idx = 1;
+    var last = S.rpeLog.slice(-3);
+    if (last.length < 2) return base;
+    var h = last.filter(function (r) { return r.v === 'hard'; }).length;
+    var e = last.filter(function (r) { return r.v === 'easy'; }).length;
+    if (h === last.length && idx > 0) { S.rpeApplied = 'down'; return levels[idx - 1]; }
+    if (e === last.length && idx < 2) { S.rpeApplied = 'up'; return levels[idx + 1]; }
+    S.rpeApplied = null; return base;
+  }
+  function rpeVote(v) {
+    S.rpeLog.push({ date: todayStr(), ts: Date.now(), v: v });
+    S.rpeLog = S.rpeLog.slice(-40); saveK('fit_rpe', S.rpeLog);
+    W.rpeVoted = true; renderW();
+    var last = S.rpeLog.slice(-3);
+    var h = last.filter(function (r) { return r.v === 'hard'; }).length;
+    var e = last.filter(function (r) { return r.v === 'easy'; }).length;
+    var order = ['light', 'std', 'hard'], di = order.indexOf(S.diff);
+    if (last.length >= 3 && h === 3 && di > 0) { S.diff = order[di - 1]; saveK('fit_diff', S.diff); toast('记录了「很累」×3 · 下次训练已自动下调难度档 😌'); }
+    else if (last.length >= 3 && e === 3 && di < 2) { S.diff = order[di + 1]; saveK('fit_diff', S.diff); toast('记录了「轻松」×3 · 下次训练已自动上调难度档 💪'); }
+    else toast(v === 'hard' ? '收到，注意恢复 💤' : v === 'easy' ? '收到，下次可以更拼 💪' : '收到，保持这个节奏 👌');
   }
 
   /* ============ 计划 ============ */
@@ -957,7 +1119,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="sum-chips"><div class="sc"><div class="n">' + w.days + '</div><div class="l">训练天</div></div>' +
       '<div class="sc"><div class="n">' + w.totalMin + '</div><div class="l">分钟/周</div></div>' +
       '<div class="sc"><div class="n">' + w.totalKcal + '</div><div class="l">千卡/周</div></div></div>' +
-      '<div class="card" style="font-size:12px;color:#4a525c;line-height:1.7">' + esc(p.venueNote || '') + '<br>💬 ' + esc(p.levelNote) + '<br>🔁 ' + esc(p.weeksNote) + '</div>' + days +
+      '<div class="card" style="font-size:12px;color:#4a525c;line-height:1.7">' + esc(p.venueNote || '') + (S.rpeApplied ? '<br>🧠 根据你近 3 次训练反馈，难度已自动' + (S.rpeApplied === 'down' ? '下调' : '上调') : '') + '<br>💬 ' + esc(p.levelNote) + '<br>🔁 ' + esc(p.weeksNote) + '</div>' + days +
       (S.weekIdx === p.weeks.length - 1 ? '<div class="gen-btn btn" data-a="nextCycle">🚀 4 周完成 · 生成下一进阶周期</div>' : '') +
       '<div class="gen-btn btn" data-a="sharePlan">📤 复制周计划 · 分享</div>' +
       '<div class="gen-btn btn ghost" data-a="replan">↻ 重新定制</div>';
@@ -1100,6 +1262,155 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   }
 
   /* ============ 记录 ============ */
+  /* ============ 训练热力图（#32）：近半年打卡密度，颜色=当日训练分钟 ============ */
+  function heatmap() {
+    var byDay = {};
+    S.records.forEach(function (r) { byDay[r.date] = (byDay[r.date] || 0) + (r.min || 15); });
+    var today = new Date(); today.setHours(23, 59, 59, 999);
+    var d = new Date(today); d.setDate(d.getDate() - 26 * 7);
+    while (d.getDay() !== 1) d.setDate(d.getDate() - 1); /* 对齐周一 */
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    var weeks = [];
+    for (var ci = 0; ci < 27; ci++) {
+      var col = [];
+      for (var ri = 0; ri < 7; ri++) {
+        var key = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+        col.push(d > today ? null : (byDay[key] || 0));
+        d.setDate(d.getDate() + 1);
+      }
+      weeks.push(col);
+    }
+    var rects = weeks.map(function (col, ci) {
+      return col.map(function (v, ri) {
+        if (v === null) return '';
+        var c = v === 0 ? 'var(--line)' : v < 20 ? '#bfe8da' : v < 35 ? '#6fd3b4' : v < 50 ? '#2cc294' : '#0fb98c';
+        return '<rect x="' + (ci * 15 + 4) + '" y="' + (ri * 15 + 4) + '" width="11" height="11" rx="2.5" fill="' + c + '"/>';
+      }).join('');
+    }).join('');
+    var total = Object.keys(byDay).length;
+    return '<div class="card"><div class="form-t" style="margin:0 0 6px">🗓 训练热力图 <span style="font-size:10px;color:#8d959e;margin-left:6px">近半年 · ' + total + ' 天练过</span></div>' +
+      '<svg viewBox="0 0 409 113" style="width:100%">' + rects + '</svg>' +
+      '<div style="font-size:10px;color:#8d959e;margin-top:4px">▢ 少 ▢▢▢▢ 多 · 颜色深浅 = 当日训练分钟</div></div>';
+  }
+  /* ============ 体能测试（#35）：每月记录三项体质指标，追踪进步 ============ */
+  function fitTestCard() {
+    var f = S.fitness, last = f[f.length - 1], prev = f.length > 1 ? f[f.length - 2] : null;
+    var items = [['pushup', '俯卧撑最大次数', '个'], ['plank', '平板支撑', '秒'], ['squat', '一分钟深蹲', '个']];
+    var rows = items.map(function (it) {
+      var k = it[0], v = last ? last[k] : null;
+      var delta = '';
+      if (last && prev && last[k] != null && prev[k] != null) {
+        var df = last[k] - prev[k];
+        delta = '<span style="margin-left:auto;font-size:12px;font-weight:800;color:' + (df > 0 ? '#0fb98c' : df < 0 ? '#e08a00' : '#8d959e') + '">' + (df > 0 ? '↑' : df < 0 ? '↓' : '—') + ' ' + Math.abs(df) + '</span>';
+      }
+      return '<div class="ft-row" style="display:flex;margin-top:6px;align-items:baseline"><div style="flex:1"><div style="font-size:11px;color:#8d959e">' + it[1] + '</div><div style="font-size:18px;font-weight:800;color:var(--ink)">' + (v != null ? v + ' ' + it[2] : '—') + '</div></div>' + delta + '</div>';
+    }).join('');
+    return '<div class="card"><div class="form-t" style="margin:0 0 4px">🏋️ 体能测试 <span style="font-size:10px;color:#8d959e;margin-left:6px">' + (f.length ? '最近 ' + last.date : '建议每月测一次') + '</span></div>' + rows +
+      '<div style="display:flex;gap:6px;margin-top:10px">' +
+      '<input type="number" id="ftPush" class="fld" placeholder="俯卧撑·个">' +
+      '<input type="number" id="ftPlank" class="fld" placeholder="平板·秒">' +
+      '<input type="number" id="ftSquat" class="fld" placeholder="深蹲·个"></div>' +
+      '<div class="btn" style="margin-top:8px;text-align:center" data-a="fitTestSave">记录本次体测</div></div>';
+  }
+  /* ============ 周报分享图（#33）：canvas 生成近 7 天训练总结卡片 ============ */
+  function weeklyReport() {
+    var now = new Date();
+    var from = new Date(now); from.setDate(now.getDate() - 6);
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    var key = function (dt) { return dt.getFullYear() + '-' + pad(dt.getMonth() + 1) + '-' + pad(dt.getDate()); };
+    var inRange = S.records.filter(function (r) { return r.date >= key(from) && r.date <= key(now); });
+    var mins = inRange.reduce(function (a, r) { return a + (r.min || 0); }, 0);
+    var kcalc = inRange.reduce(function (a, r) { return a + (r.kcal || 0); }, 0);
+    /* 上周对比 */
+    var pf = new Date(from); pf.setDate(from.getDate() - 7);
+    var pt = new Date(from); pt.setDate(from.getDate() - 1);
+    var prevMins = S.records.filter(function (r) { return r.date >= key(pf) && r.date <= key(pt); }).reduce(function (a, r) { return a + (r.min || 0); }, 0);
+    var cmp = prevMins ? Math.round((mins - prevMins) / prevMins * 100) : null;
+    /* 每日分钟柱状 */
+    var daily = [];
+    for (var i = 0; i < 7; i++) { var dd = new Date(from); dd.setDate(from.getDate() + i); daily.push({ d: dd, min: byKeyMin(key(dd)) }); }
+    function byKeyMin(k2) { return S.records.filter(function (r) { return r.date === k2; }).reduce(function (a, r) { return a + (r.min || 0); }, 0); }
+    var wK = Object.keys(S.weights).sort();
+    var wA = wK.length >= 2 ? S.weights[wK[wK.length - 1]] - S.weights[wK[Math.max(0, wK.length - 8)]] : null;
+    var c = document.createElement('canvas'); c.width = 750; c.height = 960;
+    var x = c.getContext('2d');
+    /* 背景 */
+    var g = x.createLinearGradient(0, 0, 0, 960); g.addColorStop(0, '#0e5c46'); g.addColorStop(1, '#0b3a2e');
+    x.fillStyle = g; x.fillRect(0, 0, 750, 960);
+    x.fillStyle = '#1FD6A8'; x.font = 'bold 40px sans-serif'; x.fillText('💪 我的训练周报', 48, 92);
+    x.fillStyle = '#9fd8c6'; x.font = '22px sans-serif';
+    x.fillText(key(from).slice(5) + ' ~ ' + key(now).slice(5) + ' · 健身教练网页版', 48, 130);
+    /* 大数字区 */
+    var cards = [
+      [inRange.length + ' 次', '本周训练'], [mins + ' 分钟', '总时长'], [kcalc + ' 千卡', '消耗']
+    ];
+    cards.forEach(function (cd, i2) {
+      var cx = 48 + i2 * 222;
+      x.fillStyle = 'rgba(255,255,255,0.08)';
+      x.beginPath(); x.roundRect ? x.roundRect(cx, 170, 202, 120, 18) : x.rect(cx, 170, 202, 120); x.fill();
+      x.fillStyle = '#fff'; x.font = 'bold 34px sans-serif'; x.fillText(cd[0], cx + 20, 226);
+      x.fillStyle = '#9fd8c6'; x.font = '19px sans-serif'; x.fillText(cd[1], cx + 20, 262);
+    });
+    /* 对比行 */
+    x.fillStyle = '#fff'; x.font = '24px sans-serif';
+    x.fillText('🔥 连续打卡 ' + streak() + ' 天' + (cmp !== null ? '　训练时长较上周 ' + (cmp >= 0 ? '↑ +' : '↓ ') + cmp + '%' : ''), 48, 350);
+    if (wA !== null) x.fillText('⚖️ 近期体重 ' + (wA > 0 ? '+' : '') + Math.round(wA * 10) / 10 + ' kg' + (S.wGoal ? ' · 目标 ' + S.wGoal + ' kg' : ''), 48, 392);
+    /* 每日柱状图 */
+    x.fillStyle = '#9fd8c6'; x.font = 'bold 24px sans-serif'; x.fillText('每日训练分钟', 48, 470);
+    var mx = Math.max.apply(null, daily.map(function (o) { return o.min; }).concat([30]));
+    daily.forEach(function (o, i3) {
+      var bx = 48 + i3 * 94, bh = Math.max(4, Math.round(o.min / mx * 300));
+      x.fillStyle = o.min ? '#1FD6A8' : 'rgba(255,255,255,0.15)';
+      x.beginPath(); x.roundRect ? x.roundRect(bx, 800 - bh, 56, bh, 10) : x.rect(bx, 800 - bh, 56, bh); x.fill();
+      x.fillStyle = '#9fd8c6'; x.font = '18px sans-serif';
+      x.fillText(['日', '一', '二', '三', '四', '五', '六'][o.d.getDay()], bx + 20, 836);
+      if (o.min) { x.fillStyle = '#fff'; x.fillText(o.min, bx + 12, 792 - bh); }
+    });
+    /* RPE 情绪 */
+    var rpes = S.rpeLog.filter(function (r) { return r.date >= key(from); });
+    if (rpes.length) {
+      var em = { easy: '😌', ok: '🙂', hard: '😵' };
+      var line = '本次感受：' + rpes.map(function (r) { return em[r.v] || '·'; }).join(' ');
+      x.fillStyle = '#fff'; x.font = '24px sans-serif'; x.fillText(line, 48, 900);
+    }
+    x.fillStyle = '#6fbfa8'; x.font = '18px sans-serif'; x.fillText('— 每一次训练，都是在给未来的自己存款 —', 48, 936);
+    var url = c.toDataURL('image/png');
+    openSheet('<div class="sh-h"><div class="sh-t">📊 我的训练周报</div><div class="x" data-a="xSheet">✕</div></div>' +
+      '<div class="sh-sub">长按图片保存 / 分享到朋友圈</div>' +
+      '<img src="' + url + '" style="width:100%;border-radius:14px;display:block">');
+  }
+
+  /* ============ 训练提醒（#37）：定时 Notification（页面/PWA 打开期间生效） ============ */
+  function remindCard() {
+    var r = S.remind || { on: false, time: '19:30' };
+    var perm = ('Notification' in window) ? Notification.permission : 'unsupported';
+    return '<div class="card"><div class="form-t" style="margin:0 0 8px">⏰ 每日训练提醒</div>' +
+      '<div style="display:flex;gap:8px;align-items:center">' +
+      '<div class="btn ' + (r.on ? '' : 'ghost') + '" style="padding:9px 16px" data-a="remindToggle">' + (r.on ? '✅ 已开启' : '🔕 未开启') + '</div>' +
+      '<input type="time" id="remindTime" class="fld" style="flex:1" value="' + esc(r.time) + '">' +
+      '<div class="btn" style="padding:9px 16px" data-a="remindSave">保存</div></div>' +
+      '<div style="font-size:10.5px;color:#8d959e;margin-top:6px">' + (perm === 'unsupported' ? '当前浏览器不支持通知（建议用手机 Chrome + 添加到主屏幕）' : perm === 'denied' ? '通知权限已被拒绝，请在浏览器设置中允许' : '网页打开期间生效 · 保存时会请求通知权限') + '</div></div>';
+  }
+  function remindLoop() {
+    if (remindLoop._t) return;
+    /* 惰性启动：未开启提醒/无权限时绝不装定时器（避免 jsdom 测试进程被挂住） */
+    if (!S.remind || !S.remind.on) return;
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    remindLoop._t = setInterval(function () {
+      var r = S.remind;
+      if (!r || !r.on) return;
+      var now = new Date(), pad = function (n) { return String(n).padStart(2, '0'); };
+      var hm = pad(now.getHours()) + ':' + pad(now.getMinutes());
+      var fired = loadK('fit_remind_fired', '');
+      if (hm < r.time || fired === todayStr()) return;
+      var trained = S.records.some(function (x) { return x.date === todayStr(); });
+      if (trained) return;
+      try { new Notification('⏰ 该练今天的主项了', { body: '今天还没训练——打开健身教练，10 分钟就够' }); } catch (e) {}
+      saveK('fit_remind_fired', todayStr());
+    }, 30000);
+    var t = remindLoop._t; if (t && t.unref) t.unref();
+  }
+
   function vRecord() {
     var totalMin = S.records.reduce(function (a, r) { return a + (r.min || 0); }, 0);
     var names = Object.keys(S.best).filter(function (n) { return S.best[n].best > 0; });
@@ -1135,7 +1446,8 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="bk-btns"><div class="btn" data-a="exportData">⬇ 导出备份</div><div class="btn ghost" data-a="importData">⬆ 导入备份</div></div>' +
       '<div class="bk-btns" style="margin-top:8px"><div class="btn danger' + (resetArm ? ' armed' : '') + '" data-a="resetData">' + (resetArm ? '⚠️ 再点一次确认清空' : '🗑 清空全部数据') + '</div></div>' +
       '<input type="file" id="impFile" accept="application/json" style="display:none"></div>';
-    return trendHtml() + prTrendHtml() + weightCard() + radarHtml + volHtml + backup +
+    return heatmap() + remindCard() + trendHtml() + fitTestCard() + prTrendHtml() + weightCard() + radarHtml + volHtml + backup +
+      '<div class="btn" style="margin:0 0 10px;text-align:center" data-a="weeklyReport">📊 生成周报分享图</div>' +
       '<div class="stats-row"><div class="stat"><div class="n">' + S.records.length + '</div><div class="l">累计训练</div></div>' +
       '<div class="stat"><div class="n">' + totalMin + '</div><div class="l">总分钟</div></div>' +
       '<div class="stat"><div class="n">' + names.length + '</div><div class="l">动作有纪录</div></div></div>' +
@@ -1204,7 +1516,22 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       overloadHint(name, act && act.type) +
       '<div class="cue-box">💡 ' + esc((act && act.cue) || '保持核心收紧，动作标准优先于数量') + '</div>' +
       stepsHtml +
-      variantChips(name));
+      variantChips(name) +
+      '<div class="sh-go btn ghost" data-a="similarAct" data-name="' + esc(name) + '">🔄 换个同类动作试试</div>');
+  }
+  /* 同类替换（#34）：同肌群 + 难度 ±1 + 器材可用 + 有 GIF 的候选，随机挑一个 */
+  function similarAct(name) {
+    var lib = NS.ACT_LIB[name]; if (!lib) { toast('该动作暂无分组信息'); return; }
+    var cand = Object.keys(NS.ACT_LIB).filter(function (n) {
+      if (n === name) return false;
+      var l = NS.ACT_LIB[n];
+      return l.g === lib.g && !l.dup && Math.abs((l.d || 2) - (lib.d || 2)) <= 1 &&
+        NS.actionByName[n] && NS.actionByName[n].gif && equipOk(NS.actionByName[n]);
+    });
+    if (!cand.length) { toast('同类动作都用上了，没有可替换的'); return; }
+    var pick = cand[Math.floor(Math.random() * cand.length)];
+    sheetAct(pick);
+    toast('已换成同类动作：' + pick);
   }
   function sheetDay(wIdx, i) {
     var d = S.plan.weeks[wIdx].week[i];
@@ -1544,6 +1871,12 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
         '<div class="d-p">' + esc(W.title) + '<br>' + doneN + '/' + W.detail.length + ' 个动作完成 · ' + fmtMin(secDone) + ' 分钟' + (kcalDone ? ' · ≈' + kcalDone + ' 千卡' : '') + (stk > 1 ? '<br>🔥 连续打卡 ' + stk + ' 天' : '') + '</div>' +
         (hit ? '<div class="d-rec">🏆 ' + hit + ' 个动作达标' + (W.prs ? ' · 打破 ' + W.prs + ' 项个人纪录' : '') + '</div>' : (W.prs ? '<div class="d-rec">✨ 打破 ' + W.prs + ' 项个人纪录</div>' : '')) +
         '<div class="done-detail">' + rows + '</div>' +
+        (W.rpeVoted ? '<div class="d-rec" style="background:#e8f7f2;color:#0b8a6a">✅ 反馈已记录，下次计划将参考本次感受</div>'
+          : '<div style="font-size:12.5px;color:#9aa4ad;margin:10px 0 6px">这次训练感觉如何？（帮助引擎调整下次强度）</div>' +
+            '<div style="display:flex;gap:8px;justify-content:center;width:100%">' +
+            '<div class="wk-big" data-a="rpeVote" data-v="easy" style="width:96px;height:44px;font-size:13px;border-radius:12px;background:#e8f7f2;color:#0b8a6a">😌 轻松</div>' +
+            '<div class="wk-big" data-a="rpeVote" data-v="ok" style="width:96px;height:44px;font-size:13px;border-radius:12px;background:#eef2f6;color:#3a424b">🙂 刚好</div>' +
+            '<div class="wk-big" data-a="rpeVote" data-v="hard" style="width:96px;height:44px;font-size:13px;border-radius:12px;background:#fdeeea;color:#c0392b">😵 很累</div></div>') +
         '<div class="wk-ctrl" style="width:100%"><div class="wk-big" data-a="recDetail" data-i="0" style="width:150px;height:54px;font-size:14px">查看明细 ▸</div>' +
         '<div class="wk-mini" data-a="closeW">完成</div></div></div>';
     } else if (W.phase === 'confirmExit') {
@@ -2036,8 +2369,49 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       var wi = $('#wgtIn'), wv = wi ? Number(wi.value) : 0;
       if (!wv || wv < 20 || wv > 400) { toast('请输入合理体重 (20-400 kg)'); return; }
       S.weights[todayStr()] = Math.round(wv * 10) / 10; saveK('fit_weight', S.weights);
-      renderView(); toast('⚖️ 已记录 ' + S.weights[todayStr()] + ' kg'); return;
+      var wg = $('#wgoalIn');
+      if (wg && wg.value && Number(wg.value) >= 20 && Number(wg.value) <= 400) {
+        S.wGoal = Math.round(Number(wg.value) * 10) / 10; saveK('fit_wgoal', S.wGoal);
+        toast('⚖️ 已记录 ' + S.weights[todayStr()] + ' kg · 🎯 目标 ' + S.wGoal + ' kg');
+      } else toast('⚖️ 已记录 ' + S.weights[todayStr()] + ' kg');
+      renderView(); return;
     }
+    /* RPE 疲劳反馈（#31） */
+    if (a === 'rpeVote') { rpeVote(v); return; }
+    /* 同类替换（#34） */
+    if (a === 'similarAct') { similarAct(el.dataset.name); return; }
+    /* 体能测试（#35） */
+    if (a === 'fitTestSave') {
+      var fp = Number(($('#ftPush') || {}).value) || 0, fl = Number(($('#ftPlank') || {}).value) || 0, fs = Number(($('#ftSquat') || {}).value) || 0;
+      if (!fp && !fl && !fs) { toast('至少填一项指标'); return; }
+      S.fitness.push({ date: todayStr(), pushup: fp || null, plank: fl || null, squat: fs || null });
+      S.fitness = S.fitness.slice(-24); saveK('fit_fitness', S.fitness);
+      renderView(); toast('🏋️ 体测已记录，坚持每月测一次看进步'); return;
+    }
+    /* 周报分享图（#33） */
+    if (a === 'weeklyReport') { weeklyReport(); return; }
+    /* 训练提醒（#37） */
+    if (a === 'remindToggle') {
+      if (!S.remind || !S.remind.on) {
+        if (!('Notification' in window)) { toast('当前浏览器不支持通知'); return; }
+        Notification.requestPermission().then(function (p) {
+          if (p === 'granted') { toast('通知权限已获取'); remindLoop(); renderView(); }
+          else toast('未授权通知，提醒将不可用');
+        });
+        S.remind = { on: true, time: (S.remind && S.remind.time) || '19:30' };
+      } else { S.remind.on = false; toast('提醒已关闭'); }
+      saveK('fit_remind', S.remind); renderView(); return;
+    }
+    if (a === 'remindSave') {
+      var rt = $('#remindTime');
+      S.remind = { on: S.remind ? S.remind.on : false, time: (rt && rt.value) || '19:30' };
+      saveK('fit_remind', S.remind); toast('⏰ 提醒时间已设为 ' + S.remind.time); return;
+    }
+    /* AI 姿态识别（#38） */
+    if (a === 'poseEx') { S.poseEx = v; renderView(); return; }
+    if (a === 'poseStart') { poseStart(); return; }
+    if (a === 'poseSave') { poseSave(); return; }
+    if (a === 'poseClose') { poseStopCam(); toast('已取消 AI 训练'); return; }
     if (a === 'mealChk') {
       var td = todayStr(), log = S.dietLog[td] || (S.dietLog[td] = {});
       log[k] = !log[k]; saveK('fit_dietlog', S.dietLog); renderView(); return;
@@ -2056,7 +2430,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (a === 'nextCycle') {
       if (!S.plan) return;
       var cyc = (S.plan.cycle || 1) + 1;
-      S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: S.form.level, venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
+      S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: rpeBiasLevel(S.form.level), venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
       S.plan.cycle = cyc;
       if (S.recoveryOn) applyRecovery(S.plan);
       S.weekIdx = 0; saveK(KP, S.plan); renderView();
@@ -2072,7 +2446,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     }
     if (a === 'form') { S.form[k] = (k === 'day' || k === 'length') ? Number(v) : v; renderView(); return; }
     if (a === 'genPlan') {
-      S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: S.form.level, venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
+      S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: rpeBiasLevel(S.form.level), venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
       if (S.recoveryOn) applyRecovery(S.plan);
       S.weekIdx = 0; saveK(KP, S.plan); renderView(); return;
     }
@@ -2196,6 +2570,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   });
 
   renderShell();
+  remindLoop();
 })();
 
 </script>
