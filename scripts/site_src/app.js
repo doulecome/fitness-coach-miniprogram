@@ -352,25 +352,41 @@
     var ang = Math.abs(Math.atan2(c2.y - b2.y, c2.x - b2.x) - Math.atan2(a2.y - b2.y, a2.x - b2.x)) * 180 / Math.PI;
     return ang > 180 ? 360 - ang : ang;
   }
+  var POSE_CDNS = [
+    'https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.0.10/',
+    'https://unpkg.com/@mediapipe/pose@0.5.0.10/',
+    'https://registry.npmmirror.com/@mediapipe/pose/0.5.0.10/files/'
+  ];
+  function loadScriptIdx(i2, ex) {
+    if (i2 >= POSE_CDNS.length) { toast('AI 模型加载失败：请检查网络后重试（国内网络建议多试几次）'); return; }
+    var script = document.createElement('script');
+    script.src = POSE_CDNS[i2] + 'pose.js';
+    script.onload = function () {
+      if (window.Pose) poseInit(ex, POSE_CDNS[i2]);
+      else loadScriptIdx(i2 + 1, ex);
+    };
+    script.onerror = function () { loadScriptIdx(i2 + 1, ex); };
+    document.head.appendChild(script);
+  }
   function poseStart() {
     var ex = POSE_EX[S.poseEx || 'squat'];
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast('当前环境不支持摄像头（需 https 或 localhost）'); return; }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      toast(/micromessenger/i.test(navigator.userAgent) ? '微信内置浏览器不支持摄像头，请点右上角 ··· 用系统浏览器打开' : '当前环境不支持摄像头（需 https 或 localhost）');
+      return;
+    }
     toast('正在加载 AI 模型…首次约需 5-10 秒');
-    var script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js';
-    script.onload = function () { poseInit(ex); };
-    script.onerror = function () { toast('AI 模型加载失败，请检查网络后重试'); };
-    if (window.Pose) poseInit(ex); else document.head.appendChild(script);
+    if (window.Pose) { poseInit(ex, POSE_CDNS[0]); return; }
+    loadScriptIdx(0, ex);
   }
-  function poseInit(ex) {
+  function poseInit(ex, cdnBase) {
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 }, audio: false }).then(function (stream) {
       var layer = document.createElement('div');
       layer.id = 'poseLayer';
-      layer.innerHTML = '<video id="pzVideo" playsinline style="width:100%;max-height:62vh;object-fit:contain;transform:scaleX(-1);background:#000"></video>' +
-        '<canvas id="pzCanvas" style="position:absolute;left:0;top:0;width:100%;height:62vh;pointer-events:none"></canvas>' +
+      layer.innerHTML = '<div style="position:relative"><video id="pzVideo" playsinline style="width:100%;height:auto;display:block;transform:scaleX(-1);background:#000"></video>' +
+        '<canvas id="pzCanvas" style="position:absolute;left:0;top:0;width:100%;height:auto;transform:scaleX(-1);pointer-events:none"></canvas>' +
         '<div id="pzHud" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:14px;pointer-events:none">' +
         '<div style="font-size:52px;font-weight:900;color:#1FD6A8;text-shadow:0 2px 12px rgba(0,0,0,.8)" id="pzCount">0</div>' +
-        '<div style="font-size:15px;color:#fff;background:rgba(0,0,0,.55);padding:5px 14px;border-radius:999px;margin-top:4px" id="pzTip">调整位置，让全身入镜…</div></div>' +
+        '<div style="font-size:15px;color:#fff;background:rgba(0,0,0,.55);padding:5px 14px;border-radius:999px;margin-top:4px" id="pzTip">AI 模型加载中…</div></div></div>' +
         '<div style="position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:12px">' +
         '<div class="wk-big" data-a="poseSave" style="width:170px;height:56px;border-radius:999px;font-size:16px">✅ 结束并记录</div>' +
         '<div class="wk-mini" data-a="poseClose" style="color:#ff7b6b">取消</div></div>';
@@ -380,16 +396,26 @@
       var video = layer.querySelector('#pzVideo');
       video.srcObject = stream;
       video.play();
-      var pose = new window.Pose({ locateFile: function (f) { return 'https://cdn.jsdelivr.net/npm/@mediapipe/pose/' + f; } });
+      var pose = new window.Pose({ locateFile: function (f) { return cdnBase + f; } });
       pose.setOptions({ modelComplexity: 0, smoothLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
       pose.onResults(poseOnResults);
-      PZ.pose = pose; PZ.video = video; PZ.raf = 0; PZ.stopped = false;
-      (function loop() {
-        if (PZ.stopped) return;
-        if (video.readyState >= 2) pose.send({ image: video });
-        PZ.raf = requestAnimationFrame(loop);
-      })();
-    }).catch(function () { toast('摄像头打开失败：请允许权限并确认是 https 页面'); });
+      PZ.pose = pose; PZ.video = video; PZ.raf = 0; PZ.stopped = false; PZ.busy = false;
+      var tipEl = layer.querySelector('#pzTip');
+      pose.initialize().then(function () {
+        if (PZ && tipEl) tipEl.textContent = '调整位置，让全身入镜…';
+        (function loop() {
+          if (!PZ || PZ.stopped) return;
+          if (!PZ.busy && video.readyState >= 2) {
+            PZ.busy = true;
+            pose.send({ image: video }).catch(function () {}).then(function () { if (PZ) PZ.busy = false; });
+          }
+          PZ.raf = requestAnimationFrame(loop);
+        })();
+      }).catch(function () {
+        toast('AI 模型初始化失败：请检查网络后重试');
+        poseStopCam();
+      });
+    }).catch(function () { toast('摄像头打开失败：请允许权限；微信内打开不支持摄像头，请用系统浏览器'); });
   }
   function poseOnResults(res) {
     if (!PZ || PZ.stopped) return;
@@ -1645,6 +1671,7 @@
   }
   function vDietResult() {
     var d = S.diet;
+    var today = todayStr();
     var b = bmr(d), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
     var dayK = d.training ? tgt + 150 : tgt;
     var m = macroSplit(dayK, d.weight, d.goal, d.training);
@@ -1666,7 +1693,6 @@
     }
     var water = Math.round(d.weight * 35);
     // 饮食打卡（#23）：勾选已吃的餐 → 已摄入 vs 目标进度
-    var today = todayStr();
     var dl = S.dietLog[today] || (S.dietLog[today] = {});
     var eaten = (dl.bf ? bf.kcal : 0) + (dl.lunch ? lunch.kcal : 0) + (dl.dinner ? dinner.kcal : 0) + (dl.snack ? snack.kcal : 0);
     var mealChips = [['bf', '🌅 早餐'], ['lunch', '☀️ 午餐'], ['dinner', '🌙 晚餐'], ['snack', '🍪 加餐']].map(function (x) {
@@ -1712,8 +1738,8 @@
       '<div class="o' + (d.training ? '' : ' on') + '" data-a="dietTrain" data-v="0">休息日</div>' +
       '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
       '<div class="h-sec">今日餐单 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span></div>' +
-      pantryHtml +
       mealCard('早餐', 25, bf, mealFindings(bf), S.pantry) + mealCard('午餐', 35, lunch, mealFindings(lunch), S.pantry) + mealCard('晚餐', 30, dinner, mealFindings(dinner), S.pantry) + mealCard('加餐', 10, snack, mealFindings(snack), S.pantry) +
+      pantryHtml +
       mealChkHtml +
       trainCard +
       vDietPair() +
@@ -1864,6 +1890,11 @@
         if (p.plan !== undefined) { S.plan = p.plan; saveK(KP, S.plan); }
         if (p.diet !== undefined) { S.diet = p.diet; saveK('fit_diet', S.diet); }
         if (p.dietPair) S.dietPair = p.dietPair;
+        if (p.pantry) { S.pantry = p.pantry; saveK('fit_pantry', S.pantry); }
+        if (p.wGoal !== undefined) { S.wGoal = p.wGoal; saveK('fit_wgoal', S.wGoal); }
+        if (p.fitness) { S.fitness = p.fitness; saveK('fit_fitness', S.fitness); }
+        if (p.rpeLog) { S.rpeLog = p.rpeLog; saveK('fit_rpe', S.rpeLog); }
+        S.dayMeal = null; saveK('fit_daymeal', null);
         alert('已导入备份：动作纪录 ' + Object.keys(S.best).length + ' 项，训练记录 ' + S.records.length + ' 条');
         renderShell();
       } catch (e) { alert('导入失败：文件格式不正确'); }
