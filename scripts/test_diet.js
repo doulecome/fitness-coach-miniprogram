@@ -30,9 +30,15 @@ try {
   const tabs = document.querySelectorAll('#tabbar .tab');
   ck('5 tabs rendered', tabs.length === 5);
 
-  // 2) 切到饮食 tab → 表单
+  // 2) 切到饮食 tab → 首次进入自动生成方案，直接看到餐单（零摩擦，不再表单死胡同）
   click('[data-a="tab"][data-v="diet"]');
-  ck('diet form shows', !!q('[data-a="saveDiet"]'));
+  ck('auto-generated result shows immediately', !!q('.diet-sum'));
+  ck('meal cards visible without filling form', document.querySelectorAll('.meal-card').length === 4);
+  ck('auto hint shown', document.body.innerHTML.indexOf('自动生成') >= 0);
+
+  // 3) 主动点"重新填写资料" → 表单
+  click('[data-a="dietEdit"]');
+  ck('diet form shows after edit tap', !!q('[data-a="saveDiet"]'));
   ck('gender chip present', !!q('.chip[data-a="dform"][data-v="男"]'));
 
   // 3) 填数字字段 + 选目标
@@ -68,9 +74,7 @@ try {
 
   // 8) 重新填写
   click('[data-a="dietEdit"]');
-  ck('back to form', !!q('[data-a="saveDiet"]'));
-
-  // 9) 记录趋势图
+  ck('back to form', !!q('[data-a="saveDiet"]'));  // 9) 记录趋势图
   click('[data-a="tab"][data-v="record"]');
   ck('trend chart present', !!q('.trend'));
   ck('trend has 8 bars', document.querySelectorAll('.trend .tb').length === 8);

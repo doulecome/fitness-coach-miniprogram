@@ -571,7 +571,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     weights: loadK('fit_weight', {}), dietLog: loadK('fit_dietlog', {}),
     hiit: { tpl: 'tabata', sel: {} }, badges: loadK('fit_badges', {}),
     rpeLog: loadK('fit_rpe', []), fitness: loadK('fit_fitness', []), wGoal: loadK('fit_wgoal', null), remind: loadK('fit_remind', null), pantry: loadK('fit_pantry', []), dayMeal: loadK('fit_daymeal', null),
-    diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' },
+    diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' }, dietFormOpen: false, dietAuto: false,
     builder: { sel: {}, rounds: 3 },
     dietPair: { staple: '', protein: '', veg: '', other: '' }, dietPairRes: null
   };
@@ -591,7 +591,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v19';
+  var APP_VER = 'v20';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -691,9 +691,10 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
         '<div class="rc-m">已完成 ' + rs.done + '/' + rs.seq.length + ' 个动作 · 进度已保存</div>' +
         '<div class="rc-btns"><div class="btn" data-a="resumeRun">继续训练 ▸</div><div class="btn ghost" data-a="resumeDismiss">忽略</div></div></div>'
       : '';
-    // 今日餐单入口（首页直达，解决"找不到餐单"）
+    // 今日餐单入口（首页直达，解决"找不到餐单"；无方案自动按默认生成）
     var mealTeaser = '';
-    if (S.diet) {
+    if (!S.dietFormOpen) {
+      ensureDiet();
       var th = todayMeals();
       mealTeaser = '<div class="card" data-a="tab" data-v="diet" style="cursor:pointer">' +
         '<div style="display:flex;align-items:center;margin-bottom:7px"><b style="font-size:13.5px">🍱 今日餐单</b>' +
@@ -2245,7 +2246,8 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="card diet-sum">' +
       '<div class="ds-row"><div class="ds-b"><div class="n">' + b + '</div><div class="l">基础代谢 BMR</div></div>' +
       '<div class="ds-b"><div class="n">' + td + '</div><div class="l">每日消耗 TDEE</div></div></div>' +
-      '<div class="ds-target"><span class="ds-k">' + dayK + '</span> 千卡/天 · ' + (d.training ? '训练日' : '休息日') + ' · ' + esc(d.goal) + '</div></div>' +
+      '<div class="ds-target"><span class="ds-k">' + dayK + '</span> 千卡/天 · ' + (d.training ? '训练日' : '休息日') + ' · ' + esc(d.goal) + '</div>' +
+      (S.dietAuto ? '<div style="font-size:10.5px;color:#8d959e;margin-top:6px">📱 本方案按默认资料自动生成，点底部「重新填写资料」可改成你的身高体重</div>' : '') + '</div>' +
       '<div class="card"><div class="form-t" style="margin:0 0 8px">🥗 三大营养素配比</div>' +
       '<div class="macro-bar"><i class="mp p" style="width:' + Math.round(m.pk / tot * 100) + '%"></i><i class="mp c" style="width:' + Math.round(m.ck / tot * 100) + '%"></i><i class="mp f" style="width:' + Math.round(m.fk / tot * 100) + '%"></i></div>' +
       '<div class="macro-leg"><span><b style="color:#0fb98c">' + m.protein + 'g</b> 蛋白 ' + Math.round(m.pk / tot * 100) + '%</span>' +
@@ -2264,7 +2266,20 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="card" style="font-size:11.5px;color:#7a838e;line-height:1.6;background:#f5f7f8">📌 ' + goalTxt + '。餐单为参考样例，按热量目标搭配中式食材；如有代谢疾病或特殊饮食需求，请遵营养师/医嘱。</div>' +
       '<div class="gen-btn btn ghost" data-a="dietEdit">↻ 重新填写资料</div>';
   }
-  function vDiet() { return S.diet ? vDietResult() : vDietForm(); }
+  /* 零摩擦：无方案时按默认资料自动生成（今日餐单立即可见），表单仅主动"重新填写"时出现 */
+  function ensureDiet() {
+    if (!S.diet) {
+      S.diet = Object.assign({}, S.dietDraft, { training: false });
+      saveK('fit_diet', S.diet);
+      S.dietAuto = true;
+    }
+    return S.diet;
+  }
+  function vDiet() {
+    if (!S.dietFormOpen) ensureDiet();
+    if (S.dietFormOpen) return vDietForm();
+    return vDietResult();
+  }
 
   /* ============ 记录趋势图 ============ */
   function weeklyTrend() {
@@ -2608,8 +2623,8 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (a === 'recDetail') { sheetRec(Number(el.dataset.i)); return; }
     /* 饮食规划 */
     if (a === 'dform') { S.dietDraft[k] = v; renderView(); return; }
-    if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false }); S.dayMeal = null; saveK('fit_diet', S.diet); saveK('fit_daymeal', null); renderView(); return; }
-    if (a === 'dietEdit') { S.dietDraft = Object.assign({}, S.diet); S.diet = null; saveK('fit_diet', null); renderView(); return; }
+    if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false }); S.dayMeal = null; S.dietFormOpen = false; S.dietAuto = false; saveK('fit_diet', S.diet); saveK('fit_daymeal', null); renderView(); toast('✅ 方案已生成，已按你的资料重配今日餐单'); return; }
+    if (a === 'dietEdit') { S.dietDraft = Object.assign({}, S.diet); S.dietFormOpen = true; renderView(); return; }
     if (a === 'dietTrain') { if (S.diet) { S.diet.training = (v === '1'); saveK('fit_diet', S.diet); renderView(); } return; }
     if (a === 'dietRegen') { S.dayMeal = null; saveK('fit_daymeal', null); renderView(); return; }
     /* 常备食材（#39） */
