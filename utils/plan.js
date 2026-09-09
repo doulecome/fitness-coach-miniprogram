@@ -127,9 +127,16 @@ function computeTrainIdx(days, restDays) {
 }
 
 // —— 主项选择：按水平取难度窗口，同一池多次出现时滑动窗口避免每天练同款 ——
-function poolActs(poolKey) {
+// 训练场景：居家=仅徒手/哑铃/弹力带/壶铃；健身房=全部（含杠铃/绳索/器械）
+const HOME_EQUIPS = ['徒手', '哑铃', '弹力带', '壶铃'];
+function venueOk(name, venue) {
+  if (venue !== 'home') return true;
+  const a = actionByName[name];
+  return HOME_EQUIPS.includes((a && a.equip) || '徒手');
+}
+function poolActs(poolKey, venue) {
   return Object.keys(ACT_LIB)
-    .filter(n => ACT_LIB[n].g === poolKey && !ACT_LIB[n].dup)
+    .filter(n => ACT_LIB[n].g === poolKey && !ACT_LIB[n].dup && venueOk(n, venue))
     .sort((a, b) => ACT_LIB[a].d - ACT_LIB[b].d); // 池内由易到难
 }
 
@@ -142,8 +149,8 @@ function windowStart(len, n, level, rot) {
   return (base + rot) % (maxStart + 1); // 滑窗：同一天(槽)跨周稳定，不同训练日换变式
 }
 
-function pickMains(poolKey, level, n, rot) {
-  const arr = poolActs(poolKey);
+function pickMains(poolKey, level, n, rot, venue) {
+  const arr = poolActs(poolKey, venue);
   if (!arr.length) return [];
   const start = windowStart(arr.length, n, level, rot);
   const picked = [];
@@ -160,8 +167,8 @@ function pickMains(poolKey, level, n, rot) {
   return picked;
 }
 
-function pickOne(poolKey, rot) {
-  const arr = poolActs(poolKey);
+function pickOne(poolKey, rot, venue) {
+  const arr = poolActs(poolKey, venue);
   return arr.length ? arr[rot % arr.length] : null;
 }
 
@@ -260,7 +267,7 @@ function seqItem(name, value, phase) {
 
 // —— 生成单个训练日 ——
 // type: push/legs/core/fat/recover；t: 该日在本周第几个训练日(0-based)；week: 周期周序(0-3)
-function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier) {
+function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier, venue) {
   const tmpl = TEMPLATES[type];
   const isRecover = type === 'recover';
   const acts = [];       // 唯一动作清单(展示用，带 round)
@@ -278,7 +285,7 @@ function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier) {
   if (isRecover) {
     // 恢复日：舒缓拉伸为主，动作数随时长
     const n = length <= 15 ? 4 : (length <= 30 ? 6 : 8);
-    for (let i = 0; i < n; i++) push(pickOne('stretch', (t * 3 + week + i) % 7), 1);
+    for (let i = 0; i < n; i++) push(pickOne('stretch', (t * 3 + week + i) % 7, venue), 1);
   } else {
     // W3 强化期 +1 组已内含在 layout()；减量日(W4)主项与 W1 相同集合、只做 1 轮低目标，保证可对比
     const lay = deloadTier
@@ -286,7 +293,7 @@ function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier) {
       : layout(length, level, type, phaseKey);
     const rMain = lay.rMain;
     const nMain = Math.max(1, lay.nMain);
-    const mains = pickMains(tmpl.pool, level, nMain, t * 2); // 变式只随槽位，跨周稳定
+    const mains = pickMains(tmpl.pool, level, nMain, t * 2, venue); // 变式只随槽位，跨周稳定
     mains.forEach(name => {
       const base = actionByName[name];
       const g = computeGoal(base, phaseKey, level, hist);
@@ -295,8 +302,9 @@ function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier) {
     });
     // 力量日收尾：1 个核心动作 1 轮（刺激深层稳定）；减量日去掉收尾保留冷身
     if (!deloadTier && (type === 'push' || type === 'legs')) {
-      const finName = CORE_FIN_POOL[(t + week) % CORE_FIN_POOL.length];
-      const fin = actionByName[finName];
+      const finPool = CORE_FIN_POOL.filter(n => venueOk(n, venue));
+      const finName = finPool.length ? finPool[(t + week) % finPool.length] : null;
+      const fin = finName ? actionByName[finName] : null;
       const g = computeGoal(fin, phaseKey, level, hist);
       if (g.target > 0) {
         acts.push({ name: finName, icon: fin.icon, type: fin.type, unit: g.unit, target: g.target, round: 1, fromHist: false, fin: true, cue: fin.cue || '' });
@@ -304,7 +312,7 @@ function buildDay(type, t, week, phaseKey, level, length, hist, deloadTier) {
       }
     }
     // 冷身：1 个拉伸动作
-    const coolName = pickOne('stretch', (t * 5 + week) % 7);
+    const coolName = pickOne('stretch', (t * 5 + week) % 7, venue);
     const cool = actionByName[coolName];
     if (cool) {
       const g = computeGoal(cool, phaseKey, level, hist);
@@ -357,6 +365,7 @@ function generatePlan(opts, hist) {
   const goal = opts.goal || '减脂';
   const length = [15, 30, 45].includes(opts.length) ? opts.length : 30;
   const level = opts.level || '新手';
+  const venue = opts.venue === 'gym' ? 'gym' : 'home';
   const restDays = Array.isArray(opts.restDays) ? opts.restDays.slice() : [];
   hist = hist || null;
 
@@ -385,11 +394,11 @@ function generatePlan(opts, hist) {
         // 第 1~3 周正常编排；W4 首日保留同主题低刺激（deload：同主项 1 轮 + 目标 70%）
         const dayType = slot.type;
         const deloadTier = isW4;
-        const day = buildDay(dayType, t, wi, ph.key, level, length, hist, deloadTier);
+        const day = buildDay(dayType, t, wi, ph.key, level, length, hist, deloadTier, venue);
         return { wd, rest: false, ...day };
       }
       // W4 其余训练日 → 舒缓恢复
-      const day = buildDay('recover', t, wi, ph.key, level, length, hist, false);
+      const day = buildDay('recover', t, wi, ph.key, level, length, hist, false, venue);
       return { wd, rest: false, ...day };
     });
     const trainDays = week.filter(d => !d.rest);
@@ -419,6 +428,8 @@ function generatePlan(opts, hist) {
     length,
     level,
     levelNote: LEVEL_NOTE[level] || '',
+    venue,
+    venueNote: venue === 'home' ? '🏠 居家场景：只编排徒手 / 哑铃 / 弹力带 / 壶铃动作，家里就能完整跟练' : '🏋️ 健身房场景：完整动作库（含杠铃 / 绳索 / 器械）全部可用',
     restDays,
     adjusted,
     customTotal,

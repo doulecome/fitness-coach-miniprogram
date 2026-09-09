@@ -74,7 +74,7 @@
     tab: 'home', seg: 'course', actMus: '全部', actQ: '', equipFilter: '全部',
     theme: loadK('fit_theme', 'light'), favs: loadK('fit_favs', []),
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
-    form: { goal: '减脂', day: 4, length: 30, level: '进阶' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
+    form: { goal: '减脂', day: 4, length: 30, level: '进阶', venue: '🏠 居家' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
     recoveryOn: loadK('fit_recovery', false),
     weights: loadK('fit_weight', {}), dietLog: loadK('fit_dietlog', {}),
     hiit: { tpl: 'tabata', sel: {} }, badges: loadK('fit_badges', {}),
@@ -213,7 +213,7 @@
     courses.forEach(function (c) { c.actions.forEach(function (x) { if (x.name === a.name && c.muscle) t = c.muscle; }); });
     return t || '全身';
   }
-  var EQUIPS = ['全部', '徒手', '哑铃', '弹力带', '壶铃'];
+  var EQUIPS = ['全部', '徒手', '哑铃', '弹力带', '壶铃', '器械'];
   function equipOk(a) { return S.equipFilter === '全部' || (a.equip || '徒手') === S.equipFilter; }
   function equipChips() {
     return '<div class="chips eq-chips">' + EQUIPS.map(function (e) {
@@ -410,14 +410,15 @@
   }
 
   /* ============ 计划 ============ */
-  var GOALS = ['减脂', '增肌', '塑形', '保持健康', '拉伸放松'], DAYS = [3, 4, 5, 6], LENS = [15, 30, 45], LEVELS = ['新手', '进阶', '老手'];
+  var GOALS = ['减脂', '增肌', '塑形', '保持健康', '拉伸放松'], DAYS = [3, 4, 5, 6], LENS = [15, 30, 45], LEVELS = ['新手', '进阶', '老手'], VENUES = ['🏠 居家', '🏋️ 健身房'];
   function chipRow(arr, key, fmt) {
     return '<div class="chips">' + arr.map(function (v) {
       return '<span class="chip ' + (S.form[key] === v ? 'on' : '') + '" data-a="form" data-k="' + key + '" data-v="' + v + '">' + fmt(v) + '</span>';
     }).join('') + '</div>';
   }
   function vPlanForm() {
-    return '<div class="form-t">🎯 目标</div>' + chipRow(GOALS, 'goal', function (v) { return v; }) +
+    return '<div class="form-t">📍 训练场景</div>' + chipRow(VENUES, 'venue', function (v) { return v; }) +
+      '<div class="form-t">🎯 目标</div>' + chipRow(GOALS, 'goal', function (v) { return v; }) +
       '<div class="form-t">📅 每周训练天数</div>' + chipRow(DAYS, 'day', function (v) { return v + ' 天'; }) +
       '<div class="form-t">⏱ 单次时长</div>' + chipRow(LENS, 'length', function (v) { return v + ' 分钟'; }) +
       '<div class="form-t">🏆 训练水平</div>' + chipRow(LEVELS, 'level', function (v) { return v; }) +
@@ -464,7 +465,7 @@
       '<div class="sum-chips"><div class="sc"><div class="n">' + w.days + '</div><div class="l">训练天</div></div>' +
       '<div class="sc"><div class="n">' + w.totalMin + '</div><div class="l">分钟/周</div></div>' +
       '<div class="sc"><div class="n">' + w.totalKcal + '</div><div class="l">千卡/周</div></div></div>' +
-      '<div class="card" style="font-size:12px;color:#4a525c;line-height:1.7">💬 ' + esc(p.levelNote) + '<br>🔁 ' + esc(p.weeksNote) + '</div>' + days +
+      '<div class="card" style="font-size:12px;color:#4a525c;line-height:1.7">' + esc(p.venueNote || '') + '<br>💬 ' + esc(p.levelNote) + '<br>🔁 ' + esc(p.weeksNote) + '</div>' + days +
       (S.weekIdx === p.weeks.length - 1 ? '<div class="gen-btn btn" data-a="nextCycle">🚀 4 周完成 · 生成下一进阶周期</div>' : '') +
       '<div class="gen-btn btn" data-a="sharePlan">📤 复制周计划 · 分享</div>' +
       '<div class="gen-btn btn ghost" data-a="replan">↻ 重新定制</div>';
@@ -1425,6 +1426,7 @@
   function planShareText() {
     var p = S.plan; if (!p) return '';
     var lines = ['🏋️ 我的 ' + p.weeks.length + ' 周健身计划'];
+    if (p.venueNote) lines.push('📍 ' + p.venueNote);
     if (p.levelNote) lines.push('💬 ' + p.levelNote);
     p.weeks.forEach(function (wk, wi) {
       lines.push('');
@@ -1562,7 +1564,7 @@
     if (a === 'nextCycle') {
       if (!S.plan) return;
       var cyc = (S.plan.cycle || 1) + 1;
-      S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: S.form.level }, histForPlan());
+      S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: S.form.level, venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
       S.plan.cycle = cyc;
       if (S.recoveryOn) applyRecovery(S.plan);
       S.weekIdx = 0; saveK(KP, S.plan); renderView();
@@ -1578,7 +1580,7 @@
     }
     if (a === 'form') { S.form[k] = (k === 'day' || k === 'length') ? Number(v) : v; renderView(); return; }
     if (a === 'genPlan') {
-      S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: S.form.level }, histForPlan());
+      S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: S.form.level, venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
       if (S.recoveryOn) applyRecovery(S.plan);
       S.weekIdx = 0; saveK(KP, S.plan); renderView(); return;
     }

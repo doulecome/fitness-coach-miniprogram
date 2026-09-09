@@ -524,6 +524,7 @@ function equipOf(name) {
   if (/哑铃/.test(name)) return '哑铃';
   if (/弹力带/.test(name)) return '弹力带';
   if (/壶铃/.test(name)) return '壶铃';
+  if (/杠铃|T杠|绳索|腿举|哈克|腿弯举|腿伸展|史密斯|龙门架|器械|蹬腿/.test(name)) return '器械';
   return '徒手';
 }
 courses.forEach(c => c.actions.forEach(a => {

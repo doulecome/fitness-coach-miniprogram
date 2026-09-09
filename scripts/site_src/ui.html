@@ -159,9 +159,36 @@
 .resume-card .rc-m { font-size:11px; color:#8a94a0; margin-bottom:10px; }
 .resume-card .rc-btns { display:flex; gap:10px; }
 .resume-card .rc-btns .btn { flex:1; text-align:center; }
-/* 深色主题：整帧反色 + 媒体再反色还原 GIF 原色 */
-.phone.dark { filter: invert(1) hue-rotate(180deg); background:#0b0f13; }
-.phone.dark img, .phone.dark video { filter: invert(1) hue-rotate(180deg); }
+/* ===== 深色主题（真配色，非反色） ===== */
+.phone.dark { --g:#24dc9e; --gd:#1fd6a8; --ink:#e9eef3; --sub:#8d9aa8; --bg:#0d1216; --card:#151c24; --line:#242e39; background:var(--bg); }
+.phone.dark #topbar, .phone.dark #tabbar { background:var(--card); border-color:var(--line); }
+.phone.dark #view { color:var(--ink); }
+/* 面板/卡片/控件 */
+.phone.dark .card, .phone.dark .sheet, .phone.dark .sh-h .x, .phone.dark .demo .img-fb, .phone.dark .seg .sg.on, .phone.dark .hero .h-cta, .phone.dark .dc-act, .phone.dark .mc-bd .bd.w, .phone.dark .pair-res.w, .phone.dark .pb-col { background:#1a232d; }
+.phone.dark .btn.ghost, .phone.dark .chip, .phone.dark .seg, .phone.dark .act-row .a-ic, .phone.dark .act-row .a-g, .phone.dark .bld-it .b-ic, .phone.dark .bld-it .b-go, .phone.dark .bld-rd .r-btn, .phone.dark .diff-seg .o, .phone.dark .swap-it, .phone.dark .swap-it .s-ic, .phone.dark .ed-step .o, .phone.dark .diet-pair .gc, .phone.dark .vol-b, .phone.dark .train-loop .vol-b, .phone.dark .trend .tb-c i.e, .phone.dark .bdg, .phone.dark .row-line .t { background:#202b36; }
+.phone.dark .row-line .t.fin { background:#123128; }
+.phone.dark .phase-tip, .phone.dark .rec-warn, .phone.dark .warm-box, .phone.dark .coach-box, .phone.dark .weak-tip { background:#1c242e; }
+.phone.dark .cue-box { background:#13221d; }
+.phone.dark .fld, .phone.dark .srch-in { background:#0f151b; border-color:#27323e; color:var(--ink); }
+.phone.dark .srch-in:focus { border-color:var(--g); }
+.phone.dark .btn.danger { background:#2b1a18; color:#ff8f88; border-color:#4a2622; }
+.phone.dark .btn.danger.armed { background:#d9534f; color:#fff; border-color:#d9534f; }
+.phone.dark .resume-card { background:linear-gradient(135deg,#241d0e,#151c24); border-color:#4a3a14; }
+.phone.dark .resume-card .rc-t { color:#f0d78a; }
+.phone.dark .resume-card .rc-l { color:#c99b2e; }
+.phone.dark .resume-card .rc-m { color:#8d9aa8; }
+/* 深色文字 → 亮色（覆盖 ui.html 选择器内的硬编码深色文字） */
+.phone.dark .chip, .phone.dark .seg .sg, .phone.dark .dc-act, .phone.dark .row-line .t, .phone.dark .form-t, .phone.dark .zh-st-h, .phone.dark .a-n, .phone.dark .c-n, .phone.dark .sh-t, .phone.dark .rc-t, .phone.dark .bld-it .b-ic { color:var(--ink); }
+.phone.dark [style*="color:#333"], .phone.dark [style*="color:#2b333c"], .phone.dark [style*="color:#4a525c"], .phone.dark [style*="color:#1a2129"] { color:#c6d0da !important; }
+/* app.js 内联浅色背景 → 深色（!important 压过 inline style） */
+.phone.dark [style*="background:#fff"] { background:#1a232d !important; }
+.phone.dark [style*="background:#f5f7f8"], .phone.dark [style*="background:#f0f2f4"], .phone.dark [style*="background:#f5f6f8"], .phone.dark [style*="background:#f2f4f6"] { background:#1e2832 !important; }
+.phone.dark [style*="background:#eef0f2"], .phone.dark [style*="background:#e9ebee"], .phone.dark [style*="background:#e3e7eb"] { background:#26323d !important; }
+.phone.dark [style*="background:#fff4ec"] { background:#2b2013 !important; }
+.phone.dark [style*="background:#e8f7f2"] { background:#122a24 !important; }
+.phone.dark [style*="background:#eef0ff"] { background:#1d2340 !important; }
+.phone.dark [style*="background:#fff8e8"], .phone.dark [style*="background:#fff2d9"] { background:#2b2412 !important; }
+.phone.dark [style*="background:#fff1ef"] { background:#2c1815 !important; }
 .train-loop .vol-row { display:flex; gap:8px; margin-top:4px; }
 .train-loop .vol-b { flex:1; background:#f5f7f8; border-radius:10px; padding:8px 6px; text-align:center; }
 .train-loop .vol-b .n { font-size:17px; font-weight:800; color:var(--gd); }
