@@ -591,7 +591,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v23';
+  var APP_VER = 'v24';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -740,9 +740,8 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     }).join('') + '</div>';
   }
   function vTrain() {
-    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div><div class="sg ' + (S.seg === 'hiit' ? 'on' : '') + '" data-a="seg" data-v="hiit">HIIT</div><div class="sg ' + (S.seg === 'pose' ? 'on' : '') + '" data-a="seg" data-v="pose">AI 姿态</div></div>';
+    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div><div class="sg ' + (S.seg === 'hiit' ? 'on' : '') + '" data-a="seg" data-v="hiit">HIIT</div></div>';
     if (S.seg === 'hiit') return seg + equipChips() + '<div style="height:6px"></div>' + vHiit();
-    if (S.seg === 'pose') return seg + '<div style="height:6px"></div>' + vPose();
     if (S.seg === 'course') {
       return seg + '<div class="course-grid">' + courses.map(function (c) {
         return '<div class="course-card" data-a="openCourse" data-id="' + c.id + '"><div class="cc-ic" style="background:' + esc(c.color || '#1FD6A8') + '22">' + c.icon + '</div>' +
@@ -847,150 +846,6 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     });
     var kcal = Math.round(t.rounds * (t.work / 60) * 9 * (names.length / 2 + 0.5));
     startW(seq, t.n + ' · ' + names.length + ' 动作 × ' + t.rounds + ' 轮', '⚡', kcal, '#FF6B4A', 'fit_hiit_' + S.hiit.tpl + '_' + Date.now(), t.rest, []);
-  }
-
-  /* ============ AI 姿态识别训练（#38）：MediaPipe Pose 纯前端计数 + 实时纠姿 ============ */
-  var POSE_EX = {
-    squat:  { n: '深蹲',   type: 'angle', a: 23, b: 25, c: 27, down: 105, up: 158, actName: 'AI 深蹲挑战', kcalPer: 0.45 },
-    pushup: { n: '俯卧撑', type: 'angle', a: 11, b: 13, c: 15, down: 95,  up: 155, actName: 'AI 俯卧撑挑战', kcalPer: 0.6 },
-    jj:     { n: '开合跳', type: 'jj', actName: 'AI 开合跳挑战', kcalPer: 0.35 }
-  };
-  var PZ = null;
-  function vPose() {
-    var chips = Object.keys(POSE_EX).map(function (k) {
-      return '<span class="chip ' + (S.poseEx === k ? 'on' : '') + '" data-a="poseEx" data-v="' + k + '">' + POSE_EX[k].n + '</span>';
-    }).join('');
-    return '<div class="bld-hint">🤖 AI 姿态识别：摄像头识别你的动作并自动计数、实时纠姿（纯本地运算，视频不上传）</div>' +
-      '<div class="chips">' + chips + '</div>' +
-      '<div class="card" style="margin:8px 0;font-size:12px;line-height:1.8;color:#4a525c">📱 使用说明<br>1️⃣ 将手机/电脑支好，让全身入镜（侧面 45° 最佳）<br>2️⃣ 首次使用需联网加载 AI 模型（约 5MB）<br>3️⃣ 开始后按提示做动作，AI 自动计数并提示纠偏<br>4️⃣ 结束后自动计入训练记录与里程碑</div>' +
-      '<div class="bld-foot"><div class="bld-ct">当前：' + POSE_EX[S.poseEx || 'squat'].n + '</div>' +
-      '<div class="btn" data-a="poseStart">开启摄像头 ▸</div></div>';
-  }
-  function poseAngle(a2, b2, c2) {
-    var ang = Math.abs(Math.atan2(c2.y - b2.y, c2.x - b2.x) - Math.atan2(a2.y - b2.y, a2.x - b2.x)) * 180 / Math.PI;
-    return ang > 180 ? 360 - ang : ang;
-  }
-  var POSE_CDNS = [
-    'https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.0.10/',
-    'https://unpkg.com/@mediapipe/pose@0.5.0.10/',
-    'https://registry.npmmirror.com/@mediapipe/pose/0.5.0.10/files/'
-  ];
-  function loadScriptIdx(i2, ex) {
-    if (i2 >= POSE_CDNS.length) { toast('AI 模型加载失败：请检查网络后重试（国内网络建议多试几次）'); return; }
-    var script = document.createElement('script');
-    script.src = POSE_CDNS[i2] + 'pose.js';
-    script.onload = function () {
-      if (window.Pose) poseInit(ex, POSE_CDNS[i2]);
-      else loadScriptIdx(i2 + 1, ex);
-    };
-    script.onerror = function () { loadScriptIdx(i2 + 1, ex); };
-    document.head.appendChild(script);
-  }
-  function poseStart() {
-    var ex = POSE_EX[S.poseEx || 'squat'];
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      toast(/micromessenger/i.test(navigator.userAgent) ? '微信内置浏览器不支持摄像头，请点右上角 ··· 用系统浏览器打开' : '当前环境不支持摄像头（需 https 或 localhost）');
-      return;
-    }
-    toast('正在加载 AI 模型…首次约需 5-10 秒');
-    if (window.Pose) { poseInit(ex, POSE_CDNS[0]); return; }
-    loadScriptIdx(0, ex);
-  }
-  function poseInit(ex, cdnBase) {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 }, audio: false }).then(function (stream) {
-      var layer = document.createElement('div');
-      layer.id = 'poseLayer';
-      layer.innerHTML = '<div style="position:relative"><video id="pzVideo" playsinline style="width:100%;height:auto;display:block;transform:scaleX(-1);background:#000"></video>' +
-        '<canvas id="pzCanvas" style="position:absolute;left:0;top:0;width:100%;height:auto;transform:scaleX(-1);pointer-events:none"></canvas>' +
-        '<div id="pzHud" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:14px;pointer-events:none">' +
-        '<div style="font-size:52px;font-weight:900;color:#1FD6A8;text-shadow:0 2px 12px rgba(0,0,0,.8)" id="pzCount">0</div>' +
-        '<div style="font-size:15px;color:#fff;background:rgba(0,0,0,.55);padding:5px 14px;border-radius:999px;margin-top:4px" id="pzTip">AI 模型加载中…</div></div></div>' +
-        '<div style="position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:12px">' +
-        '<div class="wk-big" data-a="poseSave" style="width:170px;height:56px;border-radius:999px;font-size:16px">✅ 结束并记录</div>' +
-        '<div class="wk-mini" data-a="poseClose" style="color:#ff7b6b">取消</div></div>';
-      layer.style.cssText = 'position:fixed;inset:0;z-index:60;background:#0b0f13;display:flex;flex-direction:column;justify-content:center';
-      document.body.appendChild(layer);
-      PZ = { ex: ex, count: 0, phase: 'up', stream: stream, t0: Date.now(), five: 0 };
-      var video = layer.querySelector('#pzVideo');
-      video.srcObject = stream;
-      video.play();
-      var pose = new window.Pose({ locateFile: function (f) { return cdnBase + f; } });
-      pose.setOptions({ modelComplexity: 0, smoothLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
-      pose.onResults(poseOnResults);
-      PZ.pose = pose; PZ.video = video; PZ.raf = 0; PZ.stopped = false; PZ.busy = false;
-      var tipEl = layer.querySelector('#pzTip');
-      pose.initialize().then(function () {
-        if (PZ && tipEl) tipEl.textContent = '调整位置，让全身入镜…';
-        (function loop() {
-          if (!PZ || PZ.stopped) return;
-          if (!PZ.busy && video.readyState >= 2) {
-            PZ.busy = true;
-            pose.send({ image: video }).catch(function () {}).then(function () { if (PZ) PZ.busy = false; });
-          }
-          PZ.raf = requestAnimationFrame(loop);
-        })();
-      }).catch(function () {
-        toast('AI 模型初始化失败：请检查网络后重试');
-        poseStopCam();
-      });
-    }).catch(function () { toast('摄像头打开失败：请允许权限；微信内打开不支持摄像头，请用系统浏览器'); });
-  }
-  function poseOnResults(res) {
-    if (!PZ || PZ.stopped) return;
-    var lm = res.poseLandmarks;
-    var cv = document.getElementById('pzCanvas'), video = PZ.video;
-    if (cv && video) {
-      cv.width = video.videoWidth || 640; cv.height = video.videoHeight || 480;
-      var x2 = cv.getContext('2d');
-      x2.clearRect(0, 0, cv.width, cv.height);
-      if (lm) {
-        x2.fillStyle = '#1FD6A8';
-        [0, 11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28].forEach(function (i3) {
-          var p = lm[i3]; if (!p) return;
-          x2.beginPath(); x2.arc(p.x * cv.width, p.y * cv.height, 6, 0, 7); x2.fill();
-        });
-      }
-    }
-    var tip = document.getElementById('pzTip'), cnt = document.getElementById('pzCount');
-    if (!lm) { if (tip) tip.textContent = '未检测到人体——请让全身入镜'; return; }
-    var ex = PZ.ex, msg = '';
-    if (ex.type === 'angle') {
-      var ang = poseAngle(lm[ex.a], lm[ex.b], lm[ex.c]);
-      if (PZ.phase === 'up' && ang < ex.down) { PZ.phase = 'down'; msg = '✓ 很标准，起身'; }
-      else if (PZ.phase === 'down' && ang > ex.up) {
-        PZ.phase = 'up'; PZ.count++;
-        if (PZ.count % 5 === 0) say(PZ.count + ' 个，继续保持');
-      }
-      msg = msg || (PZ.phase === 'up' ? (ang < ex.up - 25 ? '降下去，动作幅度再大一点' : '好，现在下降') : '推起 / 起身 ↺');
-      if (tip) tip.textContent = ex.n + ' · 关节角度 ' + Math.round(ang) + '° · ' + msg;
-    } else { /* 开合跳：双手腕过头顶=开 */
-      var open = lm[15].y < lm[0].y && lm[16].y < lm[0].y;
-      if (PZ.phase === 'up' && open) { PZ.phase = 'down'; msg = '✓ 跳开到位'; }
-      else if (PZ.phase === 'down' && !open) { PZ.phase = 'up'; PZ.count++; if (PZ.count % 5 === 0) say(PZ.count + ' 个，继续保持'); }
-      msg = msg || (PZ.phase === 'up' ? '双手举过头顶跳开！' : '收回，并腿跳');
-      if (tip) tip.textContent = ex.n + ' · ' + msg;
-    }
-    if (cnt) cnt.textContent = PZ.count;
-  }
-  function poseStopCam() {
-    if (!PZ) return;
-    PZ.stopped = true;
-    if (PZ.raf) cancelAnimationFrame(PZ.raf);
-    if (PZ.stream) PZ.stream.getTracks().forEach(function (t2) { t2.stop(); });
-    var layer = document.getElementById('poseLayer');
-    if (layer) layer.remove();
-    PZ = null;
-  }
-  function poseSave() {
-    if (!PZ) return;
-    var ex = PZ.ex, count = PZ.count, min = Math.max(1, Math.round((Date.now() - PZ.t0) / 60000));
-    var kcal = Math.round(count * ex.kcalPer);
-    poseStopCam();
-    saveRecord({ date: todayStr(), ts: Date.now(), name: ex.actName, icon: '🤖', min: min, kcal: kcal,
-      done: count, total: count, bg: '#e8f7f2', tag: 'AI',
-      detail: [{ name: ex.n, actual: count, target: count, type: 'reps', phase: 'main' }] });
-    S.tab = 'record'; renderShell();
-    toast('🤖 已记录 ' + count + ' 个 ' + ex.n + '，教练为你骄傲！');
   }
 
   /* ============ 呼吸放松（#24）：4-7-8 / 盒式 / 6-1-6，纯计时序列复用跟练引擎 ============ */
@@ -2617,11 +2472,6 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       S.remind = { on: S.remind ? S.remind.on : false, time: (rt && rt.value) || '19:30' };
       saveK('fit_remind', S.remind); toast('⏰ 提醒时间已设为 ' + S.remind.time); return;
     }
-    /* AI 姿态识别（#38） */
-    if (a === 'poseEx') { S.poseEx = v; renderView(); return; }
-    if (a === 'poseStart') { poseStart(); return; }
-    if (a === 'poseSave') { poseSave(); return; }
-    if (a === 'poseClose') { poseStopCam(); toast('已取消 AI 训练'); return; }
     /* Keep 式按餐记录（#40） */
     if (a === 'addFood') { sheetFood(el.dataset.meal); return; }
     if (a === 'foodQuick') {
