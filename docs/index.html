@@ -579,6 +579,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     r.weightGoal = bmi < 18.5 ? Math.max(Math.round(r.idealWeight * 0.88), Math.round(r.weight + 4)) : bmi >= 24 ? Math.round(r.weight - 5) : r.weight;
     r.water = Math.max(Math.round(r.weight * 35), 2000);
     var tips = [];
+    r.dietFlags = []; /* 体检标记 → 餐单选品偏好（低嘌呤硬排除 / 低 GI 软优先） */
     if (bmi < 18.5) tips.push({ i: '⚖️', t: '体重偏轻（BMI ' + r.bmi + '）', d: '核心是吃够 + 练够：每天比消耗多吃约 300 千卡，以力量训练为主、少做长时间有氧。理想体重约 ' + r.idealWeight + 'kg，先定 ' + r.weightGoal + 'kg 小目标，每月增 0.8~1.2kg 最稳。' });
     else if (bmi >= 28) tips.push({ i: '⚖️', t: '肥胖（BMI ' + r.bmi + '）', d: '建议系统减重：热量缺口 300~500 千卡/天，每周 3 次力量 + 2 次有氧组合，保肌肉先于掉体重。先定 ' + r.weightGoal + 'kg 目标，每月减 2~3kg。' });
     else if (bmi >= 24) tips.push({ i: '⚖️', t: '超重（BMI ' + r.bmi + '）', d: '热量缺口约 300 千卡/天，力量有氧各半，目标先定 ' + r.weightGoal + 'kg，每月减 1~2kg。' });
@@ -592,8 +593,9 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var ua = Number(h.ua) || 0;
     if (ua > 428) { tips.push({ i: '🧪', t: '尿酸偏高（' + ua + ' μmol/L）', d: '蛋白优选鸡蛋、牛奶、乳清、鸡胸；少吃动物内脏、浓肉汤、部分海鲜，不饮酒、少喝含糖饮料；每天喝够 ' + (r.water / 1000).toFixed(1) + 'L 水。明显升高建议就医复查。' }); r.water = Math.max(r.water, 2400); r.lowPurine = true; }
     else if (ua >= 390) { tips.push({ i: '🧪', t: '尿酸接近上限（' + ua + ' μmol/L）', d: '高蛋白饮食期间优选蛋、奶、乳清等低嘌呤来源，多喝水（' + (r.water / 1000).toFixed(1) + 'L/天），少内脏与浓汤。' }); r.water = Math.max(r.water, 2200); r.lowPurine = true; }
+    if (r.lowPurine) r.dietFlags.push('低嘌呤');
     var glu = Number(h.glu) || 0;
-    if (glu >= 6.1) tips.push({ i: '🩸', t: '空腹血糖偏高（' + glu + ' mmol/L）', d: '建议复查糖代谢；训练加每周 2~3 次有氧，主食换低 GI（糙米/燕麦），少含糖饮料。' });
+    if (glu >= 6.1) { tips.push({ i: '🩸', t: '空腹血糖偏高（' + glu + ' mmol/L）', d: '建议复查糖代谢；训练加每周 2~3 次有氧，主食换低 GI（糙米/燕麦），少含糖饮料。' }); r.dietFlags.push('低GI'); }
     var ggt = Number(h.ggt) || 0;
     if (ggt > 60) tips.push({ i: '🫀', t: 'GGT 偏高（' + ggt + ' U/L）', d: '常见于饮酒或肝胆问题，建议戒酒并复查肝功能后再定训练强度。' });
     else if (ggt > 0 && ggt < 10) tips.push({ i: '🫀', t: 'GGT 偏低（' + ggt + ' U/L）', d: '多与营养摄入不足相关，非疾病信号：把热量与蛋白吃够，通常随营养改善回升。' });
@@ -669,7 +671,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v27';
+  var APP_VER = 'v28';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -2074,15 +2076,18 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     { k: 'other', l: '其他', opts: ['牛油果', '香蕉', '牛奶', '橄榄油', '柠檬', '坚果'] }
   ];
   function goldenCombos(goal) {
+    var lp = mealFlags().indexOf('低嘌呤') >= 0;
     if (goal === '增肌') return [
       { c: '牛肉 + 糙米 + 彩椒', t: '优质蛋白 + 慢碳 + 维C促铁，增肌黄金三角' },
       { c: '鸡蛋 + 全麦面包 + 牛油果', t: '完整氨基酸 + 好脂肪，训练后恢复友好' },
-      { c: '三文鱼 + 红薯 + 西兰花', t: 'Omega-3 抗炎 + 慢碳 + 纤维，助合成' }
+      lp ? { c: '鸡胸 + 红薯 + 西兰花', t: '低嘌呤优质蛋白 + 慢碳，护尿酸也够增肌' }
+        : { c: '三文鱼 + 红薯 + 西兰花', t: 'Omega-3 抗炎 + 慢碳 + 纤维，助合成' }
     ];
     if (goal === '维持') return [
       { c: '豆腐 + 杂粮 + 时蔬', t: '植物蛋白与谷物互补，清淡均衡' },
       { c: '鸡胸 + 藜麦 + 牛油果', t: '完全蛋白 + 好脂肪，饱腹不长胖' },
-      { c: '鱼 + 糙米 + 番茄', t: '低脂优质蛋白 + 抗氧化物，日常稳态' }
+      lp ? { c: '鸡蛋 + 糙米 + 番茄', t: '低嘌呤完整蛋白 + 抗氧化物，日常稳态' }
+        : { c: '鱼 + 糙米 + 番茄', t: '低脂优质蛋白 + 抗氧化物，日常稳态' }
     ];
     return [
       { c: '鸡胸肉 + 西兰花 + 糙米', t: '高蛋白低脂 + 慢碳，减脂饱腹标配' },
@@ -2187,7 +2192,29 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (!pantry || !pantry.length) return [];
     return meal.parts.filter(function (p) { return pantry.indexOf(p.n) < 0; }).map(function (p) { return p.n; });
   }
-  function pickMeal(arr, target, pantry) {
+  /* ===== 体检指标 → 餐单选品筛选（v28）=====
+     lowPurine：硬排除高嘌呤菜品（虾蟹贝/内脏/浓汤等）；lowGI：软优先粗粮主食。 */
+  function mealFlags() { return (PROFILE && PROFILE.dietFlags) || []; }
+  var HIGH_PURINE_KW = ['虾', '海鲜', '蟹', '贝', '蛤', '生蚝', '牡蛎', '内脏', '猪肝', '鸡肝', '腰花', '肥肠', '浓汤', '肉汤', '火锅', '啤酒', '沙丁鱼', '凤尾鱼', '鱼籽', '鱿鱼', '章鱼', '带鱼', '鱼露', '虾皮'];
+  function dishText(it) { return it.n + ' ' + (it.parts || []).map(function (x) { return x.n; }).join(' '); }
+  function isHighPurine(it) { var t = dishText(it); return HIGH_PURINE_KW.some(function (k) { return t.indexOf(k) >= 0; }); }
+  function isHighGI(it) {
+    var t = dishText(it);
+    if (/糙米|杂粮|藜麦|荞麦|燕麦|全麦|紫薯|红薯/.test(t)) return false; /* 粗粮主食先豁免（"糙米饭"含"米饭"） */
+    return /米饭|白粥|白面包|糯米|土豆泥|含糖|蜂蜜|糖浆/.test(t);
+  }
+  function pickMeal(arr, target, pantry, flags) {
+    flags = flags || mealFlags();
+    var base = arr;
+    if (flags.indexOf('低嘌呤') >= 0) {
+      var clean = arr.filter(function (t) { return !isHighPurine(t); });
+      if (clean.length) base = clean; /* 池子够则硬排除；全被排掉才退回原池 */
+    }
+    if (flags.indexOf('低GI') >= 0) {
+      var low = base.filter(function (t) { return !isHighGI(t); });
+      if (low.length) base = low; /* 有粗粮主食可选时优先 */
+    }
+    arr = base;
     var pool = arr.filter(function (t) { return Math.abs(t.kcal - target) <= 80; });
     if (!pool.length) { var bd = 1e9, bn = arr[0]; arr.forEach(function (t) { var d = Math.abs(t.kcal - target); if (d < bd) { bd = d; bn = t; } }); pool = [bn]; }
     if (pantry && pantry.length) {
@@ -2241,13 +2268,13 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var d = S.diet;
     if (!d) return null;
     var today = todayStr();
-    var pk = pantryKey();
+    var pk = pantryKey(), fk = mealFlags().join('+'); /* 常备食材 + 体检筛选双重签名 */
     var b = bmr(d), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
     var dayK = d.training ? tgt + 150 : tgt;
     var shares = { bf: Math.round(dayK * 0.25), lunch: Math.round(dayK * 0.35), dinner: Math.round(dayK * 0.30) };
     var bf, lunch, dinner, snack;
-    if (S.dayMeal && S.dayMeal.date === today && S.dayMeal.goal === d.goal && S.dayMeal.pantry === pk) {
-      /* 当日餐单持久化（date+goal+常备食材三重签名）：三者任一变化即按新条件重配 */
+    if (S.dayMeal && S.dayMeal.date === today && S.dayMeal.goal === d.goal && S.dayMeal.pantry === pk && (S.dayMeal.flags || '') === fk) {
+      /* 当日餐单持久化（date+goal+常备食材+体检筛选四重签名）：任一变化即按新条件重配 */
       bf = BF.filter(function (t) { return t.n === S.dayMeal.bf; })[0] || pickMeal(BF, shares.bf, S.pantry);
       lunch = LUN.filter(function (t) { return t.n === S.dayMeal.lunch; })[0] || pickMeal(LUN, shares.lunch, S.pantry);
       dinner = DIN.filter(function (t) { return t.n === S.dayMeal.dinner; })[0] || pickMeal(DIN, shares.dinner, S.pantry);
@@ -2256,7 +2283,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       bf = pickMeal(BF, shares.bf, S.pantry); lunch = pickMeal(LUN, shares.lunch, S.pantry); dinner = pickMeal(DIN, shares.dinner, S.pantry);
       var snackK0 = dayK - (bf.kcal + lunch.kcal + dinner.kcal);
       snack = pickMeal(SNK, snackK0 > 60 ? snackK0 : 150, S.pantry);
-      S.dayMeal = { date: today, goal: d.goal, pantry: pk, bf: bf.n, lunch: lunch.n, dinner: dinner.n, snack: snack.n };
+      S.dayMeal = { date: today, goal: d.goal, pantry: pk, flags: fk, bf: bf.n, lunch: lunch.n, dinner: dinner.n, snack: snack.n };
       saveK('fit_daymeal', S.dayMeal);
     }
     return { bf: bf, lunch: lunch, dinner: dinner, snack: snack, dayK: dayK };
@@ -2324,6 +2351,15 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="ds-b"><div class="n">' + td + '</div><div class="l">每日消耗 TDEE</div></div></div>' +
       '<div class="ds-target"><span class="ds-k">' + dayK + '</span> 千卡/天 · ' + (d.training ? '训练日' : '休息日') + ' · ' + esc(d.goal) + '</div>' +
       (S.dietAuto ? '<div style="font-size:10.5px;color:#8d959e;margin-top:6px">📱 本方案按默认资料自动生成，点底部「重新填写资料」可改成你的身高体重</div>' : '') + '</div>' +
+      (function () {
+        var fl = mealFlags();
+        if (!fl.length) return '';
+        var ps = [];
+        if (fl.indexOf('低嘌呤') >= 0) ps.push('低嘌呤优先：已避开虾蟹贝、内脏、浓肉汤类菜品');
+        if (fl.indexOf('低GI') >= 0) ps.push('低 GI 优先：粗粮/全麦主食排前，白米饭类退后');
+        return '<div class="card" style="margin-bottom:10px;font-size:11.5px;color:#4a525c;line-height:1.75;background:#f5f9f7">🧪 <b>餐单已按你的体检指标筛选</b><br>' + ps.join('<br>') +
+          '<div style="font-size:10.5px;color:#8d959e;margin-top:4px">依据本机「身体数据分析器」的指标，清除数据后即恢复默认选品</div></div>';
+      })() +
       '<div class="card"><div class="form-t" style="margin:0 0 8px">🥗 三大营养素配比</div>' +
       '<div class="macro-bar"><i class="mp p" style="width:' + Math.round(m.pk / tot * 100) + '%"></i><i class="mp c" style="width:' + Math.round(m.ck / tot * 100) + '%"></i><i class="mp f" style="width:' + Math.round(m.fk / tot * 100) + '%"></i></div>' +
       '<div class="macro-leg"><span><b style="color:#0fb98c">' + m.protein + 'g</b> 蛋白 ' + Math.round(m.pk / tot * 100) + '%</span>' +
@@ -2759,7 +2795,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       S.healthOpen = false;
       renderView(); toast('✅ 分析完成：目标与饮食已更新' + trainMsg + (PROFILE.levelCap ? '（血压偏高：强度已调至新手档）' : '')); return;
     }
-    if (a === 'healthClear') { S.health = null; saveK('fit_health', null); S.healthOpen = false; renderView(); toast('已清除身体数据'); return; }
+    if (a === 'healthClear') { S.health = null; saveK('fit_health', null); S.healthDraft = null; S.dayMeal = null; saveK('fit_daymeal', null); PROFILE = analyzeHealth({ gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' }); S.healthOpen = false; renderView(); toast('已清除身体数据，餐单恢复默认选品'); return; }
     if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false, custom: true }); S.dayMeal = null; S.dietFormOpen = false; S.dietAuto = false; saveK('fit_diet', S.diet); saveK('fit_daymeal', null); renderView(); toast('✅ 方案已生成，已按你的资料重配今日餐单'); return; }
     if (a === 'dietEdit') { S.dietDraft = Object.assign({}, S.diet); S.dietFormOpen = true; renderView(); return; }
     if (a === 'dietTrain') { if (S.diet) { S.diet.training = (v === '1'); saveK('fit_diet', S.diet); renderView(); } return; }
