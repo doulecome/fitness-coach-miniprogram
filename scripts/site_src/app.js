@@ -174,7 +174,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v28';
+  var APP_VER = 'v29';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -1647,6 +1647,38 @@
     return out;
   }
   var ALLFOODS = collectFoods();
+  /* ===== 常备食材归一化（v29）=====
+     菜品库把同一物写成了多个别名（鸡蛋/水煮蛋、鸡胸肉/鸡丁/去皮鸡腿…），
+     用户勾不动也对不齐 → 归成组名：勾一次整组通过，缺料判断也用组名。
+     注：米饭/糙米饭/杂粮饭不合并（粗精细不同，热量与 GI 也不同）。 */
+  var FOOD_ALIAS = {
+    '水煮蛋': '鸡蛋',
+    '鸡胸肉': '鸡肉', '鸡丁': '鸡肉', '去皮鸡腿': '鸡肉',
+    '脱脂牛奶': '牛奶',
+    '嫩豆腐': '豆腐',
+    '橄榄油': '食用油', '豆油': '食用油', '麻油': '食用油', '油': '食用油',
+    '时蔬': '蔬菜', '蔬菜': '蔬菜', '青菜': '蔬菜', '混合蔬菜': '蔬菜', '生菜番茄': '蔬菜',
+    '麦片': '燕麦'
+  };
+  /* 厨房基础调味料：默认家里就有，不计入"缺料"，无需勾选 */
+  var PANTRY_IGNORE = ['食用油', '照烧汁', '番茄酱', '低脂酸奶蘸'];
+  function normFood(n) { return FOOD_ALIAS[n] || n; }
+  /* 可勾选的常备食材（归一化去重 + 剔除调味料）→ 从 51 个碎条目降到能扫一眼勾完 */
+  var PANTRY_OPTS = (function () {
+    var seen = {}, out = [];
+    ALLFOODS.forEach(function (f) {
+      var g = normFood(f);
+      if (PANTRY_IGNORE.indexOf(g) >= 0 || seen[g]) return;
+      seen[g] = 1; out.push(g);
+    });
+    return out;
+  })();
+  /* 老数据兼容：历史勾选可能存的是别名，载入时归一化去重 */
+  S.pantry = (function () {
+    var seen = {}, out = [];
+    (S.pantry || []).forEach(function (f) { var g = normFood(f); if (!seen[g]) { seen[g] = 1; out.push(g); } });
+    return out;
+  })();
   /* ============ Keep 式热量预算 + 按餐记录（#40）：推荐菜一键记入，预算随训练消耗闭环 ============ */
   var MEALS = [['bf', '早餐', '🌅'], ['lunch', '午餐', '☀️'], ['dinner', '晚餐', '🌙'], ['snack', '加餐', '🍪']];
   function mealLabel(k) { for (var i = 0; i < MEALS.length; i++) if (MEALS[i][0] === k) return MEALS[i][1]; return k; }
@@ -1693,7 +1725,13 @@
   }
   function pantryMiss(meal, pantry) {
     if (!pantry || !pantry.length) return [];
-    return meal.parts.filter(function (p) { return pantry.indexOf(p.n) < 0; }).map(function (p) { return p.n; });
+    var seen = {}, out = [];
+    meal.parts.forEach(function (p) {
+      var g = normFood(p.n);
+      if (PANTRY_IGNORE.indexOf(g) >= 0) return; /* 调味料不算缺 */
+      if (pantry.indexOf(g) < 0 && !seen[g]) { seen[g] = 1; out.push(g); }
+    });
+    return out;
   }
   /* ===== 体检指标 → 餐单选品筛选（v28）=====
      lowPurine：硬排除高嘌呤菜品（虾蟹贝/内脏/浓汤等）；lowGI：软优先粗粮主食。 */
@@ -1719,7 +1757,13 @@
     }
     arr = base;
     var pool = arr.filter(function (t) { return Math.abs(t.kcal - target) <= 80; });
-    if (!pool.length) { var bd = 1e9, bn = arr[0]; arr.forEach(function (t) { var d = Math.abs(t.kcal - target); if (d < bd) { bd = d; bn = t; } }); pool = [bn]; }
+    /* 窗口内没有候选（热量目标高于菜品库上限时常见）→ 取最接近的几道轮换，
+       而不是锁死"最接近的那一道"（旧逻辑会让「换一批」永远同一道，看着像乱规划）。
+       热量缺口由份量自适应（mealScale）补齐，见 todayMeals。 */
+    if (!pool.length) {
+      var sorted = arr.slice().sort(function (a, b) { return Math.abs(a.kcal - target) - Math.abs(b.kcal - target); });
+      pool = sorted.slice(0, Math.min(4, sorted.length));
+    }
     if (pantry && pantry.length) {
       /* 严格按常备食材配：先在热量窗口内找全备的；找不到就放宽热量窗口找全备的；再不行取缺得最少的 */
       var full = pool.filter(function (t) { return pantryMiss(t, pantry).length === 0; });
@@ -1738,11 +1782,12 @@
       return '<span class="chip ' + (sel === v ? 'on' : '') + '" data-a="' + aName + '" data-k="' + key + '" data-v="' + v + '">' + v + '</span>';
     }).join('') + '</div>';
   }
-  function mealCard(title, pct, meal, badges, pantry, mealKey) {
+  function mealCard(title, pct, meal, badges, pantry, mealKey, scale) {
+    scale = scale || 1;
     var miss = pantryMiss(meal, pantry);
     var parts = meal.parts.map(function (x) {
       var isMiss = miss.indexOf(x.n) >= 0;
-      return '<div class="mc-p">' + (isMiss ? '<span style="color:#e08a00">⚠️</span> ' : '') + esc(x.n) + (x.a ? ' <span class="mc-a">' + esc(x.a) + '</span>' : '') + '</div>';
+      return '<div class="mc-p">' + (isMiss ? '<span style="color:#e08a00">⚠️</span> ' : '') + esc(normFood(x.n)) + (x.a ? ' <span class="mc-a">' + esc(scaleAmt(x.a, scale)) + '</span>' : '') + '</div>';
     }).join('');
     var bd = '';
     if (badges && badges.length) {
@@ -1752,7 +1797,8 @@
     }
     if (miss.length) bd += '<div class="mc-bd"><span class="bd w">🧺 缺 ' + miss.length + ' 项食材：' + esc(miss.join('、')) + '</span></div>';
     var addBtn = mealKey ? '<div class="btn ghost" data-a="foodQuick" data-meal="' + mealKey + '" data-k="' + esc(meal.n) + '" style="margin-top:8px;text-align:center;padding:8px 0;font-size:12px">＋ 吃了就记入' + title + '</div>' : '';
-    return '<div class="meal-card"><div class="mc-h"><span class="mc-t">' + title + '</span><span class="mc-pct">' + pct + '%</span><span class="mc-k">' + meal.kcal + ' 千卡</span></div>' + parts + bd + addBtn + '</div>';
+    var scaleTag = scale > 1 ? '<span style="font-size:10px;color:#0fb98c;background:rgba(15,185,140,.13);border-radius:6px;padding:1px 6px;margin-left:6px">按目标加量 ×' + scale + '</span>' : '';
+    return '<div class="meal-card"><div class="mc-h"><span class="mc-t">' + title + '</span>' + scaleTag + '<span class="mc-pct">' + pct + '%</span><span class="mc-k">' + Math.round(meal.kcal * scale) + ' 千卡</span></div>' + parts + bd + addBtn + '</div>';
   }
   function vDietForm() {
     var d = S.dietDraft;
@@ -1775,6 +1821,7 @@
     var b = bmr(d), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
     var dayK = d.training ? tgt + 150 : tgt;
     var shares = { bf: Math.round(dayK * 0.25), lunch: Math.round(dayK * 0.35), dinner: Math.round(dayK * 0.30) };
+    var snackTgt = Math.max(60, Math.round(dayK * 0.10)); /* 加餐固定占 10%，与三餐一起凑满 dayK */
     var bf, lunch, dinner, snack;
     if (S.dayMeal && S.dayMeal.date === today && S.dayMeal.goal === d.goal && S.dayMeal.pantry === pk && (S.dayMeal.flags || '') === fk) {
       /* 当日餐单持久化（date+goal+常备食材+体检筛选四重签名）：任一变化即按新条件重配 */
@@ -1784,12 +1831,32 @@
       snack = SNK.filter(function (t) { return t.n === S.dayMeal.snack; })[0] || pickMeal(SNK, 150, S.pantry);
     } else {
       bf = pickMeal(BF, shares.bf, S.pantry); lunch = pickMeal(LUN, shares.lunch, S.pantry); dinner = pickMeal(DIN, shares.dinner, S.pantry);
-      var snackK0 = dayK - (bf.kcal + lunch.kcal + dinner.kcal);
-      snack = pickMeal(SNK, snackK0 > 60 ? snackK0 : 150, S.pantry);
+      snack = pickMeal(SNK, snackTgt, S.pantry);
       S.dayMeal = { date: today, goal: d.goal, pantry: pk, flags: fk, bf: bf.n, lunch: lunch.n, dinner: dinner.n, snack: snack.n };
       saveK('fit_daymeal', S.dayMeal);
     }
-    return { bf: bf, lunch: lunch, dinner: dinner, snack: snack, dayK: dayK };
+    /* 份量自适应（v29）：菜品库单份热量有上限，热量目标更高时按 目标÷单份 放大份量，
+       让每餐真正吃够（餐卡显示 ×N 量与放大后的千卡），而不是固定给一份、总量差一大截。 */
+    var tg = { bf: shares.bf, lunch: shares.lunch, dinner: shares.dinner, snack: snackTgt };
+    var scales = { bf: mealScale(bf, tg.bf), lunch: mealScale(lunch, tg.lunch), dinner: mealScale(dinner, tg.dinner), snack: mealScale(snack, tg.snack) };
+    return { bf: bf, lunch: lunch, dinner: dinner, snack: snack, dayK: dayK, scales: scales, targets: tg };
+  }
+  /* 目标÷单份热量 → 份量倍数；不到 5% 不加量，封顶 2.2 倍（再多不现实） */
+  function mealScale(meal, target) {
+    var s = target / meal.kcal;
+    if (!isFinite(s) || s < 1.05) return 1;
+    return Math.min(2.2, Math.round(s * 10) / 10);
+  }
+  /* 按倍数放大份量文本："150g"→"285g"、"2个"→"4个"、"60g(干)"→"114g(干)"；无定量（如"时蔬"）不动 */
+  function scaleAmt(a, s) {
+    if (!a || s === 1) return a;
+    var m = String(a).match(/^([\d.]+)(.*)$/);
+    if (!m) return a;
+    var v = parseFloat(m[1]) * s, u = m[2];
+    if (/^(g|ml)/.test(u)) v = Math.round(v / 5) * 5;
+    else if (/个|片|张|根|块|勺|杯/.test(u)) v = Math.max(1, Math.round(v));
+    else v = Math.round(v * 10) / 10;
+    return v + u;
   }
   function vDietResult() {
     var d = S.diet;
@@ -1799,7 +1866,7 @@
     var m = macroSplit(dayK, d.weight, d.goal, d.training);
     var tot = m.pk + m.ck + m.fk || 1;
     var tm = todayMeals();
-    var bf = tm.bf, lunch = tm.lunch, dinner = tm.dinner, snack = tm.snack;
+    var bf = tm.bf, lunch = tm.lunch, dinner = tm.dinner, snack = tm.snack, sc = tm.scales || {};
     var water = Math.max(Math.round(d.weight * 35), PROFILE.water);
     /* Keep 式热量预算：预算 = 目标热量 + 今日实际训练消耗；已吃 = 当日按餐记录之和 */
     var dl = dayLog();
@@ -1839,14 +1906,14 @@
       '<div class="vol-b"><div class="n">+' + burn + '</div><div class="l">今日已计入预算</div></div></div>' +
       '<div style="font-size:10.5px;color:#a0a6ad;margin-top:6px">今天练掉 ' + burn + ' 千卡已实时加进上方预算——练得多，当天能吃的也多，吃练闭环。</div></div>';
     /* 常备食材卡（#39）：勾选后餐单优先按已有食材配 */
-    var pantryChips = ALLFOODS.map(function (f) {
+    var pantryChips = PANTRY_OPTS.map(function (f) {
       return '<span class="chip ' + (S.pantry.indexOf(f) >= 0 ? 'on' : '') + '" data-a="pantryTgl" data-n="' + esc(f) + '">' + esc(f) + '</span>';
     }).join('');
     var pantryHtml = '<div class="card" style="margin-bottom:10px"><div class="form-t" style="margin:0 0 8px">🧺 我的常备食材 <span class="more" data-a="pantryAll" style="cursor:pointer">' + (S.pantry.length ? '全选 / 清空' : '一键全选') + '</span></div>' +
       '<div class="chips">' + pantryChips + '</div>' +
-      '<div style="font-size:10.5px;color:#8d959e;margin-top:6px">' + (S.pantry.length
-        ? '已勾 ' + S.pantry.length + ' 项 · 今日餐单已按你的食材重新生成（只挑家里有的，实在凑不齐才缺几样标 ⚠️）；点「重新配餐」可再换一批'
-        : '勾选家里有的食材，餐单立即按已有的来生成；不勾则全库随机') + '</div>' +
+      '<div style="font-size:10.5px;color:#8d959e;margin-top:6px;line-height:1.7">' + (S.pantry.length
+        ? '✅ 已勾 ' + S.pantry.length + ' 项 · 下方餐单<b>只从你勾的食材里配</b>（油盐酱醋等调味料默认有，不用勾）；实在凑不齐才缺几样并标 ⚠️'
+        : '⚠️ 还没勾食材 → 当前是<b>全库随机推荐</b>，跟你家里有什么无关。勾上你常备的几样，餐单就只按这些来配（调味料不用勾）') + '</div>' +
       (S.pantry.length ? '<div class="btn" style="margin-top:8px;text-align:center;padding:9px 0" data-a="pantryRegen">按常备食材重新配餐 ⟳</div>' : '') + '</div>';
     return '' +
       '<div class="card diet-sum">' +
@@ -1874,9 +1941,9 @@
       '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
       budgetCard +
       mealLogHtml +
-      '<div class="h-sec">今日推荐 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span><span style="font-size:10px;color:#8d959e;margin-left:6px">吃了点「一键记入」就进预算</span></div>' +
-      mealCard('早餐', 25, bf, mealFindings(bf), S.pantry, 'bf') + mealCard('午餐', 35, lunch, mealFindings(lunch), S.pantry, 'lunch') + mealCard('晚餐', 30, dinner, mealFindings(dinner), S.pantry, 'dinner') + mealCard('加餐', 10, snack, mealFindings(snack), S.pantry, 'snack') +
       pantryHtml +
+      '<div class="h-sec">今日推荐 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span><span style="font-size:10px;color:#8d959e;margin-left:6px">吃了点「一键记入」就进预算</span></div>' +
+      mealCard('早餐', 25, bf, mealFindings(bf), S.pantry, 'bf', sc.bf) + mealCard('午餐', 35, lunch, mealFindings(lunch), S.pantry, 'lunch', sc.lunch) + mealCard('晚餐', 30, dinner, mealFindings(dinner), S.pantry, 'dinner', sc.dinner) + mealCard('加餐', 10, snack, mealFindings(snack), S.pantry, 'snack', sc.snack) +
       trainCard +
       vDietPair() +
       '<div class="card" style="font-size:11.5px;color:#7a838e;line-height:1.6;background:#f5f7f8">📌 ' + goalTxt + '。餐单为参考样例，按热量目标搭配中式食材；如有代谢疾病或特殊饮食需求，请遵营养师/医嘱。</div>' +
@@ -2310,7 +2377,7 @@
       saveK('fit_pantry', S.pantry); renderView(); return;
     }
     if (a === 'pantryAll') {
-      S.pantry = S.pantry.length >= ALLFOODS.length ? [] : ALLFOODS.slice();
+      S.pantry = S.pantry.length >= PANTRY_OPTS.length ? [] : PANTRY_OPTS.slice();
       saveK('fit_pantry', S.pantry); renderView(); return;
     }
     if (a === 'pantryRegen') { S.dayMeal = null; saveK('fit_daymeal', null); renderView(); toast('🧺 已按常备食材重新配餐'); return; }
