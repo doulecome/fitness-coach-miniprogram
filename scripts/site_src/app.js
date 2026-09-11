@@ -174,7 +174,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v29';
+  var APP_VER = 'v30';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -492,6 +492,29 @@
       '<div class="btn" style="padding:9px 18px" data-a="weightSave">记录</div></div></div>';
   }
 
+  /* ===== 体重里程碑（v30）：按「起点 → 目标」动态算三档，通用不写死具体 kg =====
+     起点 = 体重曲线最早一条（有身体档案时会自动种入体检当天体重），目标 = S.wGoal。
+     增重与减重同构：越过该档位即解锁。三档 = 进度的 1/3、2/3、100%。 */
+  function weightProgress() {
+    var ks = Object.keys(S.weights || {}).sort();
+    if (!ks.length) return null;
+    var start = Number(S.weights[ks[0]]) || 0;
+    var goal = Number(S.wGoal) || Number(PROFILE.weightGoal) || 0;
+    if (!start || !goal) return null;
+    var span = Math.abs(goal - start);
+    if (span < 0.5) return null; /* 目标与起点几乎一样，不设里程碑 */
+    var up = goal > start;
+    var cur = Number(S.weights[ks[ks.length - 1]]) || start;
+    var seen = {}, steps = [];
+    [1 / 3, 2 / 3, 1].forEach(function (p) {
+      var v = Math.round((up ? start + span * p : start - span * p) * 10) / 10;
+      if (seen[v]) return;
+      seen[v] = 1;
+      steps.push({ v: v, ok: up ? cur >= v - 0.05 : cur <= v + 0.05 });
+    });
+    return { start: start, cur: cur, goal: goal, up: up, steps: steps };
+  }
+
   /* ============ 成就徽章（#21）：数据全来自 records/best/streak/dietLog，纯展示层 ============ */
   function badgeDefs() {
     var totalMin = S.records.reduce(function (a, r) { return a + (r.min || 0); }, 0);
@@ -500,6 +523,15 @@
     var nPR = Object.keys(S.best).filter(function (n) { return S.best[n].best > 0; }).length;
     var dietDays = Object.keys(S.dietLog).filter(function (k) { var d = S.dietLog[k]; return d && (d.bf || d.lunch || d.dinner || d.snack); }).length;
     var stk = streak() || 0;
+    /* 体重里程碑：数字由本机曲线与目标算出，代码里不含任何个人数值 */
+    var wp = weightProgress();
+    var wMeta = [['📈', '体重第一阶'], ['💪', '体重过半'], ['🏆', '体重达标']];
+    var wDefs = wMeta.map(function (m, i) {
+      var s = wp && wp.steps[i];
+      if (!s) return { id: 'wt' + i, ic: m[0], n: m[1], d: '先记录体重并设定目标', ok: false, p: 0 };
+      var done = Math.abs(wp.cur - wp.start), need = Math.abs(s.v - wp.start);
+      return { id: 'wt' + i, ic: m[0], n: m[1], d: (wp.up ? '体重达到 ' : '体重降到 ') + s.v + ' kg', ok: s.ok, p: need ? Math.min(1, done / need) : 0 };
+    });
     return [
       { id: 'first',  ic: '🥇', n: '第一练',     d: '完成首次训练',       ok: S.records.length >= 1,  p: S.records.length / 1 },
       { id: 'rec10',  ic: '🎯', n: '小有所成',   d: '累计 10 次训练',     ok: S.records.length >= 10, p: S.records.length / 10 },
@@ -513,7 +545,7 @@
       { id: 'min600', ic: '⌛', n: '十小时',     d: '累计训练 600 分钟',   ok: totalMin >= 600, p: totalMin / 600 },
       { id: 'act100', ic: '📚', n: '百动解锁',   d: '练过 100 个不同动作', ok: Object.keys(uniq).length >= 100, p: Object.keys(uniq).length / 100 },
       { id: 'diet7',  ic: '🥗', n: '吃练闭环',   d: '饮食打卡 7 天',       ok: dietDays >= 7, p: dietDays / 7 }
-    ];
+    ].concat(wDefs);
   }
   function checkNewBadges() {
     var defs = badgeDefs(), fresh = [];
