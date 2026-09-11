@@ -1,5 +1,5 @@
-/* 健身教练 Service Worker · cache fit-b3337d0b51（由 build_site.js 生成，勿手改） */
-var CV = 'fit-b3337d0b51';
+/* 健身教练 Service Worker · cache fit-ccbc121ff2（由 build_site.js 生成，勿手改） */
+var CV = 'fit-ccbc121ff2';
 var SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CV).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));

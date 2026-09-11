@@ -100,6 +100,18 @@
     var ggt = Number(h.ggt) || 0;
     if (ggt > 60) tips.push({ i: '🫀', t: 'GGT 偏高（' + ggt + ' U/L）', d: '常见于饮酒或肝胆问题，建议戒酒并复查肝功能后再定训练强度。' });
     else if (ggt > 0 && ggt < 10) tips.push({ i: '🫀', t: 'GGT 偏低（' + ggt + ' U/L）', d: '多与营养摄入不足相关，非疾病信号：把热量与蛋白吃够，通常随营养改善回升。' });
+    /* 结构化锻炼建议：由指标推导每周训练安排与强度红线（联动训练计划） */
+    var tt = [];
+    if (r.goal === '增肌') tt.push({ i: '🏋️', t: '每周 4 练 · 力量为主', d: '推/拉/蹲分化循环，复合动作优先、渐进加重；有氧每周 1~2 次、每次 15~20 分钟轻松配速即可，避免消耗过大影响增重。' });
+    else if (r.goal === '减脂') tt.push({ i: '🏋️', t: '每周 5 练 · 力量+有氧组合', d: '3 次力量（大肌群优先，守住肌肉和代谢）+ 2 次 30~40 分钟有氧造热量缺口；体重下降后力量重量同步上调。' });
+    else tt.push({ i: '🏋️', t: '每周 3~4 练 · 塑形维持', d: '力量训练为主保持肌肉量与骨密度，搭配 1~2 次 20~30 分钟有氧维持心肺。' });
+    if (sys >= 140 || dia >= 90) { tt.push({ i: '⚠️', t: '强度红线：血压偏高', d: '暂缓大重量与憋气发力（大重量深蹲/硬拉/推举），改轻重量高次数、组间充分休息；先就医评估再逐步上强度。' }); r.levelCap = '新手'; }
+    else if (sys >= 120 || dia >= 80) tt.push({ i: '⚠️', t: '强度注意：血压正常偏高', d: '可正常训练，但大重量少憋气、组间多休息；每周 2 次中低强度有氧有助血压回落。' });
+    if (hr > 90) tt.push({ i: '💓', t: '心率提示：轻松配速起步', d: '有氧控制在"能正常说话"的强度（RPE 4~6），随静息心率下降再逐步提速。' });
+    r.trainTips = tt;
+    r.planGoal = r.goal === '维持' ? '保持健康' : r.goal; /* 映射到计划表单的目标枚举 */
+    r.planDays = r.goal === '减脂' ? 5 : r.goal === '增肌' ? 4 : 3;
+    if (r.levelCap) r.planDays = Math.min(r.planDays, 3);
     tips.push({ i: '📌', t: '通用原则', d: '本分析基于常见参考区间，仅作训练与饮食方向参考；异常指标请以专科医生意见为准。' });
     r.tips = tips;
     return r;
@@ -128,7 +140,7 @@
     tab: 'home', seg: 'course', actMus: '全部', actQ: '', equipFilter: '全部',
     theme: loadK('fit_theme', 'light'), favs: loadK('fit_favs', []),
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
-    form: { goal: PROFILE.goal, day: 4, length: 30, level: '进阶', venue: '🏠 居家' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
+    form: { goal: PROFILE.planGoal || (PROFILE.goal === '维持' ? '保持健康' : PROFILE.goal), day: 4, length: 30, level: '进阶', venue: '🏠 居家' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
     recoveryOn: loadK('fit_recovery', false),
     weights: loadK('fit_weight', {}), dietLog: loadK('fit_dietlog', {}),
     hiit: { tpl: 'tabata', sel: {} }, badges: loadK('fit_badges', {}),
@@ -160,7 +172,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v26';
+  var APP_VER = 'v27';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -919,6 +931,16 @@
       '<div class="pf-b"><div class="n">' + PROFILE.bmi + '</div><div class="l">BMI ' + bmiTxt + '</div></div>' +
       '<div class="pf-b"><div class="n">' + PROFILE.weightGoal + '</div><div class="l">目标 kg</div></div></div>' +
       '<div style="font-size:11px;color:#7a838e;margin:6px 0 4px;line-height:1.6">方向：' + PROFILE.goal + ' · 每日饮水 ' + (PROFILE.water / 1000).toFixed(1) + 'L · 理想体重约 ' + PROFILE.idealWeight + 'kg</div>';
+    if (PROFILE.trainTips && PROFILE.trainTips.length) {
+      html += '<div style="font-size:12.5px;font-weight:600;margin:8px 0 0">💪 锻炼建议</div>';
+      html += PROFILE.trainTips.map(function (t) {
+        return '<div style="display:flex;gap:8px;padding:8px 0;border-top:1px solid rgba(127,127,127,.12)">' +
+          '<span style="font-size:15px">' + t.i + '</span><div><div style="font-size:12.5px;font-weight:500">' + esc(t.t) + '</div>' +
+          '<div style="font-size:11.5px;color:#7a838e;line-height:1.7;margin-top:2px">' + esc(t.d) + '</div></div></div>';
+      }).join('');
+      html += '<div class="btn ghost" data-a="tab" data-v="plan" style="margin-top:6px;text-align:center;font-size:12px">📋 去「计划」页生成训练计划</div>';
+    }
+    html += '<div style="font-size:12.5px;font-weight:600;margin:8px 0 0">🥗 饮食与恢复建议</div>';
     html += PROFILE.tips.map(function (t) {
       return '<div style="display:flex;gap:8px;padding:8px 0;border-top:1px solid rgba(127,127,127,.12)">' +
         '<span style="font-size:15px">' + t.i + '</span><div><div style="font-size:12.5px;font-weight:500">' + esc(t.t) + '</div>' +
@@ -2225,9 +2247,20 @@
       S.diet = { gender: PROFILE.gender, age: PROFILE.age, height: PROFILE.height, weight: PROFILE.weight, activity: PROFILE.activity, goal: PROFILE.goal, training: !!(S.diet && S.diet.training) };
       saveK('fit_diet', S.diet); S.dayMeal = null; saveK('fit_daymeal', null);
       S.wGoal = PROFILE.weightGoal; saveK('fit_wgoal', S.wGoal);
+      /* 联动训练：目标同步到计划表单，血压红线时降级训练水平，已有计划则按新目标重新生成 */
+      S.form.goal = PROFILE.planGoal || (PROFILE.goal === '维持' ? '保持健康' : PROFILE.goal);
+      if (PROFILE.levelCap) S.form.level = PROFILE.levelCap;
+      if (PROFILE.planDays && !S.plan) S.form.day = PROFILE.planDays;
+      var trainMsg = '';
+      if (S.plan) {
+        S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: rpeBiasLevel(S.form.level), venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
+        if (S.recoveryOn) applyRecovery(S.plan);
+        S.weekIdx = 0; saveK(KP, S.plan);
+        trainMsg = '，训练计划已重新生成';
+      }
       if (!Object.keys(S.weights).length && PROFILE.examDate) { S.weights[PROFILE.examDate] = PROFILE.weight; saveK('fit_weight', S.weights); }
       S.healthOpen = false;
-      renderView(); toast('✅ 分析完成：饮食与目标已按你的数据更新'); return;
+      renderView(); toast('✅ 分析完成：目标与饮食已更新' + trainMsg + (PROFILE.levelCap ? '（血压偏高：强度已调至新手档）' : '')); return;
     }
     if (a === 'healthClear') { S.health = null; saveK('fit_health', null); S.healthOpen = false; renderView(); toast('已清除身体数据'); return; }
     if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false, custom: true }); S.dayMeal = null; S.dietFormOpen = false; S.dietAuto = false; saveK('fit_diet', S.diet); saveK('fit_daymeal', null); renderView(); toast('✅ 方案已生成，已按你的资料重配今日餐单'); return; }
