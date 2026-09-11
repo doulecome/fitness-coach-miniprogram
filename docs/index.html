@@ -419,6 +419,11 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
 .vol-b { flex:1; text-align:center; background:#f5f7f8; border-radius:12px; padding:11px 2px; }
 .vol-b .n { font-size:19px; font-weight:900; color:var(--ink); letter-spacing:-.3px; }
 .vol-b .l { font-size:10px; color:var(--sub); margin-top:3px; }
+.pf-row { display:flex; gap:6px; }
+.pf-b { flex:1; text-align:center; background:#f5f7f8; border-radius:12px; padding:9px 2px; }
+.pf-b .n { font-size:16px; font-weight:900; color:var(--ink); letter-spacing:-.3px; }
+.pf-b .l { font-size:9.5px; color:var(--sub); margin-top:2px; }
+.phone.dark .pf-b { background:#202b36; }
 
 /* ===== 计划可编辑 ===== */
 .ed-row { display:flex; align-items:center; gap:10px; padding:11px 2px; border-bottom:1px solid #f2f4f6; }
@@ -561,20 +566,81 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (wko && !wko.classList.contains('hide')) keepAwake(true);
   });
 
+  /* ============ 身体数据分析器（通用 · 隐私安全） ============
+     体检/身体数据只存本机 localStorage（fit_health），仓库代码零个人数据。
+     analyzeHealth：规则引擎——按 BMI/血压/静息心率/尿酸/血糖/GGT 生成训练与饮食建议；
+     parseReport：粘贴体检报告文字自动提取数值。 */
+  function analyzeHealth(h) {
+    var r = { gender: h.gender || '男', age: Number(h.age) || 28, height: Number(h.height) || 175, weight: Number(h.weight) || 70, activity: h.activity || '中度', examDate: h.examDate || '' };
+    r.idealWeight = Math.round(r.height - 105);
+    var bmi = r.weight / Math.pow(r.height / 100, 2);
+    r.bmi = Math.round(bmi * 10) / 10;
+    r.goal = bmi < 18.5 ? '增肌' : bmi >= 24 ? '减脂' : (h.goal || '维持');
+    r.weightGoal = bmi < 18.5 ? Math.max(Math.round(r.idealWeight * 0.88), Math.round(r.weight + 4)) : bmi >= 24 ? Math.round(r.weight - 5) : r.weight;
+    r.water = Math.max(Math.round(r.weight * 35), 2000);
+    var tips = [];
+    if (bmi < 18.5) tips.push({ i: '⚖️', t: '体重偏轻（BMI ' + r.bmi + '）', d: '核心是吃够 + 练够：每天比消耗多吃约 300 千卡，以力量训练为主、少做长时间有氧。理想体重约 ' + r.idealWeight + 'kg，先定 ' + r.weightGoal + 'kg 小目标，每月增 0.8~1.2kg 最稳。' });
+    else if (bmi >= 28) tips.push({ i: '⚖️', t: '肥胖（BMI ' + r.bmi + '）', d: '建议系统减重：热量缺口 300~500 千卡/天，每周 3 次力量 + 2 次有氧组合，保肌肉先于掉体重。先定 ' + r.weightGoal + 'kg 目标，每月减 2~3kg。' });
+    else if (bmi >= 24) tips.push({ i: '⚖️', t: '超重（BMI ' + r.bmi + '）', d: '热量缺口约 300 千卡/天，力量有氧各半，目标先定 ' + r.weightGoal + 'kg，每月减 1~2kg。' });
+    else tips.push({ i: '⚖️', t: '体重正常（BMI ' + r.bmi + '）', d: '按目标维持或塑形即可，力量训练为主保持肌肉量与骨密度。' });
+    var sys = Number(h.sys) || 0, dia = Number(h.dia) || 0;
+    if (sys >= 140 || dia >= 90) { tips.push({ i: '❤️', t: '血压偏高（' + sys + '/' + dia + '）', d: '建议先就医评估再上强度；以中低强度有氧为主，暂避大重量憋气，力量动作用轻重量高次数。' }); r.bpFlag = 'high'; }
+    else if (sys >= 120 || dia >= 80) { tips.push({ i: '❤️', t: '血压正常偏高（' + sys + '/' + dia + '）', d: '可正常训练，但大重量少憋气、组间充分休息；每周 2 次中低强度有氧有助血压回落。' }); r.bpFlag = 'watch'; }
+    var hr = Number(h.hr) || 0;
+    if (hr > 100) tips.push({ i: '💓', t: '静息心率偏快（' + hr + ' 次/分）', d: '优先睡眠与压力管理；从低强度开始渐进，每周 1~2 次 30 分钟轻松有氧（能说话的配速），帮静息心率降下来。' });
+    else if (hr >= 90) tips.push({ i: '💓', t: '静息心率接近上限（' + hr + ' 次/分）', d: '正常范围但偏快：规律有氧 + 充足睡眠，通常 8~12 周可见改善。' });
+    var ua = Number(h.ua) || 0;
+    if (ua > 428) { tips.push({ i: '🧪', t: '尿酸偏高（' + ua + ' μmol/L）', d: '蛋白优选鸡蛋、牛奶、乳清、鸡胸；少吃动物内脏、浓肉汤、部分海鲜，不饮酒、少喝含糖饮料；每天喝够 ' + (r.water / 1000).toFixed(1) + 'L 水。明显升高建议就医复查。' }); r.water = Math.max(r.water, 2400); r.lowPurine = true; }
+    else if (ua >= 390) { tips.push({ i: '🧪', t: '尿酸接近上限（' + ua + ' μmol/L）', d: '高蛋白饮食期间优选蛋、奶、乳清等低嘌呤来源，多喝水（' + (r.water / 1000).toFixed(1) + 'L/天），少内脏与浓汤。' }); r.water = Math.max(r.water, 2200); r.lowPurine = true; }
+    var glu = Number(h.glu) || 0;
+    if (glu >= 6.1) tips.push({ i: '🩸', t: '空腹血糖偏高（' + glu + ' mmol/L）', d: '建议复查糖代谢；训练加每周 2~3 次有氧，主食换低 GI（糙米/燕麦），少含糖饮料。' });
+    var ggt = Number(h.ggt) || 0;
+    if (ggt > 60) tips.push({ i: '🫀', t: 'GGT 偏高（' + ggt + ' U/L）', d: '常见于饮酒或肝胆问题，建议戒酒并复查肝功能后再定训练强度。' });
+    else if (ggt > 0 && ggt < 10) tips.push({ i: '🫀', t: 'GGT 偏低（' + ggt + ' U/L）', d: '多与营养摄入不足相关，非疾病信号：把热量与蛋白吃够，通常随营养改善回升。' });
+    tips.push({ i: '📌', t: '通用原则', d: '本分析基于常见参考区间，仅作训练与饮食方向参考；异常指标请以专科医生意见为准。' });
+    r.tips = tips;
+    return r;
+  }
+  function parseReport(txt) {
+    var out = {}, num = function (re) { var m = txt.match(re); return m ? Number(m[1]) : 0; };
+    var v;
+    v = num(/身高[^0-9\n]{0,8}(\d{3}(?:\.\d)?)/); if (v >= 120 && v <= 230) out.height = v;
+    v = num(/体重[^0-9\n]{0,8}(\d{2,3}(?:\.\d)?)/); if (v >= 25 && v <= 250) out.weight = v;
+    v = num(/理想体重[^0-9\n]{0,8}(\d{2,3}(?:\.\d)?)/); if (v >= 30 && v <= 200) out.idealWeight = v;
+    v = num(/收缩压[^0-9\n]{0,8}(\d{2,3})/); if (v >= 70 && v <= 220) out.sys = v;
+    v = num(/舒张压[^0-9\n]{0,8}(\d{2,3})/); if (v >= 40 && v <= 140) out.dia = v;
+    v = num(/(?:脉搏|静息心率)[^0-9\n]{0,8}(\d{2,3})/); if (v >= 35 && v <= 160) out.hr = v;
+    v = num(/尿酸[^0-9\n]{0,12}(\d{2,4})/); if (v >= 100 && v <= 900) out.ua = v;
+    v = num(/(?:空腹)?血糖[^0-9\n]{0,12}(\d\.\d{1,2})/); if (v >= 2 && v <= 33) out.glu = v;
+    v = num(/谷氨酰[^0-9\n]{0,16}(\d{1,3})/); if (v >= 1 && v <= 500) out.ggt = v;
+    var dt = txt.match(/(20\d{2})[-/年.](\d{1,2})[-/月.](\d{1,2})/);
+    if (dt) out.examDate = dt[1] + '-' + ('0' + dt[2]).slice(-2) + '-' + ('0' + dt[3]).slice(-2);
+    return out;
+  }
+  var HEALTH0 = loadK('fit_health', null);
+  /* 无档案 → 通用默认（不含任何个人数据）；有档案 → 全部由 analyzeHealth 派生 */
+  var PROFILE = HEALTH0 ? analyzeHealth(HEALTH0) : { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂', weightGoal: 65, water: 0, examDate: '', idealWeight: 0, bmi: 0, tips: [] };
   /* ============ 状态 ============ */
   var S = {
     tab: 'home', seg: 'course', actMus: '全部', actQ: '', equipFilter: '全部',
     theme: loadK('fit_theme', 'light'), favs: loadK('fit_favs', []),
     best: loadK(KB, {}), records: loadK(KR, []), plan: loadK(KP, null), weekIdx: 0,
-    form: { goal: '减脂', day: 4, length: 30, level: '进阶', venue: '🏠 居家' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
+    form: { goal: PROFILE.goal, day: 4, length: 30, level: '进阶', venue: '🏠 居家' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
     recoveryOn: loadK('fit_recovery', false),
     weights: loadK('fit_weight', {}), dietLog: loadK('fit_dietlog', {}),
     hiit: { tpl: 'tabata', sel: {} }, badges: loadK('fit_badges', {}),
-    rpeLog: loadK('fit_rpe', []), fitness: loadK('fit_fitness', []), wGoal: loadK('fit_wgoal', null), remind: loadK('fit_remind', null), pantry: loadK('fit_pantry', []), dayMeal: loadK('fit_daymeal', null),
-    diet: loadK('fit_diet', null), dietDraft: { gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' }, dietFormOpen: false, dietAuto: false,
+    rpeLog: loadK('fit_rpe', []), fitness: loadK('fit_fitness', []), wGoal: loadK('fit_wgoal', PROFILE.weightGoal), remind: loadK('fit_remind', null), pantry: loadK('fit_pantry', []), dayMeal: loadK('fit_daymeal', null),
+    health: HEALTH0, healthDraft: null, healthOpen: false,
+    diet: loadK('fit_diet', null), dietDraft: { gender: PROFILE.gender, age: PROFILE.age, height: PROFILE.height, weight: PROFILE.weight, activity: PROFILE.activity, goal: PROFILE.goal }, dietFormOpen: false, dietAuto: false,
     builder: { sel: {}, rounds: 3 },
     dietPair: { staple: '', protein: '', veg: '', other: '' }, dietPairRes: null
   };
+  /* 体检基线体重：有身体档案且体重曲线为空时，把体检当天体重作为趋势起点 */
+  (function seedProfile() {
+    if (S.health && !Object.keys(S.weights).length && PROFILE.examDate && PROFILE.weight) {
+      S.weights[PROFILE.examDate] = PROFILE.weight; saveK('fit_weight', S.weights);
+    }
+  })();
   var app = $('#app');
 
   /* ============ 存储 ============ */
@@ -591,7 +657,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v24';
+  var APP_VER = 'v26';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -1318,6 +1384,46 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var t = remindLoop._t; if (t && t.unref) t.unref();
   }
 
+  function healthForm() {
+    var d = S.healthDraft || {};
+    var numF = function (k, label, ph, step) {
+      return '<div style="flex:1;min-width:0"><div style="font-size:11px;color:#7a838e;margin-bottom:3px">' + label + '</div><input class="fld" type="number" inputmode="decimal" step="' + (step || '1') + '" data-k="' + k + '" value="' + (d[k] || '') + '" placeholder="' + ph + '"></div>';
+    };
+    return '<div class="card ha-form"><div class="form-t" style="margin:0 0 8px">🩺 身体数据分析器 <span class="more">数据仅存本机</span></div>' +
+      '<div style="font-size:11.5px;color:#7a838e;line-height:1.7;margin:0 0 10px">粘贴体检报告文字可自动提取指标；也可以手动填。身高体重必填，其余选填（填了才分析对应项）。</div>' +
+      '<div class="form-t">📋 粘贴体检报告文字（可选）</div>' +
+      '<textarea id="reportPaste" rows="4" style="width:100%;box-sizing:border-box;border:1px solid rgba(127,127,127,.25);border-radius:10px;padding:8px;font-size:12px;background:var(--bg);color:var(--ink)" placeholder="把报告里的数值部分复制进来，如：身高 172 体重 65 收缩压 118 舒张压 75 脉搏 72 尿酸 350 空腹血糖 5.2 …"></textarea>' +
+      '<div class="btn ghost" data-a="healthParse" style="margin-top:6px;text-align:center;font-size:12px">🔎 自动提取指标</div>' +
+      '<div class="form-t" style="margin-top:12px">⚧ 性别 / 🎂 年龄</div><div class="flds"><input class="fld" type="number" inputmode="numeric" data-k="age" value="' + (d.age || '') + '" placeholder="年龄（岁）" style="flex:1">' + chipRowSel(['男', '女'], 'gender', d.gender, 'hform') + '</div>' +
+      '<div class="form-t">📏 身高（cm）/ ⚖️ 体重（kg）</div><div class="flds">' + numF('height', '身高 cm', '175', '0.1') + numF('weight', '体重 kg', '70', '0.1') + '</div>' +
+      '<div class="form-t">🏃 日常活动量 / 🎯 目标（可覆盖）</div><div style="display:flex;flex-wrap:wrap;gap:6px">' + chipRowSel(['久坐', '轻度', '中度', '高强度'], 'activity', d.activity, 'hform') + chipRowSel(['减脂', '增肌', '维持'], 'goal', d.goal, 'hform') + '</div>' +
+      '<div class="form-t">❤️ 血压与心率（选填）</div><div class="flds">' + numF('sys', '收缩压', '114') + numF('dia', '舒张压', '70') + numF('hr', '静息心率', '70') + '</div>' +
+      '<div class="form-t">🧪 化验指标（选填）</div><div class="flds">' + numF('ua', '尿酸 μmol/L', '350') + numF('glu', '空腹血糖', '5.0', '0.1') + numF('ggt', 'GGT U/L', '30') + '</div>' +
+      '<div class="form-t">📅 检查日期（选填）</div><div class="flds"><input class="fld" type="date" data-k="examDate" value="' + (d.examDate || '') + '"></div>' +
+      '<div class="btn" data-a="healthSave" style="margin-top:10px;text-align:center">✅ 分析并应用到方案</div>' +
+      '<div class="btn ghost" data-a="healthCancel" style="margin-top:6px;text-align:center;font-size:12px">取消</div></div>';
+  }
+  function healthCard() {
+    if (S.healthOpen) return healthForm();
+    var head = '<div class="card pf-card"><div class="form-t" style="margin:0 0 8px">🩺 身体数据分析器 <span class="more">' + (PROFILE.examDate ? '体检 ' + PROFILE.examDate : '数据仅存本机') + '</span></div>';
+    if (!S.health) {
+      return head + '<div style="font-size:11.5px;color:#7a838e;line-height:1.7;margin:4px 0 10px">填入身高体重、血压心率、尿酸血糖等指标（或直接粘贴体检报告文字自动提取），本地生成专属的训练强度与饮食方向建议。数据只保存在这台设备，不上传、不进代码。</div>' +
+        '<div class="btn" data-a="healthOpen" style="text-align:center">🔍 开始分析我的数据</div></div>';
+    }
+    var bmiTxt = PROFILE.bmi < 18.5 ? '偏瘦' : PROFILE.bmi < 24 ? '正常' : PROFILE.bmi < 28 ? '超重' : '肥胖';
+    var html = head + '<div class="pf-row"><div class="pf-b"><div class="n">' + PROFILE.height + '</div><div class="l">身高 cm</div></div>' +
+      '<div class="pf-b"><div class="n">' + PROFILE.weight + '</div><div class="l">体重 kg</div></div>' +
+      '<div class="pf-b"><div class="n">' + PROFILE.bmi + '</div><div class="l">BMI ' + bmiTxt + '</div></div>' +
+      '<div class="pf-b"><div class="n">' + PROFILE.weightGoal + '</div><div class="l">目标 kg</div></div></div>' +
+      '<div style="font-size:11px;color:#7a838e;margin:6px 0 4px;line-height:1.6">方向：' + PROFILE.goal + ' · 每日饮水 ' + (PROFILE.water / 1000).toFixed(1) + 'L · 理想体重约 ' + PROFILE.idealWeight + 'kg</div>';
+    html += PROFILE.tips.map(function (t) {
+      return '<div style="display:flex;gap:8px;padding:8px 0;border-top:1px solid rgba(127,127,127,.12)">' +
+        '<span style="font-size:15px">' + t.i + '</span><div><div style="font-size:12.5px;font-weight:500">' + esc(t.t) + '</div>' +
+        '<div style="font-size:11.5px;color:#7a838e;line-height:1.7;margin-top:2px">' + esc(t.d) + '</div></div></div>';
+    }).join('');
+    html += '<div style="display:flex;gap:8px;margin-top:10px"><div class="btn ghost" data-a="healthOpen" style="flex:1;text-align:center">↻ 重新分析</div><div class="btn ghost" data-a="healthClear" style="flex:1;text-align:center;color:#e05a4e">🗑 清除我的数据</div></div></div>';
+    return html;
+  }
   function vRecord() {
     var totalMin = S.records.reduce(function (a, r) { return a + (r.min || 0); }, 0);
     var names = Object.keys(S.best).filter(function (n) { return S.best[n].best > 0; });
@@ -1354,7 +1460,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="bk-btns" style="margin-top:8px"><div class="btn danger' + (resetArm ? ' armed' : '') + '" data-a="resetData">' + (resetArm ? '⚠️ 再点一次确认清空' : '🗑 清空全部数据') + '</div></div>' +
       '<div style="text-align:center;font-size:10px;color:#b0b6bd;margin-top:10px">健身教练 Web · ' + APP_VER + '（若与最新版本不符 = 手机在吃旧缓存，强制刷新即可）</div>' +
       '<input type="file" id="impFile" accept="application/json" style="display:none"></div>';
-    return heatmap() + remindCard() + trendHtml() + fitTestCard() + prTrendHtml() + weightCard() + radarHtml + volHtml + backup +
+    return healthCard() + heatmap() + remindCard() + trendHtml() + fitTestCard() + prTrendHtml() + weightCard() + radarHtml + volHtml + backup +
       '<div class="btn" style="margin:0 0 10px;text-align:center" data-a="weeklyReport">📊 生成周报分享图</div>' +
       '<div class="stats-row"><div class="stat"><div class="n">' + S.records.length + '</div><div class="l">累计训练</div></div>' +
       '<div class="stat"><div class="n">' + totalMin + '</div><div class="l">总分钟</div></div>' +
@@ -2142,7 +2248,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var tot = m.pk + m.ck + m.fk || 1;
     var tm = todayMeals();
     var bf = tm.bf, lunch = tm.lunch, dinner = tm.dinner, snack = tm.snack;
-    var water = Math.round(d.weight * 35);
+    var water = Math.max(Math.round(d.weight * 35), PROFILE.water);
     /* Keep 式热量预算：预算 = 目标热量 + 今日实际训练消耗；已吃 = 当日按餐记录之和 */
     var dl = dayLog();
     var eaten = logKcal(dl);
@@ -2167,6 +2273,10 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
           '<span class="chip sm" data-a="addFood" data-meal="' + m2[0] + '" style="margin-left:8px;cursor:pointer">＋ 记录</span></div>' + rows + '</div>';
       }).join('') + '</div>';
     var goalTxt = d.goal === '减脂' ? '热量缺口，建议配合训练与充足蛋白以保留肌肉' : d.goal === '增肌' ? '热量盈余，保证蛋白摄入与力量训练刺激' : '维持当前体重，均衡搭配即可';
+    /* 身体档案联动：按目标给出方案说明（数据来自本机分析器，无档案则不显示） */
+    var personalDietTip = d.goal === '增肌'
+      ? '<div class="card" style="font-size:11.5px;color:#4a525c;line-height:1.75;background:#f5f9f7">🎯 <b>你的增重方案</b>：每天吃 ' + tgt + ' 千卡（比消耗多约 300），蛋白质 ' + m.protein + 'g（' + (m.protein / d.weight).toFixed(1) + 'g/kg）。' + (PROFILE.water ? '<br>💧 每天喝够 ' + (water / 1000).toFixed(1) + 'L 水。' : '') + (PROFILE.lowPurine ? '<br>🥚 蛋白优先鸡蛋、牛奶、乳清、鸡胸；少吃动物内脏、浓肉汤，不饮酒。' : '') + '</div>'
+      : '';
     // 热量闭环（#16）：把训练消耗汇入饮食预算视角——展示本周训练消耗，训练日已 +150 千卡
     var cutoff7 = Date.now() - 7 * 86400000;
     var wkR = S.records.filter(function (r) { return new Date(r.date + 'T00:00:00').getTime() >= cutoff7; });
@@ -2209,6 +2319,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       trainCard +
       vDietPair() +
       '<div class="card" style="font-size:11.5px;color:#7a838e;line-height:1.6;background:#f5f7f8">📌 ' + goalTxt + '。餐单为参考样例，按热量目标搭配中式食材；如有代谢疾病或特殊饮食需求，请遵营养师/医嘱。</div>' +
+      personalDietTip +
       '<div class="gen-btn btn ghost" data-a="dietEdit">↻ 重新填写资料</div>';
   }
   /* 零摩擦：无方案时按默认资料自动生成（今日餐单立即可见），表单仅主动"重新填写"时出现 */
@@ -2347,7 +2458,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
 
   /* ============ 训练档案导出/备份（#15） ============ */
   function exportData() {
-    var payload = { v: 1, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair, pantry: S.pantry, wGoal: S.wGoal, fitness: S.fitness, rpeLog: S.rpeLog, dietLog: S.dietLog };
+    var payload = { v: 1, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair, pantry: S.pantry, wGoal: S.wGoal, fitness: S.fitness, rpeLog: S.rpeLog, dietLog: S.dietLog, health: S.health };
     try {
       var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       var url = URL.createObjectURL(blob);
@@ -2372,6 +2483,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
         if (p.wGoal !== undefined) { S.wGoal = p.wGoal; saveK('fit_wgoal', S.wGoal); }
         if (p.fitness) { S.fitness = p.fitness; saveK('fit_fitness', S.fitness); }
         if (p.rpeLog) { S.rpeLog = p.rpeLog; saveK('fit_rpe', S.rpeLog); }
+        if (p.health) { S.health = p.health; saveK('fit_health', S.health); PROFILE = analyzeHealth(S.health); }
         if (p.dietLog) { S.dietLog = p.dietLog; saveK('fit_dietlog', S.dietLog); }
         S.dayMeal = null; saveK('fit_daymeal', null);
         alert('已导入备份：动作纪录 ' + Object.keys(S.best).length + ' 项，训练记录 ' + S.records.length + ' 条');
@@ -2391,9 +2503,9 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       setTimeout(function () { if (resetArm && Date.now() - resetArm >= 5000) { resetArm = 0; renderShell(); } }, 5100);
       return;
     }
-    ['fit_best', 'fit_records', 'fit_plan', 'fit_weight', 'fit_dietlog', 'fit_diet', 'fit_badges', 'fit_pantry', 'fit_daymeal', 'fit_rpe', 'fit_fitness', 'fit_wgoal'].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+    ['fit_best', 'fit_records', 'fit_plan', 'fit_weight', 'fit_dietlog', 'fit_diet', 'fit_badges', 'fit_pantry', 'fit_daymeal', 'fit_rpe', 'fit_fitness', 'fit_wgoal', 'fit_health'].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
     S.best = {}; S.records = []; S.plan = null; S.weekIdx = 0;
-    S.weights = {}; S.dietLog = {}; S.diet = null; S.badges = {};
+    S.weights = {}; S.dietLog = {}; S.diet = null; S.badges = {}; S.health = null;
     resetArm = 0;
     toast('🗑 已清空全部数据，即将刷新');
     setTimeout(function () { location.reload(); }, 900);
@@ -2585,7 +2697,37 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (a === 'recDetail') { sheetRec(Number(el.dataset.i)); return; }
     /* 饮食规划 */
     if (a === 'dform') { S.dietDraft[k] = v; renderView(); return; }
-    if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false }); S.dayMeal = null; S.dietFormOpen = false; S.dietAuto = false; saveK('fit_diet', S.diet); saveK('fit_daymeal', null); renderView(); toast('✅ 方案已生成，已按你的资料重配今日餐单'); return; }
+    /* 身体数据分析器 */
+    if (a === 'healthOpen') {
+      S.healthOpen = true;
+      S.healthDraft = S.health ? JSON.parse(JSON.stringify(S.health)) : { gender: '男', age: 28, height: 175, weight: 70, activity: '中度' };
+      renderView(); return;
+    }
+    if (a === 'healthCancel') { S.healthOpen = false; renderView(); return; }
+    if (a === 'hform') { if (S.healthDraft) { S.healthDraft[k] = v; } renderView(); return; }
+    if (a === 'healthParse') {
+      var ta = $('#reportPaste');
+      var got = ta ? parseReport(ta.value || '') : {};
+      var nk = 0;
+      Object.keys(got).forEach(function (kk) { S.healthDraft[kk] = got[kk]; nk++; });
+      renderView();
+      toast(nk ? '✅ 提取到 ' + nk + ' 项指标，请核对数值' : '没提取到指标，试试复制报告数值部分或手动填写');
+      return;
+    }
+    if (a === 'healthSave') {
+      var hd = S.healthDraft || {};
+      if (!hd.height || !hd.weight) { toast('至少填写身高和体重'); return; }
+      S.health = hd; saveK('fit_health', hd);
+      PROFILE = analyzeHealth(hd);
+      S.diet = { gender: PROFILE.gender, age: PROFILE.age, height: PROFILE.height, weight: PROFILE.weight, activity: PROFILE.activity, goal: PROFILE.goal, training: !!(S.diet && S.diet.training) };
+      saveK('fit_diet', S.diet); S.dayMeal = null; saveK('fit_daymeal', null);
+      S.wGoal = PROFILE.weightGoal; saveK('fit_wgoal', S.wGoal);
+      if (!Object.keys(S.weights).length && PROFILE.examDate) { S.weights[PROFILE.examDate] = PROFILE.weight; saveK('fit_weight', S.weights); }
+      S.healthOpen = false;
+      renderView(); toast('✅ 分析完成：饮食与目标已按你的数据更新'); return;
+    }
+    if (a === 'healthClear') { S.health = null; saveK('fit_health', null); S.healthOpen = false; renderView(); toast('已清除身体数据'); return; }
+    if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false, custom: true }); S.dayMeal = null; S.dietFormOpen = false; S.dietAuto = false; saveK('fit_diet', S.diet); saveK('fit_daymeal', null); renderView(); toast('✅ 方案已生成，已按你的资料重配今日餐单'); return; }
     if (a === 'dietEdit') { S.dietDraft = Object.assign({}, S.diet); S.dietFormOpen = true; renderView(); return; }
     if (a === 'dietTrain') { if (S.diet) { S.diet.training = (v === '1'); saveK('fit_diet', S.diet); renderView(); } return; }
     if (a === 'dietRegen') { S.dayMeal = null; saveK('fit_daymeal', null); renderView(); return; }
@@ -2640,7 +2782,12 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     var t = e.target;
     if (t && t.classList && t.classList.contains('fld')) {
       var k = t.dataset.k;
-      S.dietDraft[k] = (k === 'age' || k === 'height' || k === 'weight') ? (Number(t.value) || 0) : t.value;
+      var HANUM = { age: 1, height: 1, weight: 1, sys: 1, dia: 1, hr: 1, ua: 1, glu: 1, ggt: 1 };
+      if (t.closest && t.closest('.ha-form')) {
+        if (S.healthDraft) S.healthDraft[k] = HANUM[k] ? (Number(t.value) || 0) : t.value;
+        return;
+      }
+      S.dietDraft[k] = HANUM[k] ? (Number(t.value) || 0) : t.value;
     }
     /* 动作库搜索：DOM 实时过滤，不重渲染避免丢焦点 */
     if (t && t.id === 'actSearch') {
