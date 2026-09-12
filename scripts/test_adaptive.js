@@ -22,6 +22,7 @@ function mealCardByTitle(t) {
   return null;
 }
 function mcKcal(card) { const m = card.querySelector('.mc-k').textContent.match(/(\d+)/); return m ? Number(m[1]) : 0; }
+function toastText() { const t = q('#toast'); return t ? t.textContent : ''; }
 
 try {
   tab('diet'); // 无档案 → ensureDiet 自动生成方案
@@ -68,22 +69,40 @@ try {
   ck('F2 删除后早餐卡不再有已记入标记', !mealCardByTitle('早餐').textContent.includes('已记入'));
   ck('F3 删除后回归基础份量（无动态标签）', !bodyText().includes('按剩余预算'));
 
-  // ---- G) v35 估卡拼盘：库里没有的菜 → 点食材累加千卡 → 填入 → 记入 ----
+  // ---- G) v36 文字快记：打字即估卡 → 记入 ----
   click('[data-a="addFood"][data-meal="lunch"]');
-  if (!q('#foodRefChips') && !q('#foodRefApply')) { /* chips 在 .chips 容器里，确认按钮初始隐藏 */ }
-  ck('G1 估卡拼盘入口存在（初始隐藏）', q('#foodRefApply') && q('#foodRefApply').style.display === 'none');
-  click('[data-a="foodRef"][data-v="200"]'); // 米饭 1 碗
-  click('[data-a="foodRef"][data-v="150"]'); // 瘦肉掌心大
-  ck('G2 点两样后累加并显示填入按钮', q('#foodRefApply').style.display === 'block' && q('#foodRefSum').textContent === '350');
-  click('[data-a="foodRefApply"]');
-  ck('G3 填入后千卡输入框已填 350', q('#foodCk').value === '350');
-  q('#foodCn').value = '家里做的饭';
+  ck('G1 快记输入框存在（旧千卡输入框已移除）', !!q('#foodCn') && !q('#foodCk'));
+  ck('G2 估卡提示初始为空', q('#foodEst').textContent === '');
+  q('#foodCn').value = '米饭2碗+可乐';
   q('#foodCn').dispatchEvent(new window.Event('input', { bubbles: true }));
+  ck('G3 打字即估卡：米饭×2 400 + 可乐 150 = 550', q('#foodEst').textContent.includes('550') && q('#foodEst').textContent.includes('×2'));
   click('[data-a="foodCustom"]');
   const log2 = JSON.parse(window.localStorage.getItem('fit_dietlog') || '{}');
   const items2 = (log2[todayKey] || {}).items || [];
-  const hit = items2.filter(x => x.n === '家里做的饭');
-  ck('G4 手动记录成功且千卡=拼盘结果', hit.length === 1 && hit[0].kcal === 350 && hit[0].meal === 'lunch');
+  const hit = items2.filter(x => x.meal === 'lunch');
+  ck('G4 一键记入成功且千卡=估值 550', hit.length === 1 && hit[0].kcal === 550);
+
+  // G5 自定义数字覆盖："外卖 800" → 按用户写的 800 记
+  click('[data-a="addFood"][data-meal="dinner"]');
+  q('#foodCn').value = '外卖 800';
+  q('#foodCn').dispatchEvent(new window.Event('input', { bubbles: true }));
+  ck('G5 纯数字按用户值估（外卖 800）', q('#foodEst').textContent.includes('800'));
+  click('[data-a="foodCustom"]');
+  const items3 = ((JSON.parse(window.localStorage.getItem('fit_dietlog') || '{}')[todayKey]) || {}).items || [];
+  const hit3 = items3.filter(x => x.meal === 'dinner');
+  ck('G6 dinner 记入 800', hit3.length === 1 && hit3[0].kcal === 800);
+
+  // ---- H) v36 一键全记：剩余未记的推荐餐一下全进 ----
+  const itemsH0 = ((JSON.parse(window.localStorage.getItem('fit_dietlog') || '{}')[todayKey]) || {}).items || [];
+  const unloggedN = ['bf', 'lunch', 'dinner', 'snack'].filter(k => !itemsH0.some(x => x.meal === k)).length;
+  click('[data-a="foodAll"]');
+  const items4 = ((JSON.parse(window.localStorage.getItem('fit_dietlog') || '{}')[todayKey]) || {}).items || [];
+  const mealsLogged = ['bf', 'lunch', 'dinner', 'snack'].map(k => items4.some(x => x.meal === k));
+  ck('H1 一键全记后四餐都有记录', mealsLogged.every(Boolean));
+  ck('H2 toast 提示记入 ' + unloggedN + ' 餐', toastText().includes('记入 ' + unloggedN + ' 餐'));
+  ck('H3 全记完 → 动态配份量提示消失', !bodyText().includes('动态配份量'));
+  ck('H4 标记变为「今天都记了」', bodyText().includes('今天都记了'));
+  ck('H5 预算卡显示已吃合计（>0）', /已吃\s*\/\s*\d+/.test(bodyText()) || /超|还能吃/.test(bodyText()));
 } catch (e) {
   console.log('FAIL 异常中断: ' + e.message);
   process.exitCode = 1;

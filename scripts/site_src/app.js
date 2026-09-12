@@ -266,7 +266,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v35';
+  var APP_VER = 'v36';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -1245,25 +1245,20 @@
   /* 记录饮食 sheet：24 道菜品一键 + 搜索 + 自定义热量 */
   function sheetFood(meal) {
     S._foodMeal = meal;
-    S._foodRef = 0;
     var dishes = allDishes();
     var rows = dishes.map(function (t) {
       return '<div class="food-row" data-name="' + esc(t.n) + '" data-a="foodPick" data-n="' + esc(t.n) + '" style="display:flex;align-items:center;padding:9px 4px;border-bottom:1px solid rgba(127,127,127,.12);cursor:pointer">' +
         '<span style="font-size:9px;color:#fff;background:var(--gd);border-radius:999px;padding:1px 7px;margin-right:8px;flex:none">' + t.tag + '</span>' +
         '<span style="font-size:12.5px;font-weight:600">' + esc(t.n) + '</span><span style="margin-left:auto;font-size:11px;color:var(--sub)">' + t.kcal + ' 千卡</span></div>';
     }).join('');
-    var refChips = REF_FOODS.map(function (f) {
-      return '<span class="chip" data-a="foodRef" data-v="' + f[1] + '">' + esc(f[0]) + '</span>';
-    }).join('');
     openSheet('<div class="sh-h"><div class="sh-t">🍽 记录' + mealLabel(meal) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
+      '<div class="form-t" style="margin:0 0 6px">👇 最快：直接打字，自动估卡</div>' +
+      '<input id="foodCn" class="fld" placeholder="如：米饭2碗+可乐，或 外卖 800" style="width:100%">' +
+      '<div id="foodEst" style="font-size:11.5px;color:#0fb98c;margin-top:5px;min-height:16px;line-height:1.6"></div>' +
+      '<div class="btn" data-a="foodCustom" style="margin-top:6px;text-align:center;padding:9px 0">＋ 记入' + mealLabel(meal) + '</div>' +
+      '<div class="form-t" style="margin:12px 0 6px">或从菜品库点选（千卡自动带出）</div>' +
       '<input id="foodSearch" class="fld" placeholder="🔍 搜索菜品" style="width:100%;margin:0 0 6px">' +
-      '<div id="foodList" style="max-height:300px;overflow-y:auto">' + rows + '</div>' +
-      '<div class="form-t" style="margin:12px 0 6px">吃的没在库里？手动记一条</div>' +
-      '<div style="display:flex;gap:8px"><input id="foodCn" class="fld" placeholder="名称，如 外卖" style="flex:2"><input id="foodCk" class="fld" type="number" inputmode="numeric" placeholder="千卡" style="flex:1"></div>' +
-      '<div style="font-size:10.5px;color:#8d959e;margin-top:8px;line-height:1.7">🧮 不知道多少千卡？点下面食材「拼一份」，油多的菜记得点一次「炒菜油多 +」。估算差 ±20% 不影响方向，别纠结精确值</div>' +
-      '<div class="chips" style="margin-top:6px">' + refChips + '</div>' +
-      '<div class="btn ghost" id="foodRefApply" data-a="foodRefApply" style="display:none;margin-top:8px;text-align:center;padding:9px 0">✅ 已拼 <b id="foodRefSum">0</b> 千卡 · 填入</div>' +
-      '<div class="btn" data-a="foodCustom" style="margin-top:8px;text-align:center;padding:9px 0">＋ 加入' + mealLabel(meal) + '</div>');
+      '<div id="foodList" style="max-height:260px;overflow-y:auto">' + rows + '</div>');
   }
   function sheetRec(i) {    var r = S.records[i];
     var rows;
@@ -1836,15 +1831,54 @@
   })();
   /* ============ Keep 式热量预算 + 按餐记录（#40）：推荐菜一键记入，预算随训练消耗闭环 ============ */
   var MEALS = [['bf', '早餐', '🌅'], ['lunch', '午餐', '☀️'], ['dinner', '晚餐', '🌙'], ['snack', '加餐', '🍪']];
-  /* v35 估卡助手：库里没有的菜手动记时，点食材"拼"出千卡。参考值为常见分量中位估，差 ±20% 不影响方向 */
-  var REF_FOODS = [
-    ['🍚 米饭 1 碗', 200], ['🍜 面条 1 碗', 350], ['🥟 饺子 10 个', 400], ['🍞 馒头 1 个', 120],
-    ['🍠 红薯 1 个', 150], ['🥚 鸡蛋 1 个', 70], ['🍗 瘦肉掌心大', 150], ['🍖 红烧肉几块', 350],
-    ['🐟 鱼一掌', 180], ['🦐 虾 8 只', 90], ['🧈 豆腐 1 份', 100], ['🥬 绿叶菜 1 份', 60],
-    ['🥗 沙拉 1 份', 120], ['🍲 炒菜油多 +', 150], ['🥛 牛奶 1 杯', 160], ['🍶 酸奶 1 杯', 120],
-    ['🍎 水果 1 个', 80], ['🥜 坚果 1 小把', 180], ['🧋 奶茶 1 杯', 400], ['🍺 啤酒 1 瓶', 150],
-    ['🥡 外卖盖饭整盒', 800], ['🍔 汉堡 1 个', 550], ['🍕 披萨 2 块', 450], ['🍟 薯条 1 份', 320]
+  /* v36 文字快记估卡：直接打字"米饭2碗+可乐"自动估千卡。关键词按序匹配（具体在前），估不中按 200 中位估 */
+  var FOOD_KW = [
+    ['外卖', 800], ['盖饭', 800], ['盒饭', 800], ['盖浇', 800], ['麻辣香锅', 600], ['麻辣烫', 500], ['火锅', 700], ['烧烤', 600],
+    ['汉堡', 550], ['三明治', 400], ['披萨', 450], ['比萨', 450], ['薯条', 320], ['薯片', 250], ['爆米花', 250], ['零食', 250],
+    ['奶茶', 400], ['咖啡', 150], ['可乐', 150], ['汽水', 150], ['饮料', 150], ['啤酒', 150], ['白酒', 300], ['红酒', 120], ['酒', 150],
+    ['蛋糕', 300], ['甜品', 300], ['面包', 250], ['饼干', 200], ['月饼', 400], ['粽子', 350],
+    ['红烧肉', 350], ['五花肉', 350], ['排骨', 300], ['炸鸡', 400], ['鸡翅', 250], ['烤鸭', 350], ['锅贴', 200],
+    ['鸡胸', 150], ['瘦肉', 150], ['牛肉', 150], ['羊肉', 150], ['猪肉', 200], ['肉', 150],
+    ['米线', 350], ['饺子', 400], ['包子', 150], ['馒头', 120], ['花卷', 130], ['米饭', 200], ['盖码', 800],
+    ['红薯', 150], ['地瓜', 150], ['玉米', 150], ['土豆', 130], ['山药', 120], ['南瓜', 60],
+    ['粥', 120], ['面', 350], ['粉', 300], ['饭', 200],
+    ['牛奶', 160], ['酸奶', 120], ['豆浆', 90], ['奶', 140],
+    ['坚果', 180], ['瓜子', 180], ['花生', 180],
+    ['苹果', 80], ['香蕉', 90], ['橙子', 80], ['西瓜', 50], ['葡萄', 70], ['水果', 80],
+    ['豆腐', 100], ['豆干', 100], ['豆制品', 100], ['鸡蛋', 70], ['蛋', 70], ['鱼', 180], ['虾', 90],
+    ['沙拉', 120], ['青菜', 60], ['蔬菜', 60], ['西兰花', 60], ['黄瓜', 30], ['番茄', 40], ['菜', 60], ['汤', 50]
   ];
+  function cnNum(s) {
+    var M = { 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9, 半: 0.5 };
+    if (/^\d+(\.\d+)?$/.test(s)) return Number(s);
+    var t = 0;
+    String(s).split('').forEach(function (c) { t += M[c] || 0; });
+    return t || 1;
+  }
+  function estFoodKcal(text) {
+    var tokens = String(text).trim().split(/[+＋、，,。；;\/\s]+/).filter(Boolean);
+    var total = 0, parts = [], override = 0, unknown = false;
+    tokens.forEach(function (raw) {
+      if (/^\d+(\.\d+)?$/.test(raw)) { override += Number(raw); return; } /* 纯数字 = 用户自己定总数 */
+      var tk = raw, mult = 1;
+      var mq = tk.match(/^([一二两三四五六七八九半\d]+)(碗|个|杯|瓶|份|块|只|片|根|条|把|串|勺)(.*)$/);
+      if (mq) { mult = cnNum(mq[1]); tk = mq[3] || ''; }
+      else {
+        var mt = tk.match(/^(.*?)(\d+|[一二两三四五六七八九半])(碗|个|杯|瓶|份|块|只|片|根|条|把|串|勺)$/);
+        if (mt) { mult = cnNum(mt[2]); tk = mt[1] || ''; }
+      }
+      var kcal = 0;
+      var dishHit = findDish(tk);
+      if (dishHit) kcal = dishHit.kcal;
+      else {
+        for (var i = 0; i < FOOD_KW.length; i++) { if (tk.indexOf(FOOD_KW[i][0]) >= 0) { kcal = FOOD_KW[i][1]; break; } }
+      }
+      if (!kcal) { kcal = 200; unknown = true; } /* 估不中 → 中位估 */
+      total += kcal * mult;
+      parts.push((mult > 1 ? tk + '×' + mult : tk) + ' ' + Math.round(kcal * mult));
+    });
+    return { total: override ? Math.round(override) : Math.round(total), parts: parts, override: !!override, unknown: unknown };
+  }
   function mealLabel(k) { for (var i = 0; i < MEALS.length; i++) if (MEALS[i][0] === k) return MEALS[i][1]; return k; }
   function dayLog() {
     var t = todayStr();
@@ -2075,7 +2109,10 @@
       '<div style="font-size:11px;color:#7a838e;margin-top:2px">千卡' + (left < 0 ? ' · 已超出今日预算' : ' · 距离预算还有余额') + '</div>' +
       '<div style="font-size:10.5px;color:#8d959e;margin-top:6px;line-height:1.6">预算 ' + budget + ' = 目标 ' + dayK + (burn ? ' + 今日训练已消耗 ' + burn : '') + '<br>吃了就记（下方每餐 ＋），预算实时扣减</div></div></div></div>';
     /* 按餐记录实际饮食（替代旧布尔打卡） */
-    var mealLogHtml = '<div class="card"><div class="form-t" style="margin:0 0 4px">🍽 今日吃了什么</div>' +
+    /* v36 一键全记：最常见场景"按推荐吃"只需一下 */
+    var unloggedCnt = MEALS.filter(function (m) { return !eatenBy[m[0]]; }).length;
+    var allBtn = unloggedCnt ? '<span class="chip" data-a="foodAll" style="cursor:pointer;background:rgba(31,214,168,.14);color:#0d9d7c;font-weight:700">✅ 按推荐全记（' + unloggedCnt + ' 餐）</span>' : '<span style="font-size:11px;color:#0d9d7c;font-weight:600">✅ 今天都记了</span>';
+    var mealLogHtml = '<div class="card"><div class="form-t" style="margin:0 0 4px">🍽 今日吃了什么 <span style="float:right">' + allBtn + '</span></div>' +
       MEALS.map(function (m2) {
         var its = dl.items.filter(function (x) { return x.meal === m2[0]; });
         var sum = its.reduce(function (a, x) { return a + (x.kcal || 0); }, 0);
@@ -2434,26 +2471,31 @@
       dlx.items = dlx.items.filter(function (x) { return x.id !== el.dataset.id; });
       saveDietLog(); renderView(); return;
     }
-    /* v35 估卡拼盘：点食材累加参考千卡 → 一键填入手动记录 */
-    if (a === 'foodRef') {
-      S._foodRef = (S._foodRef || 0) + (Number(v) || 0);
-      var ra = $('#foodRefApply'), rs = $('#foodRefSum');
-      if (ra) ra.style.display = 'block';
-      if (rs) rs.textContent = S._foodRef;
-      return;
-    }
-    if (a === 'foodRefApply') {
-      var ckr = $('#foodCk');
-      if (ckr) { ckr.value = S._foodRef || 0; ckr.dispatchEvent(new Event('input', { bubbles: true })); }
-      toast('已填入 ' + (S._foodRef || 0) + ' 千卡，再写个名称就行');
+    if (a === 'foodAll') {
+      var tmA = todayMeals();
+      if (!tmA) return;
+      var added = 0;
+      MEALS.forEach(function (m) {
+        var k = m[0], has = dayLog().items.some(function (x) { return x.meal === k; });
+        if (has) return;
+        var dish = tmA[k];
+        if (!dish) return;
+        var scA = (tmA.scales && tmA.scales[k]) || 1;
+        addFoodItem(k, dish.n, Math.round(dish.kcal * scA));
+        added++;
+      });
+      renderView();
+      toast(added ? '✅ 已按推荐记入 ' + added + ' 餐，预算已扣减' : '都记过啦，无需重复');
       return;
     }
     if (a === 'foodCustom') {
-      var cn = $('#foodCn'), ck2 = $('#foodCk');
-      var nm = ((cn && cn.value) || '').trim(), kv = Number(ck2 && ck2.value) || 0;
-      if (!nm) { toast('请先填写吃了什么'); return; }
-      if (kv <= 0) { toast('请填写热量（千卡）'); return; }
-      addFoodItem(S._foodMeal, nm, kv); closeSheet(); toast('✅ 已记录 ' + nm + '（' + kv + ' 千卡）'); renderView();
+      var cn = $('#foodCn');
+      var nm = ((cn && cn.value) || '').trim();
+      if (!nm) { toast('先写一句吃了什么，如：米饭2碗+可乐'); return; }
+      var es = estFoodKcal(nm);
+      if (!es.total) { toast('估不出热量——补个数字，如：外卖 800'); return; }
+      addFoodItem(S._foodMeal, nm, es.total);
+      closeSheet(); toast('✅ 已记录 ' + nm + '（估 ' + es.total + ' 千卡）'); renderView();
       return;
     }
     /* 呼吸放松 */
@@ -2682,6 +2724,19 @@
         if (!empty) { empty = document.createElement('div'); empty.id = 'foodEmpty'; fl.parentNode.insertBefore(empty, fl.nextSibling); }
         empty.innerHTML = '<div style="text-align:center;font-size:11px;color:#a0a6ad;padding:10px 0">没找到「' + esc(q3) + '」，用下方手动记一条</div>';
       } else { var em3 = app.querySelector('#foodEmpty'); if (em3) em3.innerHTML = ''; }
+    }
+    /* v36 文字快记：打字即估卡（不重渲染避免丢焦点） */
+    if (t && t.id === 'foodCn') {
+      var estE = app.querySelector('#foodEst');
+      if (estE) {
+        var txt = (t.value || '').trim();
+        if (!txt) { estE.textContent = ''; }
+        else {
+          var es2 = estFoodKcal(txt);
+          estE.innerHTML = '🧮 估 <b>' + es2.total + '</b> 千卡 · ' + esc(es2.parts.join(' + ')) +
+            (es2.override ? '（按你写的数字）' : '') + (es2.unknown ? '<br><span style="color:#e08a00">有个词没认出来，按 200 估的——不准就直接补个数字</span>' : '');
+        }
+      }
     }
   });
   app.addEventListener('change', function (e) {
