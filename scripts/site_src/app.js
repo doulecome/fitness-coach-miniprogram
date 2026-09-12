@@ -224,7 +224,9 @@
     health: HEALTH0, healthDraft: null, healthOpen: false,
     diet: loadK('fit_diet', null), dietDraft: { gender: PROFILE.gender, age: PROFILE.age, height: PROFILE.height, weight: PROFILE.weight, activity: PROFILE.activity, goal: PROFILE.goal }, dietFormOpen: false, dietAuto: false,
     builder: { sel: {}, rounds: 3 },
-    dietPair: { staple: '', protein: '', veg: '', other: '' }, dietPairRes: null
+    dietPair: { staple: '', protein: '', veg: '', other: '' }, dietPairRes: null,
+    /* v37 习惯联动：喝水/睡眠零摩擦记录——一次点击或一天一问，不断档不惩罚 */
+    habits: loadK('fit_habits', { water: {}, sleep: {}, sleepSkip: '' })
   };
   /* 体检基线体重：有身体档案且体重曲线为空时，把体检当天体重作为趋势起点 */
   (function seedProfile() {
@@ -266,7 +268,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v36';
+  var APP_VER = 'v37';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -313,6 +315,8 @@
   /* ============ 首页 ============ */
   function vHome() {
     var d = new Date(), today = todayStr();
+    var hr = (typeof window.__TEST_HOUR === 'number') ? window.__TEST_HOUR : d.getHours();
+    var slp = sleepToday();
     var minToday = S.records.filter(function (r) { return r.date === today; }).reduce(function (a, r) { return a + (r.min || 0); }, 0);
     var mdays = S.records.filter(function (r) { return r.date.indexOf(today.slice(0, 7)) === 0; }).length;
     var recCount = Object.keys(S.best).length;
@@ -390,12 +394,39 @@
         '<div style="font-size:10.5px;color:#8d959e;margin-bottom:7px">已吃 ' + eatenH + ' / 预算 ' + budgetH + ' 千卡 · 点开记录 ▸</div>' +
         '<div style="display:flex;flex-wrap:wrap;gap:6px">' + chipsH + '</div></div>';
     }
-    return heroHtml + resumeCard +
+    /* ===== v37 习惯联动（首页） ===== */
+    /* 早晨一问：昨天睡得怎样？1 秒三选一，不答不惩罚；答案直接决定今天的训练建议 */
+    var sleepQ = (slp < 0 && hr < 15) ? '<div class="card" style="background:#f2f6ff"><div style="font-weight:800;font-size:13px">☀️ 早。昨晚几点睡的？</div>' +
+      '<div style="font-size:10.5px;color:#7a838e;margin:3px 0 8px">1 秒答完，答案直接影响今天的训练安排 · 不答也没关系</div>' +
+      '<div style="display:flex;gap:8px"><div class="btn" style="flex:1;font-size:12px;padding:9px 0" data-a="sleepAns" data-v="0">😴 23 点前</div>' +
+      '<div class="btn ghost" style="flex:1;font-size:12px;padding:9px 0" data-a="sleepAns" data-v="1">🌙 23-1 点</div>' +
+      '<div class="btn ghost" style="flex:1;font-size:12px;padding:9px 0" data-a="sleepAns" data-v="2">🕧 1 点后</div></div></div>' : '';
+    /* 睡眠→训练联动：今天有训练 + 昨晚 1 点后睡 → 建议改舒缓恢复（可一键换/一键照练）；偏晚 → 温和提示 */
+    var jdS = d.getDay(), slotS = jdS === 0 ? 6 : jdS - 1;
+    var dayS = S.plan ? S.plan.weeks[0].week[slotS] : null;
+    var sleepCard = '';
+    if (dayS && !dayS.rest && slp === 2 && S.habits.sleepSkip !== today && !(dayS.recovered)) {
+      sleepCard = '<div class="card" style="background:#fff4ec"><div style="font-weight:800;font-size:13px;color:#c4691f">😴 昨晚 1 点后才睡 · 今天建议改舒缓恢复</div>' +
+        '<div style="font-size:11px;color:#8d6a4f;margin:4px 0 8px">熬夜后硬练，增重效率差还容易受伤。可把今日训练换成舒缓恢复日，强度隔天补回。</div>' +
+        '<div style="display:flex;gap:8px"><div class="btn" style="flex:1;font-size:12px;padding:9px 0" data-a="sleepRest">✅ 换成舒缓恢复日</div>' +
+        '<div class="btn ghost" style="flex:1;font-size:12px;padding:9px 0" data-a="sleepSkip">仍按计划练</div></div></div>';
+    } else if (dayS && !dayS.rest && slp === 1 && !(dayS.recovered)) {
+      sleepCard = '<div class="card" style="font-size:11.5px;color:#8d6a4f;background:#fdf8ef">🌙 昨晚睡得偏晚 · 今天训练降点强度，充分热身，最后一两个动作吃力就停</div>';
+    }
+    /* 习惯条：喝水一键 +250（目标按体重/训练自动算），睡眠状态一眼可见 */
+    var wtH = waterToday(), wgH = waterGoal(), wpH = Math.min(100, Math.round(wtH / wgH * 100));
+    var habitStrip = '<div class="card" style="display:flex;align-items:center;gap:10px;padding:11px 14px">' +
+      '<div style="flex:1;min-width:0"><div style="display:flex;align-items:baseline"><b style="font-size:12.5px">💧 喝水</b>' +
+      '<span style="margin-left:auto;font-size:11px;color:var(--sub)">' + (wtH / 1000).toFixed(2) + ' / ' + (wgH / 1000).toFixed(1) + ' L</span></div>' +
+      '<div style="height:6px;border-radius:4px;background:rgba(127,127,127,.15);margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:' + wpH + '%;background:#3aa3ff"></i></div></div>' +
+      '<div class="chip" data-a="waterAdd" data-v="250" style="cursor:pointer;flex:none;font-weight:700">＋250ml</div>' +
+      '<span style="font-size:11px;color:#8d959e;flex:none">😴 ' + (slp < 0 ? '睡眠未记' : sleepLabel(slp)) + '</span></div>';
+    return heroHtml + resumeCard + sleepQ + sleepCard +
       '<div class="stats-row"><div class="stat"><div class="n">' + minToday + '</div><div class="l">今日分钟</div></div>' +
       '<div class="stat"><div class="n">' + mdays + '</div><div class="l">本月练次</div></div>' +
       '<div class="stat"><div class="n">' + recCount + '</div><div class="l">动作有纪录</div></div>' +
       '<div class="stat"><div class="n">' + (streak() || 0) + '</div><div class="l">连续打卡</div></div></div>' +
-      mealTeaser +
+      habitStrip + mealTeaser +
       '<div class="h-sec">为你精选<span class="more">点卡片看动作清单</span></div>' + strip + lastCard + breathCard;
   }
 
@@ -727,6 +758,15 @@
     }).join('');
     return '<div class="phase-tabs">' + tabs + '</div>' +
       '<div class="phase-tip">📌 ' + esc(p.weeks[S.weekIdx].tip) + '</div>' +
+      (function () {
+        /* v37 睡眠→训练联动提示：本周视图 + 今天是训练日 + 昨晚睡得偏晚 */
+        var jdP = new Date().getDay(), slotP = jdP === 0 ? 6 : jdP - 1;
+        if (S.weekIdx !== 0 || !w.week[slotP] || w.week[slotP].rest) return '';
+        var sp = sleepToday();
+        if (sp === 2 && S.habits.sleepSkip !== todayStr() && !w.week[slotP].recovered) return '<div class="phase-tip" style="background:#fff4ec;color:#c4691f">😴 昨晚 1 点后才睡 · 首页可一键把今天换成舒缓恢复日</div>';
+        if (sp === 1) return '<div class="phase-tip" style="background:#fdf8ef">🌙 昨晚睡得偏晚 · 今天训练降点强度，充分热身</div>';
+        return '';
+      })() +
       (p.cycle && p.cycle > 1 ? '<div class="phase-tip" style="background:#eef0ff">🚀 第 ' + p.cycle + ' 进阶周期 · 目标已按你的个人最佳自动上调</div>' : '') +
       (p.customTotal ? '<div class="phase-tip" style="background:#e8f7f2">🧠 本计划 ' + p.customTotal + ' 个动作目标已按你的成绩历史自动定制</div>' : '') +
       (p.edited ? '<div class="phase-tip" style="background:#fff4ec;color:#c4691f">✏️ 你已手动调整本计划（替换动作 / 组数），重新定制将还原改动</div>' : '') +
@@ -1891,6 +1931,30 @@
     var t = todayStr();
     return S.records.filter(function (r) { return r.date === t; }).reduce(function (a, r) { return a + (r.kcal || 0); }, 0);
   }
+  /* ===== v37 习惯联动：喝水 + 睡眠（零摩擦原则：记录 ≤1 次点击，不答不惩罚，答案当天就用） ===== */
+  function saveHabits() { saveK('fit_habits', S.habits); }
+  function waterGoal() { return Math.round(((PROFILE.weight || 60) * 35 + (todayBurn() > 0 ? 500 : 0)) / 50) * 50; }
+  function waterToday() { return S.habits.water[todayStr()] || 0; }
+  function sleepToday() { var x = S.habits.sleep[todayStr()]; return x == null ? -1 : Number(x); }
+  function sleepLabel(v) { return v === 0 ? '23 点前' : v === 1 ? '23 点-1 点' : '1 点后'; }
+  function recentDayKeys(n) {
+    var out = [];
+    for (var i = 1; i <= n; i++) {
+      var d = new Date(); d.setDate(d.getDate() - i);
+      var m = '0' + (d.getMonth() + 1), dd = '0' + d.getDate();
+      out.push(d.getFullYear() + '-' + m.slice(-2) + '-' + dd.slice(-2));
+    }
+    return out;
+  }
+  function eatenOf(key) { var dl = S.dietLog[key]; return dl && dl.items ? dl.items.reduce(function (a, x) { return a + (x.kcal || 0); }, 0) : 0; }
+  /* v37 摄入→后续计划：前 3 个完整日都吃超预算 10% → 今日目标自动 -5% 拉回；增肌目标连续 3 天没吃够 → 提示 */
+  function dietCalib(dayK) {
+    var ks = recentDayKeys(3), over = 0, under = 0;
+    ks.forEach(function (k) { var e = eatenOf(k); if (e > dayK * 1.1) over++; if (e > 0 && e < dayK * 0.85) under++; });
+    if (over >= 3) return { dayK: Math.round(dayK * 0.95), banner: '📉 连续 3 天吃超预算 · 今日目标已自动下调 5%（-' + Math.round(dayK * 0.05) + ' 千卡），帮你拉回节奏', over: true };
+    if (PROFILE.goal === '增肌' && under >= 3) return { dayK: dayK, banner: '⚠️ 连续 3 天没吃够（不足目标 85%）· 增重期长期缺口会掉进度，今天尽量补上', under: true };
+    return { dayK: dayK, banner: '' };
+  }
   function saveDietLog() { saveK('fit_dietlog', S.dietLog); }
   function allDishes() {
     var out = [];
@@ -2062,6 +2126,10 @@
     var today = todayStr();
     var b = bmr(d), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
     var dayK = d.training ? tgt + 150 : tgt;
+    /* v37 摄入→后续计划：近 3 天吃超则今日目标自动下调 5%，吃不够则提示（数据来自本机记录，无记录不触发） */
+    var calib = dietCalib(dayK);
+    dayK = calib.dayK;
+    var calibHtml = calib.banner ? '<div class="card" style="font-size:11.5px;color:' + (calib.over ? '#c4691f' : '#0d7a5f') + ';line-height:1.7;background:' + (calib.over ? '#fff4ec' : '#e8f7f2') + '">' + calib.banner + '</div>' : '';
     var m = macroSplit(dayK, d.weight, d.goal, d.training);
     var tot = m.pk + m.ck + m.fk || 1;
     var tm = todayMeals();
@@ -2097,6 +2165,10 @@
       dinner: adScale.dinner != null ? adScale.dinner : sc.dinner,
       snack: adScale.snack != null ? adScale.snack : sc.snack
     };
+    /* v37 运动→饮食结构联动：练后餐补给 / 休息日清淡。只在基线份量时生效——动态配份量时以剩余预算为准，两套规则不打架 */
+    var noAd = !Object.keys(adScale).length;
+    if (noAd && burn > 0) scales.dinner = Math.min(2.5, Math.round((scales.dinner || 1) * 1.1 * 10) / 10);
+    else if (noAd && !d.training) scales.dinner = Math.max(0.5, Math.round((scales.dinner || 1) * 0.92 * 10) / 10);
     var scaleTagFor = function (k) {
       if (adScale[k] == null) return '';
       var s = adScale[k], base = sc[k] || 1;
@@ -2108,6 +2180,15 @@
       '<div style="flex:1;min-width:0"><div style="font-size:26px;font-weight:900;color:' + (left < 0 ? '#e05a4e' : 'var(--ink)') + '">' + (left < 0 ? '超 ' + (-left) : '还能吃 ' + left) + '</div>' +
       '<div style="font-size:11px;color:#7a838e;margin-top:2px">千卡' + (left < 0 ? ' · 已超出今日预算' : ' · 距离预算还有余额') + '</div>' +
       '<div style="font-size:10.5px;color:#8d959e;margin-top:6px;line-height:1.6">预算 ' + budget + ' = 目标 ' + dayK + (burn ? ' + 今日训练已消耗 ' + burn : '') + '<br>吃了就记（下方每餐 ＋），预算实时扣减</div></div></div></div>';
+    /* v37 喝水卡：目标按体重+训练自动算，记录成本 = 一下点击 */
+    var wtV = waterToday(), wgV = waterGoal(), wpV = Math.min(100, Math.round(wtV / wgV * 100));
+    var waterCard = '<div class="card"><div style="display:flex;align-items:center;gap:12px">' +
+      '<div style="flex:1;min-width:0"><div style="display:flex;align-items:baseline"><b style="font-size:13px">💧 喝水</b>' +
+      '<span style="margin-left:auto;font-size:11.5px;color:var(--sub)"><b style="color:var(--ink);font-size:14px">' + (wtV / 1000).toFixed(2) + '</b> / ' + (wgV / 1000).toFixed(1) + ' L（' + Math.round(wgV / 250) + ' 杯）</span></div>' +
+      '<div style="height:8px;border-radius:5px;background:rgba(127,127,127,.15);margin-top:7px;overflow:hidden"><i style="display:block;height:100%;width:' + wpV + '%;background:#3aa3ff;transition:width .3s"></i></div>' +
+      '<div style="font-size:10px;color:#8d959e;margin-top:5px">目标已按体重' + (burn > 0 ? ' + 今日训练消耗自动加 500ml' : '自动算好') + '，点一下记一杯，不用精确</div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px;flex:none"><div class="btn" data-a="waterAdd" data-v="250" style="font-size:12.5px;padding:8px 14px;text-align:center">＋250</div>' +
+      '<div class="btn ghost" data-a="waterAdd" data-v="-250" style="font-size:11px;padding:5px 14px;text-align:center">－250</div></div></div></div>';
     /* 按餐记录实际饮食（替代旧布尔打卡） */
     /* v36 一键全记：最常见场景"按推荐吃"只需一下 */
     var unloggedCnt = MEALS.filter(function (m) { return !eatenBy[m[0]]; }).length;
@@ -2171,13 +2252,17 @@
       '<div class="diff-seg" style="margin:10px 0 6px"><span class="dl">当日类型</span>' +
       '<div class="o' + (d.training ? '' : ' on') + '" data-a="dietTrain" data-v="0">休息日</div>' +
       '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
+      calibHtml +
       budgetCard +
+      waterCard +
       mealLogHtml +
       pantryHtml +
       '<div class="h-sec">今日推荐 <span class="more" data-a="dietRegen" style="cursor:pointer">换一批 ⟳</span><span style="font-size:10px;color:#8d959e;margin-left:6px">吃了点「一键记入」就进预算</span></div>' +
       '<div style="font-size:11px;color:#7a838e;margin:-2px 6px 8px;line-height:1.7">' +
       (S.pantry.length ? '🧺 按你勾的 <b>' + S.pantry.length + '</b> 项常备食材配餐' : '🧺 <span style="color:#e08a00">未勾常备食材 → 当前全库推荐</span>：在上方「我的常备食材」勾几样，餐单就只按你有的配（调味料不用勾）') +
-      (eaten > 0 && openK.length ? '<br>🍽 今天已记 ' + eaten + ' 千卡 · 还剩 ' + remainR + ' 千卡，<b>没记的餐已按剩余预算动态配份量</b>' : (eaten > 0 ? '<br>🍽 今天已记 ' + eaten + ' 千卡 · 预算还剩 ' + remainR + ' 千卡' : '')) + '</div>' +
+      (eaten > 0 && openK.length ? '<br>🍽 今天已记 ' + eaten + ' 千卡 · 还剩 ' + remainR + ' 千卡，<b>没记的餐已按剩余预算动态配份量</b>' : (eaten > 0 ? '<br>🍽 今天已记 ' + eaten + ' 千卡 · 预算还剩 ' + remainR + ' 千卡' : '')) +
+      (noAd && burn > 0 ? '<br>🔥 今天已练 ' + burn + ' 千卡 · 晚餐按<b>练后补给</b>加量 10%（碳水优先补）' : '') +
+      (noAd && burn === 0 && !d.training ? '<br>💤 今天休息日 · 晚餐按<b>清淡</b>配，比训练日少一点' : '') + '</div>' +
       mealCard('早餐', 25, bf, mealFindings(bf), S.pantry, 'bf', scales.bf, eatenBy.bf, scaleTagFor('bf')) + mealCard('午餐', 35, lunch, mealFindings(lunch), S.pantry, 'lunch', scales.lunch, eatenBy.lunch, scaleTagFor('lunch')) + mealCard('晚餐', 30, dinner, mealFindings(dinner), S.pantry, 'dinner', scales.dinner, eatenBy.dinner, scaleTagFor('dinner')) + mealCard('加餐', 10, snack, mealFindings(snack), S.pantry, 'snack', scales.snack, eatenBy.snack, scaleTagFor('snack')) +
       trainCard +
       vDietPair() +
@@ -2470,6 +2555,39 @@
       var dlx = dayLog();
       dlx.items = dlx.items.filter(function (x) { return x.id !== el.dataset.id; });
       saveDietLog(); renderView(); return;
+    }
+    /* ===== v37 习惯联动动作 ===== */
+    /* 早晨一问：记睡眠。答案当天就用——2 → 首页出"改舒缓恢复"卡；1 → 计划页/首页出温和提示 */
+    if (a === 'sleepAns') {
+      S.habits.sleep[todayStr()] = Number(v) || 0;
+      saveHabits();
+      toast(['✅ 已记：昨晚 23 点前睡 · 今天正常练，状态好可以冲一把', '🌙 已记：昨晚睡得偏晚 · 今天训练降点强度，充分热身', '😴 已记：昨晚 1 点后才睡 · 建议今天改舒缓恢复，别硬练'][Number(v)] || '✅ 已记下');
+      renderView(); return;
+    }
+    /* 一键把今天换成舒缓恢复日（复用恢复日模板，明天自动回归计划节奏） */
+    if (a === 'sleepRest') {
+      if (S.plan) {
+        var jdR = new Date().getDay(), slotR = jdR === 0 ? 6 : jdR - 1;
+        var ddR = S.plan.weeks[0].week[slotR];
+        if (ddR && !ddR.rest) S.plan.weeks[0].week[slotR] = makeRecoverDay(ddR.wd, ddR.duration);
+        saveK(KP, S.plan);
+      }
+      S.habits.sleepSkip = todayStr(); saveHabits();
+      toast('🌿 今日已换舒缓恢复 · 明天精神好再补强度');
+      renderView(); return;
+    }
+    if (a === 'sleepSkip') { S.habits.sleepSkip = todayStr(); saveHabits(); toast('好，按计划练 · 记得充分热身'); renderView(); return; }
+    /* 喝水：一下一杯，误差无所谓，追趋势不追账本 */
+    if (a === 'waterAdd') {
+      var dW = Number(v) || 0;
+      var curW = waterToday();
+      S.habits.water[todayStr()] = Math.max(0, curW + dW);
+      saveHabits(); renderView();
+      if (dW > 0) {
+        var nwW = S.habits.water[todayStr()], gW = waterGoal();
+        if (nwW >= gW && curW < gW) toast('💧 达标！今天 ' + (nwW / 1000).toFixed(1) + 'L 喝够了');
+      }
+      return;
     }
     if (a === 'foodAll') {
       var tmA = todayMeals();
