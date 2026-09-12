@@ -39,19 +39,17 @@ try {
   // ---- 2) 保存：锻炼建议块出现 + 计划目标同步（尚无计划 → 不重生成） ----
   click('[data-a="healthSave"]');
   const t1 = toastText();
-  ck('保存成功 toast', t1.includes('分析完成'));
-  ck('无计划时不误报重生成', !t1.includes('训练计划已重新生成'));
+  ck('保存成功 toast', t1.includes('已按你的数据生成训练计划与饮食方案'));
+  ck('toast 带计划参数', t1.includes('训练计划已生成'));
   const recTxt = bodyText();
   ck('锻炼建议块出现', recTxt.includes('💪 锻炼建议'));
   ck('饮食建议标题分栏', recTxt.includes('🥗 饮食与恢复建议'));
   ck('有每周训练安排条目', recTxt.includes('每周') && recTxt.includes('力量'));
   ck('有去计划页入口', !!q('[data-a="tab"][data-v="plan"]'));
 
-  // ---- 3) 生成一个计划 → 回来改数据（血压红线）→ 保存应重生成计划并降级强度 ----
+  // ---- 3) v32：保存即自动生成计划（无需手动 genPlan）→ 改数据（血压红线）→ 保存应重生成并降级强度 ----
   tab('plan');
-  click('[data-a="genPlan"]');
-  ck('计划已生成', bodyText().includes('第1周') || bodyText().includes('我的'));
-  const planGoalBefore = bodyText().includes('增肌'); // 默认体重 65/172.3 BMI 正常，draft goal 沿用减脂 → 不应出现增肌
+  ck('首次保存后计划已自动生成', !!q('.phase-tabs') && bodyText().includes('第1周'));
   tab('record');
   click('[data-a="healthOpen"]');
   // 改成明显超重 + 血压偏高 + 心率快
@@ -61,7 +59,7 @@ try {
   setNum('hr', '96');
   click('[data-a="healthSave"]');
   const t2 = toastText();
-  ck('血压红线 → toast 提示重生成', t2.includes('训练计划已重新生成'));
+  ck('参数变化 → toast 提示计划已生成', t2.includes('训练计划已生成'));
   ck('血压红线 → toast 提示强度降级', t2.includes('新手'));
   ck('出现强度红线建议', bodyText().includes('强度红线：血压偏高'));
   ck('BMI 超重 → 方向变减脂', bodyText().includes('方向：减脂'));

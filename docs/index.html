@@ -745,7 +745,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v31';
+  var APP_VER = 'v32';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -1532,7 +1532,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (S.healthOpen) return healthForm();
     var head = '<div class="card pf-card"><div class="form-t" style="margin:0 0 8px">🩺 身体数据分析器 <span class="more">' + (PROFILE.examDate ? '体检 ' + PROFILE.examDate : '数据仅存本机') + '</span></div>';
     if (!S.health) {
-      return head + '<div style="font-size:11.5px;color:#7a838e;line-height:1.7;margin:4px 0 10px">填入身高体重、血压心率、尿酸血糖等指标（或直接粘贴体检报告文字自动提取），本地生成专属的训练强度与饮食方向建议。数据只保存在这台设备，不上传、不进代码。</div>' +
+      return head + '<div style="font-size:11.5px;color:#7a838e;line-height:1.7;margin:4px 0 10px">填入身高体重、血压心率、尿酸血糖等指标（或直接粘贴体检报告文字自动提取），点「分析」后<b>自动生成</b>专属训练计划与饮食方案——无需再去别页手填。数据只保存在这台设备，不上传、不进代码。</div>' +
         '<div class="btn" data-a="healthOpen" style="text-align:center">🔍 开始分析我的数据</div></div>';
     }
     var bmiTxt = PROFILE.bmi < 18.5 ? '偏瘦' : PROFILE.bmi < 24 ? '正常' : PROFILE.bmi < 28 ? '超重' : '肥胖';
@@ -1540,7 +1540,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="pf-b"><div class="n">' + PROFILE.weight + '</div><div class="l">体重 kg</div></div>' +
       '<div class="pf-b"><div class="n">' + PROFILE.bmi + '</div><div class="l">BMI ' + bmiTxt + '</div></div>' +
       '<div class="pf-b"><div class="n">' + PROFILE.weightGoal + '</div><div class="l">目标 kg</div></div></div>' +
-      '<div style="font-size:11px;color:#7a838e;margin:6px 0 4px;line-height:1.6">方向：' + PROFILE.goal + ' · 每日饮水 ' + (PROFILE.water / 1000).toFixed(1) + 'L · 理想体重约 ' + PROFILE.idealWeight + 'kg</div>';
+      '<div style="font-size:11px;color:#7a838e;margin:6px 0 4px;line-height:1.6">方向：' + PROFILE.goal + ' · 每日饮水 ' + (PROFILE.water / 1000).toFixed(1) + 'L · 理想体重约 ' + PROFILE.idealWeight + 'kg<br>✅ 训练计划与饮食方案已按以上数据自动生成，下方入口可直接查看</div>';
     /* 可选指标：报告里识别到哪几项就显示哪几项，一项都没有则整块不出现 */
     var hChips = [], LV_C = { ok: '#0fb98c', edge: '#e08a00', high: '#e05a4e', low: '#e05a4e' }, LV_A = { ok: '✓', edge: '↑', high: '↑', low: '↓' }, LV_N = { ok: '正常', edge: '边缘', high: '偏高', low: '偏低' };
     var chipOne = function (label, val, unit, lv) {
@@ -1567,7 +1567,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
           '<span style="font-size:15px">' + t.i + '</span><div><div style="font-size:12.5px;font-weight:500">' + esc(t.t) + '</div>' +
           '<div style="font-size:11.5px;color:#7a838e;line-height:1.7;margin-top:2px">' + esc(t.d) + '</div></div></div>';
       }).join('');
-      html += '<div class="btn ghost" data-a="tab" data-v="plan" style="margin-top:6px;text-align:center;font-size:12px">📋 去「计划」页生成训练计划</div>';
+      html += '<div style="display:flex;gap:8px;margin-top:6px"><div class="btn ghost" data-a="tab" data-v="plan" style="flex:1;text-align:center;font-size:12px">📋 查看训练计划</div><div class="btn ghost" data-a="tab" data-v="diet" style="flex:1;text-align:center;font-size:12px">🥗 查看饮食计划</div></div>';
     }
     html += '<div style="font-size:12.5px;font-weight:600;margin:8px 0 0">🥗 饮食与恢复建议</div>';
     html += PROFILE.tips.map(function (t) {
@@ -2977,20 +2977,22 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       S.diet = { gender: PROFILE.gender, age: PROFILE.age, height: PROFILE.height, weight: PROFILE.weight, activity: PROFILE.activity, goal: PROFILE.goal, training: !!(S.diet && S.diet.training) };
       saveK('fit_diet', S.diet); S.dayMeal = null; saveK('fit_daymeal', null);
       S.wGoal = PROFILE.weightGoal; saveK('fit_wgoal', S.wGoal);
-      /* 联动训练：目标同步到计划表单，血压红线时降级训练水平，已有计划则按新目标重新生成 */
+      /* 自动生成训练计划：参数由体检数据推导（目标/周频次/水平封顶），时长与场景沿用表单现值 */
       S.form.goal = PROFILE.planGoal || (PROFILE.goal === '维持' ? '保持健康' : PROFILE.goal);
       if (PROFILE.levelCap) S.form.level = PROFILE.levelCap;
-      if (PROFILE.planDays && !S.plan) S.form.day = PROFILE.planDays;
+      if (PROFILE.planDays) S.form.day = PROFILE.planDays;
+      var want = { goal: S.form.goal, days: S.form.day, length: S.form.length, level: rpeBiasLevel(S.form.level), venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' };
+      var same = S.plan && S.plan.goal === want.goal && S.plan.days === want.days && S.plan.length === want.length && S.plan.level === want.level && S.plan.venue === want.venue;
       var trainMsg = '';
-      if (S.plan) {
-        S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: rpeBiasLevel(S.form.level), venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
+      if (!same) {
+        S.plan = generatePlan(want, histForPlan());
         if (S.recoveryOn) applyRecovery(S.plan);
         S.weekIdx = 0; saveK(KP, S.plan);
-        trainMsg = '，训练计划已重新生成';
+        trainMsg = ' · 训练计划已生成（每周 ' + want.days + ' 练 · ' + want.goal + '）';
       }
       if (!Object.keys(S.weights).length && PROFILE.examDate) { S.weights[PROFILE.examDate] = PROFILE.weight; saveK('fit_weight', S.weights); }
       S.healthOpen = false;
-      renderView(); toast('✅ 分析完成：目标与饮食已更新' + trainMsg + (PROFILE.levelCap ? '（血压偏高：强度已调至新手档）' : '')); return;
+      renderView(); toast('✅ 已按你的数据生成训练计划与饮食方案' + (same ? '（计划参数未变，保留原进度）' : trainMsg) + (PROFILE.levelCap ? ' · 血压偏高，强度已调至新手档' : '')); return;
     }
     if (a === 'healthClear') { S.health = null; saveK('fit_health', null); S.healthDraft = null; S.dayMeal = null; saveK('fit_daymeal', null); PROFILE = analyzeHealth({ gender: '男', age: 28, height: 175, weight: 70, activity: '中度', goal: '减脂' }); S.healthOpen = false; renderView(); toast('已清除身体数据，餐单恢复默认选品'); return; }
     if (a === 'saveDiet') { S.diet = Object.assign({}, S.dietDraft, { training: false, custom: true }); S.dayMeal = null; S.dietFormOpen = false; S.dietAuto = false; saveK('fit_diet', S.diet); saveK('fit_daymeal', null); renderView(); toast('✅ 方案已生成，已按你的资料重配今日餐单'); return; }
