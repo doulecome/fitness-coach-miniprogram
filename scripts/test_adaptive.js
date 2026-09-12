@@ -67,6 +67,23 @@ try {
   ck('F1 删除后日志清空', ((JSON.parse(window.localStorage.getItem('fit_dietlog') || '{}')[todayKey] || {}).items || []).length === 0);
   ck('F2 删除后早餐卡不再有已记入标记', !mealCardByTitle('早餐').textContent.includes('已记入'));
   ck('F3 删除后回归基础份量（无动态标签）', !bodyText().includes('按剩余预算'));
+
+  // ---- G) v35 估卡拼盘：库里没有的菜 → 点食材累加千卡 → 填入 → 记入 ----
+  click('[data-a="addFood"][data-meal="lunch"]');
+  if (!q('#foodRefChips') && !q('#foodRefApply')) { /* chips 在 .chips 容器里，确认按钮初始隐藏 */ }
+  ck('G1 估卡拼盘入口存在（初始隐藏）', q('#foodRefApply') && q('#foodRefApply').style.display === 'none');
+  click('[data-a="foodRef"][data-v="200"]'); // 米饭 1 碗
+  click('[data-a="foodRef"][data-v="150"]'); // 瘦肉掌心大
+  ck('G2 点两样后累加并显示填入按钮', q('#foodRefApply').style.display === 'block' && q('#foodRefSum').textContent === '350');
+  click('[data-a="foodRefApply"]');
+  ck('G3 填入后千卡输入框已填 350', q('#foodCk').value === '350');
+  q('#foodCn').value = '家里做的饭';
+  q('#foodCn').dispatchEvent(new window.Event('input', { bubbles: true }));
+  click('[data-a="foodCustom"]');
+  const log2 = JSON.parse(window.localStorage.getItem('fit_dietlog') || '{}');
+  const items2 = (log2[todayKey] || {}).items || [];
+  const hit = items2.filter(x => x.n === '家里做的饭');
+  ck('G4 手动记录成功且千卡=拼盘结果', hit.length === 1 && hit[0].kcal === 350 && hit[0].meal === 'lunch');
 } catch (e) {
   console.log('FAIL 异常中断: ' + e.message);
   process.exitCode = 1;

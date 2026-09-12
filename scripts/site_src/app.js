@@ -266,7 +266,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v34';
+  var APP_VER = 'v35';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -1245,17 +1245,24 @@
   /* 记录饮食 sheet：24 道菜品一键 + 搜索 + 自定义热量 */
   function sheetFood(meal) {
     S._foodMeal = meal;
+    S._foodRef = 0;
     var dishes = allDishes();
     var rows = dishes.map(function (t) {
       return '<div class="food-row" data-name="' + esc(t.n) + '" data-a="foodPick" data-n="' + esc(t.n) + '" style="display:flex;align-items:center;padding:9px 4px;border-bottom:1px solid rgba(127,127,127,.12);cursor:pointer">' +
         '<span style="font-size:9px;color:#fff;background:var(--gd);border-radius:999px;padding:1px 7px;margin-right:8px;flex:none">' + t.tag + '</span>' +
         '<span style="font-size:12.5px;font-weight:600">' + esc(t.n) + '</span><span style="margin-left:auto;font-size:11px;color:var(--sub)">' + t.kcal + ' 千卡</span></div>';
     }).join('');
+    var refChips = REF_FOODS.map(function (f) {
+      return '<span class="chip" data-a="foodRef" data-v="' + f[1] + '">' + esc(f[0]) + '</span>';
+    }).join('');
     openSheet('<div class="sh-h"><div class="sh-t">🍽 记录' + mealLabel(meal) + '</div><div class="x" data-a="xSheet">✕</div></div>' +
       '<input id="foodSearch" class="fld" placeholder="🔍 搜索菜品" style="width:100%;margin:0 0 6px">' +
       '<div id="foodList" style="max-height:300px;overflow-y:auto">' + rows + '</div>' +
       '<div class="form-t" style="margin:12px 0 6px">吃的没在库里？手动记一条</div>' +
       '<div style="display:flex;gap:8px"><input id="foodCn" class="fld" placeholder="名称，如 外卖" style="flex:2"><input id="foodCk" class="fld" type="number" inputmode="numeric" placeholder="千卡" style="flex:1"></div>' +
+      '<div style="font-size:10.5px;color:#8d959e;margin-top:8px;line-height:1.7">🧮 不知道多少千卡？点下面食材「拼一份」，油多的菜记得点一次「炒菜油多 +」。估算差 ±20% 不影响方向，别纠结精确值</div>' +
+      '<div class="chips" style="margin-top:6px">' + refChips + '</div>' +
+      '<div class="btn ghost" id="foodRefApply" data-a="foodRefApply" style="display:none;margin-top:8px;text-align:center;padding:9px 0">✅ 已拼 <b id="foodRefSum">0</b> 千卡 · 填入</div>' +
       '<div class="btn" data-a="foodCustom" style="margin-top:8px;text-align:center;padding:9px 0">＋ 加入' + mealLabel(meal) + '</div>');
   }
   function sheetRec(i) {    var r = S.records[i];
@@ -1829,6 +1836,15 @@
   })();
   /* ============ Keep 式热量预算 + 按餐记录（#40）：推荐菜一键记入，预算随训练消耗闭环 ============ */
   var MEALS = [['bf', '早餐', '🌅'], ['lunch', '午餐', '☀️'], ['dinner', '晚餐', '🌙'], ['snack', '加餐', '🍪']];
+  /* v35 估卡助手：库里没有的菜手动记时，点食材"拼"出千卡。参考值为常见分量中位估，差 ±20% 不影响方向 */
+  var REF_FOODS = [
+    ['🍚 米饭 1 碗', 200], ['🍜 面条 1 碗', 350], ['🥟 饺子 10 个', 400], ['🍞 馒头 1 个', 120],
+    ['🍠 红薯 1 个', 150], ['🥚 鸡蛋 1 个', 70], ['🍗 瘦肉掌心大', 150], ['🍖 红烧肉几块', 350],
+    ['🐟 鱼一掌', 180], ['🦐 虾 8 只', 90], ['🧈 豆腐 1 份', 100], ['🥬 绿叶菜 1 份', 60],
+    ['🥗 沙拉 1 份', 120], ['🍲 炒菜油多 +', 150], ['🥛 牛奶 1 杯', 160], ['🍶 酸奶 1 杯', 120],
+    ['🍎 水果 1 个', 80], ['🥜 坚果 1 小把', 180], ['🧋 奶茶 1 杯', 400], ['🍺 啤酒 1 瓶', 150],
+    ['🥡 外卖盖饭整盒', 800], ['🍔 汉堡 1 个', 550], ['🍕 披萨 2 块', 450], ['🍟 薯条 1 份', 320]
+  ];
   function mealLabel(k) { for (var i = 0; i < MEALS.length; i++) if (MEALS[i][0] === k) return MEALS[i][1]; return k; }
   function dayLog() {
     var t = todayStr();
@@ -2417,6 +2433,20 @@
       var dlx = dayLog();
       dlx.items = dlx.items.filter(function (x) { return x.id !== el.dataset.id; });
       saveDietLog(); renderView(); return;
+    }
+    /* v35 估卡拼盘：点食材累加参考千卡 → 一键填入手动记录 */
+    if (a === 'foodRef') {
+      S._foodRef = (S._foodRef || 0) + (Number(v) || 0);
+      var ra = $('#foodRefApply'), rs = $('#foodRefSum');
+      if (ra) ra.style.display = 'block';
+      if (rs) rs.textContent = S._foodRef;
+      return;
+    }
+    if (a === 'foodRefApply') {
+      var ckr = $('#foodCk');
+      if (ckr) { ckr.value = S._foodRef || 0; ckr.dispatchEvent(new Event('input', { bubbles: true })); }
+      toast('已填入 ' + (S._foodRef || 0) + ' 千卡，再写个名称就行');
+      return;
     }
     if (a === 'foodCustom') {
       var cn = $('#foodCn'), ck2 = $('#foodCk');
