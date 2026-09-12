@@ -82,3 +82,44 @@ try {
   console.log('FAIL 异常中断: ' + e.message);
   process.exitCode = 1;
 }
+
+// ---- E/F/G) v33 启动自愈：用 beforeParse 预置 localStorage，验证开机补齐逻辑 ----
+function bootWith(store) {
+  const d2 = new JSDOM(html, {
+    runScripts: 'dangerously', url: 'http://localhost/',
+    beforeParse(w) { Object.keys(store).forEach(k => w.localStorage.setItem(k, JSON.stringify(store[k]))); }
+  });
+  return d2.window;
+}
+try {
+  // E) 有身体档案、无计划（v32 前存的档）→ 开机即自动生成，无需任何点击
+  const wE = bootWith({ fit_health: { gender: '男', age: 30, height: 172, weight: 54, activity: '中度', goal: '增肌' } });
+  const planE = JSON.parse(wE.localStorage.getItem('fit_plan') || 'null');
+  ck('E1 开机自愈：fit_health 在、fit_plan 无 → 自动生成', !!planE && !!planE.weeks);
+  ck('E2 自愈计划方向=增肌（BMI 18.2 偏瘦）', planE && planE.goal === '增肌');
+  ck('E3 自愈计划带 fromHealth 标记（此后不再反复重生成）', planE && planE.fromHealth === true);
+  wE.document.querySelector('#tabbar .tab[data-v="plan"]').click();
+  const txtE = wE.document.body.textContent;
+  const viewE = wE.document.querySelector('#view').textContent;
+  ck('E4 自愈后计划页直接是结果页（非填写表单）', txtE.includes('我的 4 周计划') && !viewE.includes('生成我的 4 周计划') && viewE.includes('训练天'));
+
+  // F) 旧版本遗留的通用计划（无 fromHealth/manual/edited、无打卡记录）→ 按档案重定向
+  const fakeWeeks = [{ label: '第1周', tip: '', days: 1, totalMin: 0, totalKcal: 0, week: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'].map(wd => ({ wd, rest: true })) }];
+  const wF = bootWith({
+    fit_health: { gender: '男', age: 30, height: 172, weight: 54, activity: '中度', goal: '增肌' },
+    fit_plan: { goal: '保持健康', days: 2, length: 30, level: '新手', venue: 'home', weeks: fakeWeeks }
+  });
+  const planF = JSON.parse(wF.localStorage.getItem('fit_plan') || '{}');
+  ck('F1 遗留通用计划被按档案重生成', planF.goal === '增肌');
+
+  // G) 用户手动调过的计划（edited）→ 不覆盖
+  const wG = bootWith({
+    fit_health: { gender: '男', age: 30, height: 172, weight: 54, activity: '中度', goal: '增肌' },
+    fit_plan: { goal: '保持健康', days: 2, length: 30, level: '新手', venue: 'home', weeks: fakeWeeks, edited: true }
+  });
+  const planG = JSON.parse(wG.localStorage.getItem('fit_plan') || '{}');
+  ck('G1 手动编辑过的计划不被自愈覆盖', planG.goal === '保持健康');
+} catch (e) {
+  console.log('FAIL 自愈用例异常中断: ' + e.message);
+  process.exitCode = 1;
+}

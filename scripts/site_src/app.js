@@ -232,6 +232,24 @@
       S.weights[PROFILE.examDate] = PROFILE.weight; saveK('fit_weight', S.weights);
     }
   })();
+  /* v33 启动自愈：有身体档案但计划缺失、或计划从未按档案生成过（旧版本遗留）时，
+     开机即按档案参数补齐训练计划——不再依赖"必须再点一次保存"。
+     已有进度的计划（手动生成/手动编辑/进阶周期/有训练打卡/RPE 反馈）一律不覆盖。 */
+  (function ensureProfilePlan() {
+    if (!S.health) return;
+    S.form.goal = PROFILE.planGoal || (PROFILE.goal === '维持' ? '保持健康' : PROFILE.goal);
+    if (PROFILE.levelCap) S.form.level = PROFILE.levelCap;
+    if (PROFILE.planDays) S.form.day = PROFILE.planDays;
+    var hasProgress = !!S.plan && (S.plan.fromHealth || S.plan.manual || S.plan.edited || (S.plan.cycle || 1) > 1 ||
+      S.records.some(function (r) { return r.tag && r.tag.indexOf('fit_plan_') === 0; }) || S.rpeLog.length > 0);
+    if (!S.plan || !hasProgress) {
+      var want = { goal: S.form.goal, days: S.form.day, length: S.form.length, level: rpeBiasLevel(S.form.level), venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' };
+      S.plan = generatePlan(want, histForPlan());
+      S.plan.fromHealth = true;
+      if (S.recoveryOn) applyRecovery(S.plan);
+      S.weekIdx = 0; saveK(KP, S.plan);
+    }
+  })();
   var app = $('#app');
 
   /* ============ 存储 ============ */
@@ -248,7 +266,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v32';
+  var APP_VER = 'v33';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -1043,7 +1061,7 @@
       '<div class="pf-b"><div class="n">' + PROFILE.weight + '</div><div class="l">体重 kg</div></div>' +
       '<div class="pf-b"><div class="n">' + PROFILE.bmi + '</div><div class="l">BMI ' + bmiTxt + '</div></div>' +
       '<div class="pf-b"><div class="n">' + PROFILE.weightGoal + '</div><div class="l">目标 kg</div></div></div>' +
-      '<div style="font-size:11px;color:#7a838e;margin:6px 0 4px;line-height:1.6">方向：' + PROFILE.goal + ' · 每日饮水 ' + (PROFILE.water / 1000).toFixed(1) + 'L · 理想体重约 ' + PROFILE.idealWeight + 'kg<br>✅ 训练计划与饮食方案已按以上数据自动生成，下方入口可直接查看</div>';
+      '<div style="font-size:11px;color:#7a838e;margin:6px 0 4px;line-height:1.6">方向：' + PROFILE.goal + ' · 每日饮水 ' + (PROFILE.water / 1000).toFixed(1) + 'L · 理想体重约 ' + PROFILE.idealWeight + 'kg<br>' + (S.plan ? '✅ 训练计划与饮食方案已按以上数据自动生成，下方入口可直接查看' : '⚠️ 训练计划尚未生成——打开「计划」页即可按以上数据补齐') + '</div>';
     /* 可选指标：报告里识别到哪几项就显示哪几项，一项都没有则整块不出现 */
     var hChips = [], LV_C = { ok: '#0fb98c', edge: '#e08a00', high: '#e05a4e', low: '#e05a4e' }, LV_A = { ok: '✓', edge: '↑', high: '↑', low: '↓' }, LV_N = { ok: '正常', edge: '边缘', high: '偏高', low: '偏低' };
     var chipOne = function (label, val, unit, lv) {
@@ -2381,7 +2399,9 @@
     if (a === 'nextCycle') {
       if (!S.plan) return;
       var cyc = (S.plan.cycle || 1) + 1;
+      var wasManual = !!S.plan.manual;
       S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: rpeBiasLevel(S.form.level), venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
+      if (wasManual) S.plan.manual = true;
       S.plan.cycle = cyc;
       if (S.recoveryOn) applyRecovery(S.plan);
       S.weekIdx = 0; saveK(KP, S.plan); renderView();
@@ -2398,6 +2418,7 @@
     if (a === 'form') { S.form[k] = (k === 'day' || k === 'length') ? Number(v) : v; renderView(); return; }
     if (a === 'genPlan') {
       S.plan = generatePlan({ goal: S.form.goal, days: S.form.day, length: S.form.length, level: rpeBiasLevel(S.form.level), venue: S.form.venue === '🏋️ 健身房' ? 'gym' : 'home' }, histForPlan());
+      S.plan.manual = true;
       if (S.recoveryOn) applyRecovery(S.plan);
       S.weekIdx = 0; saveK(KP, S.plan); renderView(); return;
     }
@@ -2489,6 +2510,7 @@
       var trainMsg = '';
       if (!same) {
         S.plan = generatePlan(want, histForPlan());
+        S.plan.fromHealth = true;
         if (S.recoveryOn) applyRecovery(S.plan);
         S.weekIdx = 0; saveK(KP, S.plan);
         trainMsg = ' · 训练计划已生成（每周 ' + want.days + ' 练 · ' + want.goal + '）';
