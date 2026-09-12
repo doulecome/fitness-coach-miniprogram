@@ -78,8 +78,15 @@
     r.idealWeight = Math.round(r.height - 105);
     var bmi = r.weight / Math.pow(r.height / 100, 2);
     r.bmi = Math.round(bmi * 10) / 10;
-    r.goal = bmi < 18.5 ? '增肌' : bmi >= 24 ? '减脂' : (h.goal || '维持');
-    r.weightGoal = bmi < 18.5 ? Math.max(Math.round(r.idealWeight * 0.88), Math.round(r.weight + 4)) : bmi >= 24 ? Math.round(r.weight - 5) : r.weight;
+    /* 体脂率（可选指标）：BMI 正常但体脂偏高 = 隐性肥胖，未显式指定目标时方向定为减脂 */
+    r.bfp = 0; r.bfpLv = '';
+    var bfpRaw = Number(h.bfp) || 0;
+    if (bfpRaw) {
+      var bfHi = r.gender === '女' ? 32 : 25, bfLo = r.gender === '女' ? 18 : 10;
+      r.bfp = bfpRaw; r.bfpLv = bfpRaw >= bfHi ? 'high' : bfpRaw <= bfLo ? 'low' : 'ok';
+    }
+    r.goal = bmi < 18.5 ? '增肌' : bmi >= 24 ? '减脂' : (h.goal || (r.bfpLv === 'high' ? '减脂' : '维持'));
+    r.weightGoal = bmi < 18.5 ? Math.max(Math.round(r.idealWeight * 0.88), Math.round(r.weight + 4)) : bmi >= 24 ? Math.round(r.weight - 5) : (r.goal === '减脂' ? Math.round(r.weight - 3) : r.weight);
     r.water = Math.max(Math.round(r.weight * 35), 2000);
     var tips = [];
     r.dietFlags = []; /* 体检标记 → 餐单选品偏好（低嘌呤硬排除 / 低 GI 软优先） */
@@ -102,6 +109,46 @@
     var ggt = Number(h.ggt) || 0;
     if (ggt > 60) tips.push({ i: '🫀', t: 'GGT 偏高（' + ggt + ' U/L）', d: '常见于饮酒或肝胆问题，建议戒酒并复查肝功能后再定训练强度。' });
     else if (ggt > 0 && ggt < 10) tips.push({ i: '🫀', t: 'GGT 偏低（' + ggt + ' U/L）', d: '多与营养摄入不足相关，非疾病信号：把热量与蛋白吃够，通常随营养改善回升。' });
+    /* ---- 血脂四项：参考《中国成人血脂异常防治指南》通用区间，任一项有值才判定 ---- */
+    var tc = Number(h.tc) || 0, tg = Number(h.tg) || 0, hdl = Number(h.hdl) || 0, ldl = Number(h.ldl) || 0;
+    r.lipid = null;
+    if (tc || tg || hdl || ldl) {
+      var lp = {};
+      if (tc) { lp.tc = tc; lp.tcLv = tc >= 6.2 ? 'high' : tc >= 5.2 ? 'edge' : 'ok'; }
+      if (tg) { lp.tg = tg; lp.tgLv = tg >= 2.3 ? 'high' : tg >= 1.7 ? 'edge' : 'ok'; }
+      if (hdl) { lp.hdl = hdl; lp.hdlLv = hdl < (r.gender === '女' ? 1.3 : 1.0) ? 'low' : 'ok'; }
+      if (ldl) { lp.ldl = ldl; lp.ldlLv = ldl >= 4.1 ? 'high' : ldl >= 3.4 ? 'edge' : 'ok'; }
+      r.lipid = lp;
+      var seg = [];
+      if (lp.tcLv && lp.tcLv !== 'ok') seg.push('总胆固醇 ' + tc);
+      if (lp.tgLv && lp.tgLv !== 'ok') seg.push('甘油三酯 ' + tg);
+      if (lp.hdlLv && lp.hdlLv !== 'ok') seg.push('HDL ' + hdl);
+      if (lp.ldlLv && lp.ldlLv !== 'ok') seg.push('LDL ' + ldl);
+      var ldlBad = (lp.ldlLv && lp.ldlLv !== 'ok') || (lp.tcLv && lp.tcLv !== 'ok');
+      var tgBad = lp.tgLv && lp.tgLv !== 'ok';
+      var hdlBad = lp.hdlLv === 'low';
+      var lHigh = lp.tcLv === 'high' || lp.tgLv === 'high' || lp.ldlLv === 'high';
+      if (seg.length) {
+        var ladv = [];
+        if (ldlBad) ladv.push('减少饱和脂肪与反式脂肪（肥肉、油炸、奶油糕点、内脏），多吃膳食纤维、豆类与深海鱼');
+        if (tgBad) ladv.push('甘油三酯与酒精、含糖饮料、精制主食最相关：先戒酒、少甜饮、主食换低 GI（糙米/燕麦）');
+        if (hdlBad) ladv.push('HDL 偏低（好胆固醇不足）：规律有氧 + 适量优质脂肪（坚果、橄榄油、深海鱼）比单纯少吃更有效');
+        tips.push({ i: '🩸', t: '血脂' + (lHigh ? '异常' : '边缘偏高') + '（' + seg.join(' / ') + '）', d: ladv.join('；') + '。建议 3~6 个月复查血脂四项。' });
+        if (tgBad) r.dietFlags.push('低GI'); /* 真实联动：甘油三酯偏高时主食优先粗粮 */
+      }
+    }
+    /* ---- 体脂率 ---- */
+    if (r.bfpLv === 'high') tips.push({ i: '📊', t: '体脂率偏高（' + r.bfp + '%）', d: 'BMI ' + r.bmi + ' 在正常范围但体脂占比偏高（隐性肥胖倾向）：热量小幅缺口 200~300 千卡 + 力量训练为主保住肌肉，比单纯节食有效。' });
+    else if (r.bfpLv === 'low') tips.push({ i: '📊', t: '体脂率偏低（' + r.bfp + '%）', d: '体脂过低会影响激素水平与免疫力：适当增加优质脂肪与总热量，减少长时间有氧。' });
+    /* ---- 骨密度 T 值（WHO 口径：≥-1 正常 / -1~-2.5 骨量减少 / ≤-2.5 骨质疏松）---- */
+    if (h.bmd !== undefined && h.bmd !== null && h.bmd !== '') {
+      var tVal = Number(h.bmd);
+      if (!isNaN(tVal)) {
+        r.bmd = tVal;
+        if (tVal <= -2.5) tips.push({ i: '🦴', t: '骨密度 T 值 ' + tVal + '（骨质疏松范围）', d: '训练需在医生指导下进行：以坐姿/固定器械等低冲击抗阻为主，避免弯腰负重（硬拉、仰卧起坐）与跳跃；同时补足钙与维生素 D、多晒太阳。' });
+        else if (tVal < -1) tips.push({ i: '🦴', t: '骨密度 T 值 ' + tVal + '（骨量减少）', d: '骨骼需要负重刺激：每周 3 次抗阻或自重训练（深蹲、推举、提重物行走）比游泳更有效；配合补钙 + 维生素 D，避免过度节食。' });
+      }
+    }
     /* 结构化锻炼建议：由指标推导每周训练安排与强度红线（联动训练计划） */
     var tt = [];
     if (r.goal === '增肌') tt.push({ i: '🏋️', t: '每周 4 练 · 力量为主', d: '推/拉/蹲分化循环，复合动作优先、渐进加重；有氧每周 1~2 次、每次 15~20 分钟轻松配速即可，避免消耗过大影响增重。' });
@@ -110,7 +157,16 @@
     if (sys >= 140 || dia >= 90) { tt.push({ i: '⚠️', t: '强度红线：血压偏高', d: '暂缓大重量与憋气发力（大重量深蹲/硬拉/推举），改轻重量高次数、组间充分休息；先就医评估再逐步上强度。' }); r.levelCap = '新手'; }
     else if (sys >= 120 || dia >= 80) tt.push({ i: '⚠️', t: '强度注意：血压正常偏高', d: '可正常训练，但大重量少憋气、组间多休息；每周 2 次中低强度有氧有助血压回落。' });
     if (hr > 90) tt.push({ i: '💓', t: '心率提示：轻松配速起步', d: '有氧控制在"能正常说话"的强度（RPE 4~6），随静息心率下降再逐步提速。' });
+    /* 血脂 / 骨密度识别到时追加的训练安排（识别不到则整段不出现） */
+    if (r.lipid && (r.lipid.ldlLv !== undefined || r.lipid.tcLv !== undefined || r.lipid.tgLv !== undefined) &&
+      ((r.lipid.ldlLv && r.lipid.ldlLv !== 'ok') || (r.lipid.tcLv && r.lipid.tcLv !== 'ok') || (r.lipid.tgLv && r.lipid.tgLv !== 'ok'))) {
+      tt.push({ i: '🫀', t: '有氧补充：血脂偏高', d: '在力量训练之外每周 3 次 30 分钟中等强度有氧（快走/骑车/椭圆机，能说话但略喘），对降甘油三酯与 LDL 最直接。' });
+    }
+    if (r.bmd != null && r.bmd <= -2.5) tt.push({ i: '🦴', t: '强度红线：骨质疏松', d: '避免脊柱屈曲负重与跳跃落地（仰卧起坐、弯腰硬拉、跳箱），改坐姿器械与快走；上强度前先就医评估。' });
+    else if (r.bmd != null && r.bmd < -1) tt.push({ i: '🦴', t: '训练重点：负重抗阻', d: '骨量减少期最有效的是抗阻/负重训练（每周 3 次），别把训练全换成游泳或骑行这类无负重有氧。' });
     r.trainTips = tt;
+    /* 标记去重（血糖与甘油三酯都可能要求低 GI） */
+    r.dietFlags = r.dietFlags.filter(function (x, i, a) { return a.indexOf(x) === i; });
     r.planGoal = r.goal === '维持' ? '保持健康' : r.goal; /* 映射到计划表单的目标枚举 */
     r.planDays = r.goal === '减脂' ? 5 : r.goal === '增肌' ? 4 : 3;
     if (r.levelCap) r.planDays = Math.min(r.planDays, 3);
@@ -130,6 +186,24 @@
     v = num(/尿酸[^0-9\n]{0,12}(\d{2,4})/); if (v >= 100 && v <= 900) out.ua = v;
     v = num(/(?:空腹)?血糖[^0-9\n]{0,12}(\d\.\d{1,2})/); if (v >= 2 && v <= 33) out.glu = v;
     v = num(/谷氨酰[^0-9\n]{0,16}(\d{1,3})/); if (v >= 1 && v <= 500) out.ggt = v;
+    /* ---- 可选指标：报告里没有这几项就不带出来，调用方按"有值才分析"处理 ---- */
+    v = num(/(?:高密度脂蛋白|HDL)[^0-9\-]{0,12}(\d(?:\.\d{1,2})?)/); if (v >= 0.2 && v <= 5) out.hdl = v;
+    v = num(/(?:低密度脂蛋白|LDL)[^0-9\-]{0,12}(\d(?:\.\d{1,2})?)/); if (v >= 0.3 && v <= 12) out.ldl = v;
+    v = num(/甘油三酯[^0-9\-]{0,12}(\d(?:\.\d{1,2})?)/); if (v >= 0.2 && v <= 30) out.tg = v;
+    v = num(/总胆固醇[^0-9\-]{0,12}(\d(?:\.\d{1,2})?)/); if (v < 1.5 || v > 20) v = 0;
+    if (!v) {
+      /* 报告只写「胆固醇」时兜底，但要排除「高密度/低密度脂蛋白胆固醇」这两项 */
+      var reC = /胆固醇[^0-9\-]{0,12}(\d(?:\.\d{1,2})?)/g, mC;
+      while ((mC = reC.exec(txt))) {
+        if (/高密度|低密度|HDL|LDL/.test(txt.slice(Math.max(0, mC.index - 8), mC.index))) continue;
+        var cv = Number(mC[1]); if (cv >= 1.5 && cv <= 20) { v = cv; break; }
+      }
+    }
+    if (v) out.tc = v;
+    v = num(/体脂(?:率|百分比)?[^0-9\-]{0,10}(\d{1,2}(?:\.\d)?)/); if (v >= 3 && v <= 60) out.bfp = v;
+    /* 骨密度 T 值可为 0 或负数，不能用 truthy 判断是否识别到 */
+    var mt = txt.match(/(?:骨密度[^0-9\n\-]{0,12}|[Tt]\s*值[^0-9\n\-]{0,8})(-?\d(?:\.\d{1,2})?)/);
+    if (mt) { var tv = Number(mt[1]); if (tv >= -6 && tv <= 4) out.bmd = tv; }
     var dt = txt.match(/(20\d{2})[-/年.](\d{1,2})[-/月.](\d{1,2})/);
     if (dt) out.examDate = dt[1] + '-' + ('0' + dt[2]).slice(-2) + '-' + ('0' + dt[3]).slice(-2);
     return out;
@@ -174,7 +248,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v30';
+  var APP_VER = 'v31';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -936,10 +1010,12 @@
   function healthForm() {
     var d = S.healthDraft || {};
     var numF = function (k, label, ph, step) {
-      return '<div style="flex:1;min-width:0"><div style="font-size:11px;color:#7a838e;margin-bottom:3px">' + label + '</div><input class="fld" type="number" inputmode="decimal" step="' + (step || '1') + '" data-k="' + k + '" value="' + (d[k] || '') + '" placeholder="' + ph + '"></div>';
+      /* 骨密度 T 值 0 是合法值，不能用 || 兜底吞成空串 */
+      var vv = (d[k] || d[k] === 0) ? String(d[k]) : '';
+      return '<div style="flex:1;min-width:0"><div style="font-size:11px;color:#7a838e;margin-bottom:3px">' + label + '</div><input class="fld" type="number" inputmode="decimal" step="' + (step || '1') + '" data-k="' + k + '" value="' + vv + '" placeholder="' + ph + '"></div>';
     };
     return '<div class="card ha-form"><div class="form-t" style="margin:0 0 8px">🩺 身体数据分析器 <span class="more">数据仅存本机</span></div>' +
-      '<div style="font-size:11.5px;color:#7a838e;line-height:1.7;margin:0 0 10px">粘贴体检报告文字可自动提取指标；也可以手动填。身高体重必填，其余选填（填了才分析对应项）。</div>' +
+      '<div style="font-size:11.5px;color:#7a838e;line-height:1.7;margin:0 0 10px">粘贴体检报告文字可自动提取指标；也可以手动填。身高体重必填，其余选填。<b style="font-weight:600">识别到哪几项就分析哪几项</b>——报告里没有的项目会自动跳过，不会出现空条目，也不影响其他指标。</div>' +
       '<div class="form-t">📋 粘贴体检报告文字（可选）</div>' +
       '<textarea id="reportPaste" rows="4" style="width:100%;box-sizing:border-box;border:1px solid rgba(127,127,127,.25);border-radius:10px;padding:8px;font-size:12px;background:var(--bg);color:var(--ink)" placeholder="把报告里的数值部分复制进来，如：身高 172 体重 65 收缩压 118 舒张压 75 脉搏 72 尿酸 350 空腹血糖 5.2 …"></textarea>' +
       '<div class="btn ghost" data-a="healthParse" style="margin-top:6px;text-align:center;font-size:12px">🔎 自动提取指标</div>' +
@@ -948,6 +1024,9 @@
       '<div class="form-t">🏃 日常活动量 / 🎯 目标（可覆盖）</div><div style="display:flex;flex-wrap:wrap;gap:6px">' + chipRowSel(['久坐', '轻度', '中度', '高强度'], 'activity', d.activity, 'hform') + chipRowSel(['减脂', '增肌', '维持'], 'goal', d.goal, 'hform') + '</div>' +
       '<div class="form-t">❤️ 血压与心率（选填）</div><div class="flds">' + numF('sys', '收缩压', '114') + numF('dia', '舒张压', '70') + numF('hr', '静息心率', '70') + '</div>' +
       '<div class="form-t">🧪 化验指标（选填）</div><div class="flds">' + numF('ua', '尿酸 μmol/L', '350') + numF('glu', '空腹血糖', '5.0', '0.1') + numF('ggt', 'GGT U/L', '30') + '</div>' +
+      '<div class="form-t">🩸 血脂四项（选填 · 报告里有才填）</div><div class="flds">' + numF('tc', '总胆固醇', '5.0', '0.01') + numF('tg', '甘油三酯', '1.2', '0.01') + '</div>' +
+      '<div class="flds">' + numF('hdl', '高密度 HDL', '1.3', '0.01') + numF('ldl', '低密度 LDL', '3.0', '0.01') + '</div>' +
+      '<div class="form-t">📊 体成分 / 🦴 骨密度（选填）</div><div class="flds">' + numF('bfp', '体脂率 %', '20', '0.1') + numF('bmd', '骨密度 T 值', '0', '0.1') + '</div>' +
       '<div class="form-t">📅 检查日期（选填）</div><div class="flds"><input class="fld" type="date" data-k="examDate" value="' + (d.examDate || '') + '"></div>' +
       '<div class="btn" data-a="healthSave" style="margin-top:10px;text-align:center">✅ 分析并应用到方案</div>' +
       '<div class="btn ghost" data-a="healthCancel" style="margin-top:6px;text-align:center;font-size:12px">取消</div></div>';
@@ -965,6 +1044,25 @@
       '<div class="pf-b"><div class="n">' + PROFILE.bmi + '</div><div class="l">BMI ' + bmiTxt + '</div></div>' +
       '<div class="pf-b"><div class="n">' + PROFILE.weightGoal + '</div><div class="l">目标 kg</div></div></div>' +
       '<div style="font-size:11px;color:#7a838e;margin:6px 0 4px;line-height:1.6">方向：' + PROFILE.goal + ' · 每日饮水 ' + (PROFILE.water / 1000).toFixed(1) + 'L · 理想体重约 ' + PROFILE.idealWeight + 'kg</div>';
+    /* 可选指标：报告里识别到哪几项就显示哪几项，一项都没有则整块不出现 */
+    var hChips = [], LV_C = { ok: '#0fb98c', edge: '#e08a00', high: '#e05a4e', low: '#e05a4e' }, LV_A = { ok: '✓', edge: '↑', high: '↑', low: '↓' }, LV_N = { ok: '正常', edge: '边缘', high: '偏高', low: '偏低' };
+    var chipOne = function (label, val, unit, lv) {
+      return '<span style="font-size:11px;padding:3px 8px;border-radius:8px;background:' + LV_C[lv] + '1a;color:' + LV_C[lv] + ';font-weight:600">' +
+        esc(label) + ' ' + val + (unit || '') + ' ' + LV_A[lv] + ' ' + LV_N[lv] + '</span>';
+    };
+    var lp0 = PROFILE.lipid;
+    if (lp0) {
+      if (lp0.tcLv) hChips.push(chipOne('总胆固醇', lp0.tc, '', lp0.tcLv));
+      if (lp0.tgLv) hChips.push(chipOne('甘油三酯', lp0.tg, '', lp0.tgLv));
+      if (lp0.hdlLv) hChips.push(chipOne('HDL', lp0.hdl, '', lp0.hdlLv));
+      if (lp0.ldlLv) hChips.push(chipOne('LDL', lp0.ldl, '', lp0.ldlLv));
+    }
+    if (PROFILE.bfp) hChips.push(chipOne('体脂率', PROFILE.bfp, '%', PROFILE.bfpLv));
+    if (PROFILE.bmd != null) {
+      var tLv = PROFILE.bmd <= -2.5 ? 'high' : PROFILE.bmd < -1 ? 'edge' : 'ok';
+      hChips.push(chipOne('骨密度 T 值', PROFILE.bmd, '', tLv));
+    }
+    if (hChips.length) html += '<div style="font-size:12.5px;font-weight:600;margin:8px 0 4px">📋 体检指标</div><div style="display:flex;flex-wrap:wrap;gap:6px">' + hChips.join('') + '</div>';
     if (PROFILE.trainTips && PROFILE.trainTips.length) {
       html += '<div style="font-size:12.5px;font-weight:600;margin:8px 0 0">💪 锻炼建议</div>';
       html += PROFILE.trainTips.map(function (t) {
@@ -2453,9 +2551,10 @@
     var t = e.target;
     if (t && t.classList && t.classList.contains('fld')) {
       var k = t.dataset.k;
-      var HANUM = { age: 1, height: 1, weight: 1, sys: 1, dia: 1, hr: 1, ua: 1, glu: 1, ggt: 1 };
+      var HANUM = { age: 1, height: 1, weight: 1, sys: 1, dia: 1, hr: 1, ua: 1, glu: 1, ggt: 1, tc: 1, tg: 1, hdl: 1, ldl: 1, bfp: 1, bmd: 1 };
       if (t.closest && t.closest('.ha-form')) {
-        if (S.healthDraft) S.healthDraft[k] = HANUM[k] ? (Number(t.value) || 0) : t.value;
+        /* 空输入保持为空：骨密度 T 值 0 是合法值，不能被 Number('') 污染成 0 */
+        if (S.healthDraft) S.healthDraft[k] = HANUM[k] ? (t.value === '' ? '' : (Number(t.value) || 0)) : t.value;
         return;
       }
       S.dietDraft[k] = HANUM[k] ? (Number(t.value) || 0) : t.value;
