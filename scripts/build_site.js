@@ -93,7 +93,7 @@ var crypto = require('crypto');
 var cv = 'fit-' + crypto.createHash('md5').update(html).digest('hex').slice(0, 10);
 fs.writeFileSync(path.join(ROOT, 'docs', 'manifest.json'), JSON.stringify({
   name: '健身教练', short_name: '健身教练',
-  description: '144 个真人示范动作 · AI 4 周计划 · HIIT 计时 · 打卡与趋势',
+  description: '144 个真人示范动作 · 4 周个性化计划 · 饮食闭环 · 习惯联动',
   start_url: './index.html', scope: './', display: 'standalone',
   background_color: '#0f1419', theme_color: '#1FD6A8',
   icons: [

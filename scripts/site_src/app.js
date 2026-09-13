@@ -219,7 +219,7 @@
     form: { goal: PROFILE.planGoal || (PROFILE.goal === '维持' ? '保持健康' : PROFILE.goal), day: 4, length: 30, level: '进阶', venue: '🏠 居家' }, restSec: loadK(KRS, 10), diff: loadK('fit_diff', 'std'),
     recoveryOn: loadK('fit_recovery', false),
     weights: loadK('fit_weight', {}), dietLog: loadK('fit_dietlog', {}),
-    hiit: { tpl: 'tabata', sel: {} }, badges: loadK('fit_badges', {}),
+    badges: loadK('fit_badges', {}),
     rpeLog: loadK('fit_rpe', []), fitness: loadK('fit_fitness', []), wGoal: loadK('fit_wgoal', PROFILE.weightGoal), pantry: loadK('fit_pantry', []), dayMeal: loadK('fit_daymeal', null),
     health: HEALTH0, healthDraft: null, healthOpen: false,
     diet: loadK('fit_diet', null), dietDraft: { gender: PROFILE.gender, age: PROFILE.age, height: PROFILE.height, weight: PROFILE.weight, activity: PROFILE.activity, goal: PROFILE.goal }, dietFormOpen: false, dietAuto: false,
@@ -268,7 +268,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v39';
+  var APP_VER = 'v40';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -360,17 +360,6 @@
       '<div class="btn" style="flex:1;font-size:12px;padding:9px 0" data-a="breath" data-v="478">4-7-8 助眠</div>' +
       '<div class="btn ghost" style="flex:1;font-size:12px;padding:9px 0" data-a="breath" data-v="box">盒式专注</div>' +
       '<div class="btn ghost" style="flex:1;font-size:12px;padding:9px 0" data-a="breath" data-v="618">6-1-6 平复</div></div></div>';
-    // 精选课程：真人 GIF 封面大卡（用每门课第一个动作的演示图），Keep 式推荐流
-    var strip = '<div class="course-strip">' + courses.slice(0, 6).map(function (c) {
-      var cover = (c.actions[0] && c.actions[0].gif) ? c.actions[0].gif : '';
-      var cbg = 'background:linear-gradient(135deg,' + (c.color || '#1FD6A8') + ',#0d8f6f)';
-      return '<div class="cs-card" style="' + cbg + '" data-a="openCourse" data-id="' + c.id + '">' +
-        (cover ? mediaTag(cover, c.icon) + '<div class="cs-veil"></div>' : '<div class="img-fb">' + c.icon + '</div>') +
-        '<div class="cs-tag">' + esc(c.level) + ' · ' + esc(c.cat) + '</div>' +
-        '<div class="cs-txt"><div class="c-n">' + esc(c.name) + '</div>' +
-        '<div class="c-m">' + c.duration + '′ · ' + c.actions.length + ' 动作</div></div>' +
-        '</div>';
-    }).join('') + '</div>';
     // 续练卡片：上次中途退出且有实质进度时显示（12 小时内有效）
     var rs = loadK('fit_resume', null);
     var resumeCard = (rs && rs.seq && rs.seq.length && rs.done > 0 && Date.now() - rs.ts < 12 * 3600e3)
@@ -424,10 +413,9 @@
     return heroHtml + resumeCard + sleepQ + sleepCard +
       '<div class="stats-row"><div class="stat"><div class="n">' + minToday + '</div><div class="l">今日分钟</div></div>' +
       '<div class="stat"><div class="n">' + mdays + '</div><div class="l">本月练次</div></div>' +
-      '<div class="stat"><div class="n">' + recCount + '</div><div class="l">动作有纪录</div></div>' +
-      '<div class="stat"><div class="n">' + (streak() || 0) + '</div><div class="l">连续打卡</div></div></div>' +
+      '<div class="stat"><div class="n">' + recCount + '</div><div class="l">动作有纪录</div></div></div>' +
       habitStrip + mealTeaser +
-      '<div class="h-sec">为你精选<span class="more">点卡片看动作清单</span></div>' + strip + lastCard + breathCard;
+      lastCard + breathCard;
   }
 
   /* ============ 训练库 ============ */
@@ -446,8 +434,7 @@
     }).join('') + '</div>';
   }
   function vTrain() {
-    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div><div class="sg ' + (S.seg === 'hiit' ? 'on' : '') + '" data-a="seg" data-v="hiit">HIIT</div></div>';
-    if (S.seg === 'hiit') return seg + equipChips() + '<div style="height:6px"></div>' + vHiit();
+    var seg = '<div class="seg"><div class="sg ' + (S.seg === 'course' ? 'on' : '') + '" data-a="seg" data-v="course">课程</div><div class="sg ' + (S.seg === 'acts' ? 'on' : '') + '" data-a="seg" data-v="acts">动作库</div><div class="sg ' + (S.seg === 'custom' ? 'on' : '') + '" data-a="seg" data-v="custom">自定义</div></div>';
     if (S.seg === 'course') {
       return seg + '<div class="course-grid">' + courses.map(function (c) {
         return '<div class="course-card" data-a="openCourse" data-id="' + c.id + '"><div class="cc-ic" style="background:' + esc(c.color || '#1FD6A8') + '22">' + c.icon + '</div>' +
@@ -505,53 +492,6 @@
     var cfg = diffCfg(S.diff);
     seq = seq.map(function (s) { return scaleAction(s, cfg); });
     startW(seq, '自定义训练 · ' + names.length + ' 动作', '🎯', 0, '#7C5CFF', 'fit_custom_' + Date.now(), Math.max(3, S.restSec + cfg.restAdd), buildWarmSeq(warmKindFromBuilder(S.builder.sel)));
-  }
-
-  /* ============ HIIT/Tabata 计时模式（#22）：模板 + 动作循环，全部转计时复用跟练引擎 ============ */
-  var HIT_TPL = {
-    tabata: { n: 'Tabata', desc: '经典 8 轮 · 动 20s / 休 10s · 共 4 分钟', work: 20, rest: 10, rounds: 8 },
-    hiit30: { n: 'HIIT 30/15', desc: '10 轮 · 动 30s / 休 15s · 共 7.5 分钟', work: 30, rest: 15, rounds: 10 },
-    emom:   { n: 'EMOM', desc: '每分钟完成该动作，共 10 轮', work: 60, rest: 1, rounds: 10 },
-    amrap:  { n: 'AMRAP', desc: '12 分钟 · 尽可能多循环', work: 45, rest: 15, rounds: 9 }
-  };
-  function vHiit() {
-    var t = HIT_TPL[S.hiit.tpl];
-    var chips = Object.keys(HIT_TPL).map(function (k) {
-      return '<span class="chip ' + (S.hiit.tpl === k ? 'on' : '') + '" data-a="hitTpl" data-v="' + k + '">' + HIT_TPL[k].n + '</span>';
-    }).join('');
-    var nSel = Object.keys(S.hiit.sel).length;
-    var groups = [['胸·肩', 'push'], ['背·臂', 'pull'], ['臀·腿', 'legs'], ['核心', 'core'], ['燃脂', 'cardio']];
-    var list = '';
-    groups.forEach(function (g) {
-      var seen = {}, items = [];
-      courses.forEach(function (c) { c.actions.forEach(function (a) {
-        var lib = NS.ACT_LIB[a.name];
-        if (!seen[a.name] && lib && lib.g === g[1] && equipOk(a)) { seen[a.name] = 1; items.push(a); }
-      }); });
-      if (!items.length) return;
-      list += '<div class="bld-g">' + g[0] + '</div>' + items.slice(0, 8).map(function (a) {
-        var on = S.hiit.sel[a.name] ? ' on' : '';
-        return '<div class="bld-it' + on + '" data-a="hitToggle" data-name="' + esc(a.name) + '"><div class="b-ic">' + a.icon + '</div>' +
-          '<div class="b-n">' + esc(a.name) + '</div><div class="b-go">' + (on ? '✓' : '＋') + '</div></div>';
-      }).join('');
-    });
-    return '<div class="bld-hint">⚡ 间歇训练：选 1-4 个动作，按模板节奏动休交替</div>' +
-      '<div class="chips">' + chips + '</div>' +
-      '<div class="card" style="margin:8px 0;font-size:12px;color:#4a525c;padding:10px 12px;background:#fff4ec">⏱ ' + esc(t.desc) + '</div>' + list +
-      '<div class="bld-foot"><div class="bld-ct">已选 <b>' + nSel + '</b> / 4 项</div>' +
-      '<div class="btn' + (nSel ? '' : ' ghost') + '" data-a="hitStart">开练 ▸</div></div>';
-  }
-  function hiitStart() {
-    var t = HIT_TPL[S.hiit.tpl], names = Object.keys(S.hiit.sel);
-    if (!names.length) { toast('先勾选 1-4 个动作'); return; }
-    if (names.length > 4) { toast('最多选 4 个动作'); return; }
-    var seq = [];
-    for (var r = 0; r < t.rounds; r++) names.forEach(function (nm) {
-      var a = NS.actionByName[nm]; if (!a) return;
-      seq.push({ name: nm, icon: a.icon || '⚡', type: 'time', value: t.work, cue: a.cue || '' });
-    });
-    var kcal = Math.round(t.rounds * (t.work / 60) * 9 * (names.length / 2 + 0.5));
-    startW(seq, t.n + ' · ' + names.length + ' 动作 × ' + t.rounds + ' 轮', '⚡', kcal, '#FF6B4A', 'fit_hiit_' + S.hiit.tpl + '_' + Date.now(), t.rest, []);
   }
 
   /* ============ 呼吸放松（#24）：4-7-8 / 盒式 / 6-1-6，纯计时序列复用跟练引擎 ============ */
@@ -1146,6 +1086,7 @@
       (act && act.gif ? '<div class="demo">' + mediaTag(act.gif, act.icon) + '</div>' : '') +
       overloadHint(name, act && act.type) +
       '<div class="cue-box">💡 ' + esc((act && act.cue) || '保持核心收紧，动作标准优先于数量') + '</div>' +
+      '<div class="btn ghost" data-a="keepDemo" data-name="' + esc(name) + '" style="margin:8px 12px 0;text-align:center;padding:9px 0;font-size:12px">🎬 看真人示范 ▸（跳转搜索引擎，认准 Keep 结果）</div>' +
       stepsHtml +
       variantChips(name) +
       '<div class="sh-go btn ghost" data-a="similarAct" data-name="' + esc(name) + '">🔄 换个同类动作试试</div>');
@@ -1655,15 +1596,6 @@
     }
     return null;
   }
-  function mealFindings(meal) {
-    var names = meal.parts.map(function (p) { return p.n; });
-    var out = [];
-    for (var i = 0; i < names.length; i++) for (var j = i + 1; j < names.length; j++) {
-      var r = pairLookup(names[i], names[j]);
-      if (r) out.push(r);
-    }
-    return out;
-  }
   var FOOD_CATS = [
     { k: 'staple', l: '主食', opts: ['米饭', '糙米', '燕麦', '红薯', '全麦面包', '意面', '荞麦面'] },
     { k: 'protein', l: '蛋白', opts: ['鸡胸肉', '鸡蛋', '牛肉', '鱼', '虾', '豆腐', '希腊酸奶'] },
@@ -2001,11 +1933,6 @@
       return '<div class="mc-p">' + (isMiss ? '<span style="color:#e08a00">⚠️</span> ' : '') + esc(normFood(x.n)) + (x.a ? ' <span class="mc-a">' + esc(scaleAmt(x.a, scale)) + '</span>' : '') + '</div>';
     }).join('');
     var bd = '';
-    if (badges && badges.length) {
-      bd = '<div class="mc-bd">' + badges.map(function (r) {
-        return '<span class="bd ' + (r.t === 'good' ? 'g' : 'w') + '">' + (r.t === 'good' ? '✓ 宜搭 ' : '⚠ 注意 ') + esc(r.a) + '+' + esc(r.b) + '</span>';
-      }).join('') + '</div>';
-    }
     if (miss.length) bd += '<div class="mc-bd"><span class="bd w">🧺 缺 ' + miss.length + ' 项食材：' + esc(miss.join('、')) + '</span></div>';
     var logTag = loggedK > 0 ? '<span style="font-size:10px;color:#0fb98c;background:rgba(15,185,140,.13);border-radius:6px;padding:1px 6px;margin-left:6px">✓ 已记入 ' + loggedK + ' 千卡</span>' : '';
     var scaleTag = tagTxt || (scale > 1 ? '<span style="font-size:10px;color:#0fb98c;background:rgba(15,185,140,.13);border-radius:6px;padding:1px 6px;margin-left:6px">按目标加量 ×' + scale + '</span>' : '');
@@ -2229,7 +2156,7 @@
       (eaten > 0 && openK.length ? '<br>🍽 今天已记 ' + eaten + ' 千卡 · 还剩 ' + remainR + ' 千卡，<b>没记的餐已按剩余预算动态配份量</b>' : (eaten > 0 ? '<br>🍽 今天已记 ' + eaten + ' 千卡 · 预算还剩 ' + remainR + ' 千卡' : '')) +
       (noAd && burn > 0 ? '<br>🔥 今天已练 ' + burn + ' 千卡 · 晚餐按<b>练后补给</b>加量 10%（碳水优先补）' : '') +
       (noAd && burn === 0 && !d.training ? '<br>💤 今天休息日 · 晚餐按<b>清淡</b>配，比训练日少一点' : '') + '</div>' +
-      mealCard('早餐', 25, bf, mealFindings(bf), S.pantry, 'bf', scales.bf, eatenBy.bf, scaleTagFor('bf')) + mealCard('午餐', 35, lunch, mealFindings(lunch), S.pantry, 'lunch', scales.lunch, eatenBy.lunch, scaleTagFor('lunch')) + mealCard('晚餐', 30, dinner, mealFindings(dinner), S.pantry, 'dinner', scales.dinner, eatenBy.dinner, scaleTagFor('dinner')) + mealCard('加餐', 10, snack, mealFindings(snack), S.pantry, 'snack', scales.snack, eatenBy.snack, scaleTagFor('snack')) +
+      mealCard('早餐', 25, bf, null, S.pantry, 'bf', scales.bf, eatenBy.bf, scaleTagFor('bf')) + mealCard('午餐', 35, lunch, null, S.pantry, 'lunch', scales.lunch, eatenBy.lunch, scaleTagFor('lunch')) + mealCard('晚餐', 30, dinner, null, S.pantry, 'dinner', scales.dinner, eatenBy.dinner, scaleTagFor('dinner')) + mealCard('加餐', 10, snack, null, S.pantry, 'snack', scales.snack, eatenBy.snack, scaleTagFor('snack')) +
       trainCard +
       vDietPair() +
       '<div class="card" style="font-size:11.5px;color:#7a838e;line-height:1.6;background:#f5f7f8">📌 ' + goalTxt + '。餐单为参考样例，按热量目标搭配中式食材；如有代谢疾病或特殊饮食需求，请遵营养师/医嘱。</div>' +
@@ -2436,6 +2363,12 @@
     if (a === 'rpeVote') { rpeVote(v); return; }
     /* 同类替换（#34） */
     if (a === 'similarAct') { similarAct(el.dataset.name); return; }
+    /* v40 动作示范直达：Keep 官网无公开搜索页 URL，跳搜索引擎认准 Keep 结果（不编造链接） */
+    if (a === 'keepDemo') {
+      window.open('https://www.bing.com/search?q=' + encodeURIComponent(el.dataset.name + ' keep 动作示范'), '_blank');
+      toast('已打开搜索：认准 Keep 的动作示范视频');
+      return;
+    }
     /* 体能测试（#35） */
     if (a === 'fitTestSave') {
       var fp = Number(($('#ftPush') || {}).value) || 0, fl = Number(($('#ftPlank') || {}).value) || 0, fs = Number(($('#ftSquat') || {}).value) || 0;
@@ -2531,14 +2464,6 @@
     }
     /* 呼吸放松 */
     if (a === 'breath') { startBreath(v); return; }
-    /* HIIT */
-    if (a === 'hitTpl') { S.hiit.tpl = v; renderView(); return; }
-    if (a === 'hitToggle') {
-      var hn = el.dataset.name;
-      if (S.hiit.sel[hn]) delete S.hiit.sel[hn]; else if (Object.keys(S.hiit.sel).length >= 4) { toast('最多选 4 个动作'); } else S.hiit.sel[hn] = 1;
-      renderView(); return;
-    }
-    if (a === 'hitStart') { hiitStart(); return; }
     /* 进阶周期 */
     if (a === 'nextCycle') {
       if (!S.plan) return;
