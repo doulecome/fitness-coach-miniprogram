@@ -268,7 +268,7 @@
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v37';
+  var APP_VER = 'v38';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -733,7 +733,7 @@
       var b = S.best[n], hist = b.hist || [];
       var recent = hist.slice(-3);
       var avg = recent.length ? Math.round(recent.reduce(function (a, x) { return a + x; }, 0) / recent.length) : 0;
-      h[n] = { best: b.best, count: hist.length, last: b.last, recent: avg };
+      h[n] = { best: b.best, count: hist.length, last: b.last, recent: avg, lastDate: b.lastDate || '' };
     });
     return h;
   }
@@ -1895,11 +1895,12 @@
     String(s).split('').forEach(function (c) { t += M[c] || 0; });
     return t || 1;
   }
-  function estFoodKcal(text) {
+  /* v38 共享分词器：estFoodKcal / estProtein 共用——"米饭2碗+可乐" → [{tk:'米饭',mult:2},{tk:'可乐'},{num:无}] */
+  function foodTokens(text) {
     var tokens = String(text).trim().split(/[+＋、，,。；;\/\s]+/).filter(Boolean);
-    var total = 0, parts = [], override = 0, unknown = false;
+    var out = [];
     tokens.forEach(function (raw) {
-      if (/^\d+(\.\d+)?$/.test(raw)) { override += Number(raw); return; } /* 纯数字 = 用户自己定总数 */
+      if (/^\d+(\.\d+)?$/.test(raw)) { out.push({ num: Number(raw) }); return; }
       var tk = raw, mult = 1;
       var mq = tk.match(/^([一二两三四五六七八九半\d]+)(碗|个|杯|瓶|份|块|只|片|根|条|把|串|勺)(.*)$/);
       if (mq) { mult = cnNum(mq[1]); tk = mq[3] || ''; }
@@ -1907,17 +1908,63 @@
         var mt = tk.match(/^(.*?)(\d+|[一二两三四五六七八九半])(碗|个|杯|瓶|份|块|只|片|根|条|把|串|勺)$/);
         if (mt) { mult = cnNum(mt[2]); tk = mt[1] || ''; }
       }
+      out.push({ tk: tk, mult: mult, raw: raw });
+    });
+    return out;
+  }
+  function estFoodKcal(text) {
+    var toks = foodTokens(text);
+    var total = 0, parts = [], override = 0, unknown = false;
+    toks.forEach(function (x) {
+      if (x.num != null) { override += x.num; return; } /* 纯数字 = 用户自己定总数 */
       var kcal = 0;
-      var dishHit = findDish(tk);
+      var dishHit = findDish(x.tk);
       if (dishHit) kcal = dishHit.kcal;
       else {
-        for (var i = 0; i < FOOD_KW.length; i++) { if (tk.indexOf(FOOD_KW[i][0]) >= 0) { kcal = FOOD_KW[i][1]; break; } }
+        for (var i = 0; i < FOOD_KW.length; i++) { if (x.tk.indexOf(FOOD_KW[i][0]) >= 0) { kcal = FOOD_KW[i][1]; break; } }
       }
       if (!kcal) { kcal = 200; unknown = true; } /* 估不中 → 中位估 */
-      total += kcal * mult;
-      parts.push((mult > 1 ? tk + '×' + mult : tk) + ' ' + Math.round(kcal * mult));
+      total += kcal * x.mult;
+      parts.push((x.mult > 1 ? x.tk + '×' + x.mult : x.tk) + ' ' + Math.round(kcal * x.mult));
     });
     return { total: override ? Math.round(override) : Math.round(total), parts: parts, override: !!override, unknown: unknown };
+  }
+  /* v38 蛋白估算：关键词表按具体度排序（鸡胸 先于 鸡蛋 先于 蛋），每 token 命中第一条即停，防 鸡蛋×鸡 双计 */
+  var PROTEIN_KW = [
+    ['蛋白粉', 22], ['乳清', 22], ['鸡胸', 30], ['鸡排', 25], ['鸡丁', 25], ['鸡腿', 22], ['鸡翅', 20], ['炸鸡', 28], ['烤鸡', 25], ['鸡肉', 25],
+    ['牛排', 28], ['牛肉', 25], ['羊肉', 25], ['猪肉', 25], ['瘦肉', 25], ['排骨', 20], ['培根', 10], ['火腿', 12], ['午餐肉', 10],
+    ['鱼', 18], ['虾', 12], ['豆腐', 12], ['豆干', 15], ['豆浆', 7], ['黄豆', 30], ['牛奶', 8], ['酸奶', 8], ['奶酪', 15],
+    ['鹌鹑蛋', 6], ['鸡蛋', 7], ['蛋', 6]
+  ];
+  function estProtein(text) {
+    var g = 0;
+    foodTokens(text).forEach(function (x) {
+      if (x.num != null || !x.tk) return;
+      for (var i = 0; i < PROTEIN_KW.length; i++) { if (x.tk.indexOf(PROTEIN_KW[i][0]) >= 0) { g += PROTEIN_KW[i][1] * x.mult; break; } }
+    });
+    return g;
+  }
+  function proteinToday() {
+    var t = todayStr(), dl = S.dietLog[t];
+    return dl && dl.items ? dl.items.reduce(function (a, x) { return a + estProtein(x.n); }, 0) : 0;
+  }
+  /* v38 体重滚动：饮食目标锚定体重曲线近 7 天均值（无近期记录用最新一条），不再锚死填表快照 */
+  function dynWeight() {
+    var keys = Object.keys(S.weights).sort();
+    if (!keys.length) return 0;
+    var cutoff = Date.now() - 7 * 86400000, vals = [];
+    keys.forEach(function (k) {
+      var w = Number(S.weights[k]);
+      if (!w || w <= 0) return;
+      var t = new Date(k + 'T00:00:00').getTime();
+      if (isNaN(t)) return;
+      if (t >= cutoff) vals.push(w);
+    });
+    if (!vals.length) {
+      var last = Number(S.weights[keys[keys.length - 1]]);
+      return last > 0 ? last : 0;
+    }
+    return Math.round(vals.reduce(function (a, x) { return a + x; }, 0) / vals.length * 10) / 10;
   }
   function mealLabel(k) { for (var i = 0; i < MEALS.length; i++) if (MEALS[i][0] === k) return MEALS[i][1]; return k; }
   function dayLog() {
@@ -1933,7 +1980,7 @@
   }
   /* ===== v37 习惯联动：喝水 + 睡眠（零摩擦原则：记录 ≤1 次点击，不答不惩罚，答案当天就用） ===== */
   function saveHabits() { saveK('fit_habits', S.habits); }
-  function waterGoal() { return Math.round(((PROFILE.weight || 60) * 35 + (todayBurn() > 0 ? 500 : 0)) / 50) * 50; }
+  function waterGoal() { return Math.round((((dynWeight() || PROFILE.weight) || 60) * 35 + (todayBurn() > 0 ? 500 : 0)) / 50) * 50; }
   function waterToday() { return S.habits.water[todayStr()] || 0; }
   function sleepToday() { var x = S.habits.sleep[todayStr()]; return x == null ? -1 : Number(x); }
   function sleepLabel(v) { return v === 0 ? '23 点前' : v === 1 ? '23 点-1 点' : '1 点后'; }
@@ -2124,17 +2171,20 @@
   function vDietResult() {
     var d = S.diet;
     var today = todayStr();
-    var b = bmr(d), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
+    /* v38 体重滚动：BMR/宏量锚定体重曲线近 7 天均值（练得越成功目标跟得越紧，不再越练越低估） */
+    var wEff = dynWeight() || d.weight;
+    var dw0 = { gender: d.gender, age: d.age, height: d.height, weight: wEff, activity: d.activity };
+    var b = bmr(dw0), td = tdee(b, d.activity), tgt = targetKcal(td, d.goal);
     var dayK = d.training ? tgt + 150 : tgt;
     /* v37 摄入→后续计划：近 3 天吃超则今日目标自动下调 5%，吃不够则提示（数据来自本机记录，无记录不触发） */
     var calib = dietCalib(dayK);
     dayK = calib.dayK;
     var calibHtml = calib.banner ? '<div class="card" style="font-size:11.5px;color:' + (calib.over ? '#c4691f' : '#0d7a5f') + ';line-height:1.7;background:' + (calib.over ? '#fff4ec' : '#e8f7f2') + '">' + calib.banner + '</div>' : '';
-    var m = macroSplit(dayK, d.weight, d.goal, d.training);
+    var m = macroSplit(dayK, wEff, d.goal, d.training);
     var tot = m.pk + m.ck + m.fk || 1;
     var tm = todayMeals();
     var bf = tm.bf, lunch = tm.lunch, dinner = tm.dinner, snack = tm.snack, sc = tm.scales || {};
-    var water = Math.max(Math.round(d.weight * 35), PROFILE.water);
+    var water = Math.max(Math.round(wEff * 35), PROFILE.water);
     /* Keep 式热量预算：预算 = 目标热量 + 今日实际训练消耗；已吃 = 当日按餐记录之和 */
     var dl = dayLog();
     var eaten = logKcal(dl);
@@ -2233,6 +2283,7 @@
       '<div class="ds-row"><div class="ds-b"><div class="n">' + b + '</div><div class="l">基础代谢 BMR</div></div>' +
       '<div class="ds-b"><div class="n">' + td + '</div><div class="l">每日消耗 TDEE</div></div></div>' +
       '<div class="ds-target"><span class="ds-k">' + dayK + '</span> 千卡/天 · ' + (d.training ? '训练日' : '休息日') + ' · ' + esc(d.goal) + '</div>' +
+      (wEff !== d.weight ? '<div style="font-size:10.5px;color:#8d959e;margin-top:5px">⚖️ 目标已按体重曲线近 7 天均值 <b>' + wEff + 'kg</b> 滚动计算（档案体重 ' + d.weight + 'kg）——练涨了目标跟着涨</div>' : '') +
       (S.dietAuto ? '<div style="font-size:10.5px;color:#8d959e;margin-top:6px">📱 本方案按默认资料自动生成，点底部「重新填写资料」可改成你的身高体重</div>' : '') + '</div>' +
       (function () {
         var fl = mealFlags();
@@ -2254,6 +2305,19 @@
       '<div class="o' + (d.training ? ' on' : '') + '" data-a="dietTrain" data-v="1">训练日</div></div>' +
       calibHtml +
       budgetCard +
+      (function () {
+        /* v38 蛋白质执行卡：按当天已记食物自动估蛋白，目标 1.8g/kg（锚滚动体重） */
+        var protNow = proteinToday();
+        var protTgt = Math.max(1, Math.round(m.protein));
+        var protPct = Math.min(100, Math.round(protNow / protTgt * 100));
+        var protLeft = Math.max(0, protTgt - protNow);
+        return '<div class="card"><div style="display:flex;align-items:center;gap:12px">' +
+          '<div style="flex:1;min-width:0"><div style="display:flex;align-items:baseline"><b style="font-size:13px">🥩 蛋白质</b>' +
+          '<span style="margin-left:auto;font-size:11.5px;color:var(--sub)"><b style="color:var(--ink);font-size:14px">' + protNow + '</b> / ' + protTgt + ' g</span></div>' +
+          '<div style="height:8px;border-radius:5px;background:rgba(127,127,127,.15);margin-top:7px;overflow:hidden"><i style="display:block;height:100%;width:' + protPct + '%;background:' + (protPct >= 100 ? '#1FD6A8' : '#e0a23a') + ';transition:width .3s"></i></div>' +
+          '<div style="font-size:10px;color:#8d959e;margin-top:5px">' + (protLeft > 0 ? '还差 ' + protLeft + 'g —— 鸡胸 30g/掌 · 鸡蛋 7g/个 · 牛奶 8g/杯，记一笔自动算' : '今天达标 ✓') + '（按已记食物自动估，±20% 内够用）</div>' +
+          '</div></div></div>';
+      })() +
       waterCard +
       mealLogHtml +
       pantryHtml +
@@ -2406,7 +2470,8 @@
 
   /* ============ 训练档案导出/备份（#15） ============ */
   function exportData() {
-    var payload = { v: 1, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair, pantry: S.pantry, wGoal: S.wGoal, fitness: S.fitness, rpeLog: S.rpeLog, dietLog: S.dietLog, health: S.health };
+    /* v38：payload 补漏 weights（体重曲线）/badges/habits（喝水睡眠）/recovery，升 v2；导入向后兼容 v1 */
+    var payload = { v: 2, exportedAt: new Date().toISOString(), best: S.best, records: S.records, plan: S.plan, diet: S.diet, dietPair: S.dietPair, pantry: S.pantry, wGoal: S.wGoal, fitness: S.fitness, rpeLog: S.rpeLog, dietLog: S.dietLog, health: S.health, weights: S.weights, badges: S.badges, habits: S.habits, recovery: S.recoveryOn };
     try {
       var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       var url = URL.createObjectURL(blob);
@@ -2433,10 +2498,14 @@
         if (p.rpeLog) { S.rpeLog = p.rpeLog; saveK('fit_rpe', S.rpeLog); }
         if (p.health) { S.health = p.health; saveK('fit_health', S.health); PROFILE = analyzeHealth(S.health); }
         if (p.dietLog) { S.dietLog = p.dietLog; saveK('fit_dietlog', S.dietLog); }
+        if (p.weights) { S.weights = p.weights; saveK('fit_weight', S.weights); }
+        if (p.badges) { S.badges = p.badges; saveK('fit_badges', S.badges); }
+        if (p.habits) { S.habits = Object.assign({ water: {}, sleep: {}, sleepSkip: '' }, p.habits); saveHabits(); }
+        if (p.recovery !== undefined) { S.recoveryOn = !!p.recovery; saveK('fit_recovery', S.recoveryOn); }
         S.dayMeal = null; saveK('fit_daymeal', null);
-        alert('已导入备份：动作纪录 ' + Object.keys(S.best).length + ' 项，训练记录 ' + S.records.length + ' 条');
+        toast('✅ 已导入备份：动作纪录 ' + Object.keys(S.best).length + ' 项 · 训练 ' + S.records.length + ' 条 · 体重 ' + Object.keys(S.weights).length + ' 天');
         renderShell();
-      } catch (e) { alert('导入失败：文件格式不正确'); }
+      } catch (e) { toast('导入失败：文件格式不正确'); }
     };
     reader.readAsText(file);
   }

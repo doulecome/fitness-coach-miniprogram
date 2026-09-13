@@ -207,7 +207,15 @@ function computeGoal(act, phaseKey, level, hist) {
     return { target, unit: '秒' };
   }
   const rec = hist ? hist[act.name] : null;
-  const best = rec && rec.best ? rec.best : 0;
+  // 停练衰减（v38）：>21 天没练该动作，历史最佳按每天 1% 回落（75% 封底）——
+  // 停练回归第一周不再被历史最佳打满；回来练过后由下方 recent 回退机制接管实际状态
+  const decayedBest = (r) => {
+    if (!r || !r.best) return 0;
+    if (!r.lastDate) return r.best;
+    const days = Math.floor((Date.now() - new Date(r.lastDate + 'T00:00:00').getTime()) / 86400000);
+    return Math.round(r.best * Math.max(0.75, 1 - Math.max(0, days - 21) * 0.01));
+  };
+  const best = decayedBest(rec);
   if (!best) {
     const t = phaseKey === 'deload' ? Math.max(3, Math.round(base * k * 0.7)) : Math.max(1, Math.round(base * k));
     return { target: t, unit: '次' };
@@ -436,7 +444,7 @@ function generatePlan(opts, hist) {
     coachIntro: cfg.intro,
     generatedAt: new Date().toISOString(),
     weeks,
-    weeksNote: '个性化法则：练过的动作按「历史最佳 × 阶段比例」定单轮目标（W2 +8% / W3 +15% / W4 减至 70%，基数小则保底 +1/+2 次），主项组数随水平与时长自动设定。W4 后回到第 1 周循环。',
+    weeksNote: '个性化法则：练过的动作按「历史最佳 × 阶段比例」定单轮目标（W2 +8% / W3 +15% / W4 减至 70%，基数小则保底 +1/+2 次），主项组数随水平与时长自动设定；超过 3 周没练的动作，起点按停练时长自动回落，回归不吃老本。W4 后回到第 1 周循环。',
     week: weeks[0].week,
     totalMin: weeks[0].totalMin,
     totalKcal: weeks[0].totalKcal
