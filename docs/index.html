@@ -717,7 +717,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     recoveryOn: loadK('fit_recovery', false),
     weights: loadK('fit_weight', {}), dietLog: loadK('fit_dietlog', {}),
     hiit: { tpl: 'tabata', sel: {} }, badges: loadK('fit_badges', {}),
-    rpeLog: loadK('fit_rpe', []), fitness: loadK('fit_fitness', []), wGoal: loadK('fit_wgoal', PROFILE.weightGoal), remind: loadK('fit_remind', null), pantry: loadK('fit_pantry', []), dayMeal: loadK('fit_daymeal', null),
+    rpeLog: loadK('fit_rpe', []), fitness: loadK('fit_fitness', []), wGoal: loadK('fit_wgoal', PROFILE.weightGoal), pantry: loadK('fit_pantry', []), dayMeal: loadK('fit_daymeal', null),
     health: HEALTH0, healthDraft: null, healthOpen: false,
     diet: loadK('fit_diet', null), dietDraft: { gender: PROFILE.gender, age: PROFILE.age, height: PROFILE.height, weight: PROFILE.weight, activity: PROFILE.activity, goal: PROFILE.goal }, dietFormOpen: false, dietAuto: false,
     builder: { sel: {}, rounds: 3 },
@@ -765,7 +765,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   function saveRecord(o) { S.records.unshift(o); S.records = S.records.slice(0, 200); saveK(KR, S.records); checkNewBadges(); }
 
   /* ============ 外壳 ============ */
-  var APP_VER = 'v38';
+  var APP_VER = 'v39';
   var TABS = [{ k: 'home', i: '🏠', l: '首页' }, { k: 'train', i: '🏋️', l: '训练' }, { k: 'plan', i: '🗓️', l: '计划' }, { k: 'diet', i: '🍱', l: '饮食' }, { k: 'record', i: '📈', l: '记录' }];
   function tabTitle() {
     if (S.tab === 'home') return '健身教练';
@@ -1272,7 +1272,6 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="sc"><div class="n">' + w.totalKcal + '</div><div class="l">千卡/周</div></div></div>' +
       '<div class="card" style="font-size:12px;color:#4a525c;line-height:1.7">' + esc(p.venueNote || '') + (S.rpeApplied ? '<br>🧠 根据你近 3 次训练反馈，难度已自动' + (S.rpeApplied === 'down' ? '下调' : '上调') : '') + '<br>💬 ' + esc(p.levelNote) + '<br>🔁 ' + esc(p.weeksNote) + '</div>' + days +
       (S.weekIdx === p.weeks.length - 1 ? '<div class="gen-btn btn" data-a="nextCycle">🚀 4 周完成 · 生成下一进阶周期</div>' : '') +
-      '<div class="gen-btn btn" data-a="sharePlan">📤 复制周计划 · 分享</div>' +
       '<div class="gen-btn btn ghost" data-a="replan">↻ 重新定制</div>';
   }
 
@@ -1463,104 +1462,8 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<input type="number" id="ftSquat" class="fld" placeholder="深蹲·个"></div>' +
       '<div class="btn" style="margin-top:8px;text-align:center" data-a="fitTestSave">记录本次体测</div></div>';
   }
-  /* ============ 周报分享图（#33）：canvas 生成近 7 天训练总结卡片 ============ */
-  function weeklyReport() {
-    var now = new Date();
-    var from = new Date(now); from.setDate(now.getDate() - 6);
-    var pad = function (n) { return String(n).padStart(2, '0'); };
-    var key = function (dt) { return dt.getFullYear() + '-' + pad(dt.getMonth() + 1) + '-' + pad(dt.getDate()); };
-    var inRange = S.records.filter(function (r) { return r.date >= key(from) && r.date <= key(now); });
-    var mins = inRange.reduce(function (a, r) { return a + (r.min || 0); }, 0);
-    var kcalc = inRange.reduce(function (a, r) { return a + (r.kcal || 0); }, 0);
-    /* 上周对比 */
-    var pf = new Date(from); pf.setDate(from.getDate() - 7);
-    var pt = new Date(from); pt.setDate(from.getDate() - 1);
-    var prevMins = S.records.filter(function (r) { return r.date >= key(pf) && r.date <= key(pt); }).reduce(function (a, r) { return a + (r.min || 0); }, 0);
-    var cmp = prevMins ? Math.round((mins - prevMins) / prevMins * 100) : null;
-    /* 每日分钟柱状 */
-    var daily = [];
-    for (var i = 0; i < 7; i++) { var dd = new Date(from); dd.setDate(from.getDate() + i); daily.push({ d: dd, min: byKeyMin(key(dd)) }); }
-    function byKeyMin(k2) { return S.records.filter(function (r) { return r.date === k2; }).reduce(function (a, r) { return a + (r.min || 0); }, 0); }
-    var wK = Object.keys(S.weights).sort();
-    var wA = wK.length >= 2 ? S.weights[wK[wK.length - 1]] - S.weights[wK[Math.max(0, wK.length - 8)]] : null;
-    var c = document.createElement('canvas'); c.width = 750; c.height = 960;
-    var x = c.getContext('2d');
-    /* 背景 */
-    var g = x.createLinearGradient(0, 0, 0, 960); g.addColorStop(0, '#0e5c46'); g.addColorStop(1, '#0b3a2e');
-    x.fillStyle = g; x.fillRect(0, 0, 750, 960);
-    x.fillStyle = '#1FD6A8'; x.font = 'bold 40px sans-serif'; x.fillText('💪 我的训练周报', 48, 92);
-    x.fillStyle = '#9fd8c6'; x.font = '22px sans-serif';
-    x.fillText(key(from).slice(5) + ' ~ ' + key(now).slice(5) + ' · 健身教练网页版', 48, 130);
-    /* 大数字区 */
-    var cards = [
-      [inRange.length + ' 次', '本周训练'], [mins + ' 分钟', '总时长'], [kcalc + ' 千卡', '消耗']
-    ];
-    cards.forEach(function (cd, i2) {
-      var cx = 48 + i2 * 222;
-      x.fillStyle = 'rgba(255,255,255,0.08)';
-      x.beginPath(); x.roundRect ? x.roundRect(cx, 170, 202, 120, 18) : x.rect(cx, 170, 202, 120); x.fill();
-      x.fillStyle = '#fff'; x.font = 'bold 34px sans-serif'; x.fillText(cd[0], cx + 20, 226);
-      x.fillStyle = '#9fd8c6'; x.font = '19px sans-serif'; x.fillText(cd[1], cx + 20, 262);
-    });
-    /* 对比行 */
-    x.fillStyle = '#fff'; x.font = '24px sans-serif';
-    x.fillText('🔥 连续打卡 ' + streak() + ' 天' + (cmp !== null ? '　训练时长较上周 ' + (cmp >= 0 ? '↑ +' : '↓ ') + cmp + '%' : ''), 48, 350);
-    if (wA !== null) x.fillText('⚖️ 近期体重 ' + (wA > 0 ? '+' : '') + Math.round(wA * 10) / 10 + ' kg' + (S.wGoal ? ' · 目标 ' + S.wGoal + ' kg' : ''), 48, 392);
-    /* 每日柱状图 */
-    x.fillStyle = '#9fd8c6'; x.font = 'bold 24px sans-serif'; x.fillText('每日训练分钟', 48, 470);
-    var mx = Math.max.apply(null, daily.map(function (o) { return o.min; }).concat([30]));
-    daily.forEach(function (o, i3) {
-      var bx = 48 + i3 * 94, bh = Math.max(4, Math.round(o.min / mx * 300));
-      x.fillStyle = o.min ? '#1FD6A8' : 'rgba(255,255,255,0.15)';
-      x.beginPath(); x.roundRect ? x.roundRect(bx, 800 - bh, 56, bh, 10) : x.rect(bx, 800 - bh, 56, bh); x.fill();
-      x.fillStyle = '#9fd8c6'; x.font = '18px sans-serif';
-      x.fillText(['日', '一', '二', '三', '四', '五', '六'][o.d.getDay()], bx + 20, 836);
-      if (o.min) { x.fillStyle = '#fff'; x.fillText(o.min, bx + 12, 792 - bh); }
-    });
-    /* RPE 情绪 */
-    var rpes = S.rpeLog.filter(function (r) { return r.date >= key(from); });
-    if (rpes.length) {
-      var em = { easy: '😌', ok: '🙂', hard: '😵' };
-      var line = '本次感受：' + rpes.map(function (r) { return em[r.v] || '·'; }).join(' ');
-      x.fillStyle = '#fff'; x.font = '24px sans-serif'; x.fillText(line, 48, 900);
-    }
-    x.fillStyle = '#6fbfa8'; x.font = '18px sans-serif'; x.fillText('— 每一次训练，都是在给未来的自己存款 —', 48, 936);
-    var url = c.toDataURL('image/png');
-    openSheet('<div class="sh-h"><div class="sh-t">📊 我的训练周报</div><div class="x" data-a="xSheet">✕</div></div>' +
-      '<div class="sh-sub">长按图片保存 / 分享到朋友圈</div>' +
-      '<img src="' + url + '" style="width:100%;border-radius:14px;display:block">');
-  }
-
-  /* ============ 训练提醒（#37）：定时 Notification（页面/PWA 打开期间生效） ============ */
-  function remindCard() {
-    var r = S.remind || { on: false, time: '19:30' };
-    var perm = ('Notification' in window) ? Notification.permission : 'unsupported';
-    return '<div class="card"><div class="form-t" style="margin:0 0 8px">⏰ 每日训练提醒</div>' +
-      '<div style="display:flex;gap:8px;align-items:center">' +
-      '<div class="btn ' + (r.on ? '' : 'ghost') + '" style="padding:9px 16px" data-a="remindToggle">' + (r.on ? '✅ 已开启' : '🔕 未开启') + '</div>' +
-      '<input type="time" id="remindTime" class="fld" style="flex:1" value="' + esc(r.time) + '">' +
-      '<div class="btn" style="padding:9px 16px" data-a="remindSave">保存</div></div>' +
-      '<div style="font-size:10.5px;color:#8d959e;margin-top:6px">' + (perm === 'unsupported' ? '当前浏览器不支持通知（建议用手机 Chrome + 添加到主屏幕）' : perm === 'denied' ? '通知权限已被拒绝，请在浏览器设置中允许' : '网页打开期间生效 · 保存时会请求通知权限') + '</div></div>';
-  }
-  function remindLoop() {
-    if (remindLoop._t) return;
-    /* 惰性启动：未开启提醒/无权限时绝不装定时器（避免 jsdom 测试进程被挂住） */
-    if (!S.remind || !S.remind.on) return;
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
-    remindLoop._t = setInterval(function () {
-      var r = S.remind;
-      if (!r || !r.on) return;
-      var now = new Date(), pad = function (n) { return String(n).padStart(2, '0'); };
-      var hm = pad(now.getHours()) + ':' + pad(now.getMinutes());
-      var fired = loadK('fit_remind_fired', '');
-      if (hm < r.time || fired === todayStr()) return;
-      var trained = S.records.some(function (x) { return x.date === todayStr(); });
-      if (trained) return;
-      try { new Notification('⏰ 该练今天的主项了', { body: '今天还没训练——打开健身教练，10 分钟就够' }); } catch (e) {}
-      saveK('fit_remind_fired', todayStr());
-    }, 30000);
-    var t = remindLoop._t; if (t && t.unref) t.unref();
-  }
+  /* 周报分享图（#33）与训练提醒（#37）已于 v39 删除：私人版无分享场景；Web 无推送能力，页面级提醒形同虚设 */
+  /* 周报分享图（#33）与训练提醒（#37）已于 v39 删除：私人版无分享场景；Web 无推送能力，页面级提醒形同虚设 */
 
   function healthForm() {
     var d = S.healthDraft || {};
@@ -1672,8 +1575,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       '<div class="bk-btns" style="margin-top:8px"><div class="btn danger' + (resetArm ? ' armed' : '') + '" data-a="resetData">' + (resetArm ? '⚠️ 再点一次确认清空' : '🗑 清空全部数据') + '</div></div>' +
       '<div style="text-align:center;font-size:10px;color:#b0b6bd;margin-top:10px">健身教练 Web · ' + APP_VER + '（若与最新版本不符 = 手机在吃旧缓存，强制刷新即可）</div>' +
       '<input type="file" id="impFile" accept="application/json" style="display:none"></div>';
-    return healthCard() + heatmap() + remindCard() + trendHtml() + fitTestCard() + prTrendHtml() + weightCard() + radarHtml + volHtml + backup +
-      '<div class="btn" style="margin:0 0 10px;text-align:center" data-a="weeklyReport">📊 生成周报分享图</div>' +
+    return healthCard() + heatmap() + trendHtml() + fitTestCard() + prTrendHtml() + weightCard() + radarHtml + volHtml + backup +
       '<div class="stats-row"><div class="stat"><div class="n">' + S.records.length + '</div><div class="l">累计训练</div></div>' +
       '<div class="stat"><div class="n">' + totalMin + '</div><div class="l">总分钟</div></div>' +
       '<div class="stat"><div class="n">' + names.length + '</div><div class="l">动作有纪录</div></div></div>' +
@@ -2926,45 +2828,6 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     return '<div class="h-sec">⏱ 训练趋势时间线</div>' + cards + volCard;
   }
 
-  /* ============ 周计划分享（#17）：生成可读文本并复制到剪贴板 ============ */
-  function planShareText() {
-    var p = S.plan; if (!p) return '';
-    var lines = ['🏋️ 我的 ' + p.weeks.length + ' 周健身计划'];
-    if (p.venueNote) lines.push('📍 ' + p.venueNote);
-    if (p.levelNote) lines.push('💬 ' + p.levelNote);
-    p.weeks.forEach(function (wk, wi) {
-      lines.push('');
-      lines.push('—— 第' + (wi + 1) + '周（' + wk.days + ' 练 · 约 ' + wk.totalMin + ' 分钟 · ' + wk.totalKcal + ' 千卡）——');
-      wk.week.forEach(function (d) {
-        if (d.rest) { lines.push(d.wd + '：💤 休息日'); return; }
-        var mains = d.acts.filter(function (a) { return !a.fin && !a.cool; }).slice(0, 4).map(function (a) { return a.name; }).join('、');
-        lines.push(d.wd + '：' + d.icon + ' ' + d.typeName + '（' + mains + (d.acts.length > 4 ? ' 等' : '') + '）');
-      });
-    });
-    lines.push('');
-    lines.push('—— 来自「健身教练」网页版');
-    return lines.join('\n');
-  }
-  function copyText(txt, okMsg) {
-    var done = function () { toast(okMsg); };
-    var fallback = function () {
-      try {
-        var ta = document.createElement('textarea');
-        ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
-        document.body.appendChild(ta); ta.select();
-        document.execCommand('copy'); document.body.removeChild(ta); done();
-      } catch (e) { toast('复制失败，请手动选择文本'); }
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(txt).then(done, fallback);
-    } else fallback();
-  }
-  function sharePlan() {
-    var txt = planShareText();
-    if (!txt) { toast('先生成计划再分享'); return; }
-    copyText(txt, '📋 周计划已复制，去粘贴分享吧');
-  }
-
   /* ============ 训练档案导出/备份（#15） ============ */
   function exportData() {
     /* v38：payload 补漏 weights（体重曲线）/badges/habits（喝水睡眠）/recovery，升 v2；导入向后兼容 v1 */
@@ -3054,7 +2917,6 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
     if (a === 'confirmExit') { doCloseW(); return; }
     if (a === 'resumePrev') { resumePrev(); return; }
     if (a === 'undoAct') { undoLast(); return; }
-    if (a === 'sharePlan') { sharePlan(); return; }
     /* 体重 / 饮食打卡 */
     if (a === 'weightSave') {
       var wi = $('#wgtIn'), wv = wi ? Number(wi.value) : 0;
@@ -3079,25 +2941,7 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
       S.fitness = S.fitness.slice(-24); saveK('fit_fitness', S.fitness);
       renderView(); toast('🏋️ 体测已记录，坚持每月测一次看进步'); return;
     }
-    /* 周报分享图（#33） */
-    if (a === 'weeklyReport') { weeklyReport(); return; }
-    /* 训练提醒（#37） */
-    if (a === 'remindToggle') {
-      if (!S.remind || !S.remind.on) {
-        if (!('Notification' in window)) { toast('当前浏览器不支持通知'); return; }
-        Notification.requestPermission().then(function (p) {
-          if (p === 'granted') { toast('通知权限已获取'); remindLoop(); renderView(); }
-          else toast('未授权通知，提醒将不可用');
-        });
-        S.remind = { on: true, time: (S.remind && S.remind.time) || '19:30' };
-      } else { S.remind.on = false; toast('提醒已关闭'); }
-      saveK('fit_remind', S.remind); renderView(); return;
-    }
-    if (a === 'remindSave') {
-      var rt = $('#remindTime');
-      S.remind = { on: S.remind ? S.remind.on : false, time: (rt && rt.value) || '19:30' };
-      saveK('fit_remind', S.remind); toast('⏰ 提醒时间已设为 ' + S.remind.time); return;
-    }
+    /* 周报分享图（#33）与训练提醒（#37）已随功能移除 */
     /* Keep 式按餐记录（#40） */
     if (a === 'addFood') { sheetFood(el.dataset.meal); return; }
     if (a === 'foodQuick') {
@@ -3429,7 +3273,6 @@ body { background: linear-gradient(135deg, #1a2029 0%, #0f1419 100%); font-famil
   });
 
   renderShell();
-  remindLoop();
 })();
 
 </script>
